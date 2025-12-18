@@ -1,0 +1,265 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import { useIdentities } from '@/composables/useIdentities'
+import { useSessions } from '@/composables/useSessions'
+import { useCourierMessages } from '@/composables/useCourier'
+import { useHealthAlive, useVersion } from '@/composables/useHealth'
+import Card from '@/components/ui/Card.vue'
+import CardHeader from '@/components/ui/CardHeader.vue'
+import CardTitle from '@/components/ui/CardTitle.vue'
+import CardContent from '@/components/ui/CardContent.vue'
+import Skeleton from '@/components/ui/Skeleton.vue'
+import TimeAgo from '@/components/common/TimeAgo.vue'
+import StatusBadge from '@/components/common/StatusBadge.vue'
+import ErrorState from '@/components/common/ErrorState.vue'
+import { Users, Key, Mail, Activity, ArrowRight } from 'lucide-vue-next'
+
+const { data: identities, isLoading: identitiesLoading, isError: identitiesError, refetch: refetchIdentities } = useIdentities()
+const { data: sessions, isLoading: sessionsLoading, isError: sessionsError, refetch: refetchSessions } = useSessions()
+const { data: messages, isLoading: messagesLoading, isError: messagesError, refetch: refetchMessages } = useCourierMessages()
+const { isError: healthError } = useHealthAlive()
+const { data: version } = useVersion()
+
+const stats = computed(() => [
+  {
+    name: 'Identities',
+    value: identities.value?.length ?? 0,
+    icon: Users,
+    href: '/identities',
+    color: 'text-accent',
+    bgColor: 'bg-accent/10',
+  },
+  {
+    name: 'Active Sessions',
+    value: sessions.value?.length ?? 0,
+    icon: Key,
+    href: '/sessions',
+    color: 'text-success',
+    bgColor: 'bg-success/10',
+  },
+  {
+    name: 'Messages',
+    value: messages.value?.length ?? 0,
+    icon: Mail,
+    href: '/courier',
+    color: 'text-warning',
+    bgColor: 'bg-warning/10',
+  },
+  {
+    name: 'API Status',
+    value: healthError ? 'Offline' : 'Online',
+    icon: Activity,
+    href: '/settings',
+    color: healthError ? 'text-destructive' : 'text-success',
+    bgColor: healthError ? 'bg-destructive/10' : 'bg-success/10',
+  },
+])
+
+function getIdentityName(identity: any): string {
+  const traits = identity.traits || {}
+  return traits.email || traits.username || traits.name || identity.id.slice(0, 8)
+}
+</script>
+
+<template>
+  <div class="space-y-6">
+    <!-- Page header -->
+    <div>
+      <h1 class="text-2xl font-semibold text-text-primary">Dashboard</h1>
+      <p class="text-sm text-text-muted mt-1">
+        Overview of your Ory Kratos instance
+        <span v-if="version?.version" class="text-text-secondary">
+          (v{{ version.version }})
+        </span>
+      </p>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <RouterLink
+        v-for="stat in stats"
+        :key="stat.name"
+        :to="stat.href"
+        class="group"
+      >
+        <Card class="transition-colors hover:border-border-default">
+          <CardContent class="p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-text-muted">{{ stat.name }}</p>
+                <p class="text-2xl font-semibold text-text-primary mt-1">
+                  {{ stat.value }}
+                </p>
+              </div>
+              <div :class="[stat.bgColor, 'rounded-lg p-2']">
+                <component :is="stat.icon" :class="['h-5 w-5', stat.color]" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </RouterLink>
+    </div>
+
+    <!-- Recent items grid -->
+    <div class="grid gap-6 lg:grid-cols-2">
+      <!-- Recent identities -->
+      <Card>
+        <CardHeader class="flex flex-row items-center justify-between pb-2">
+          <CardTitle class="text-base">Recent Identities</CardTitle>
+          <RouterLink
+            to="/identities"
+            class="text-sm text-accent hover:text-accent-hover flex items-center gap-1"
+          >
+            View all
+            <ArrowRight class="h-3 w-3" />
+          </RouterLink>
+        </CardHeader>
+        <CardContent>
+          <div v-if="identitiesLoading" class="space-y-3">
+            <Skeleton v-for="i in 5" :key="i" class="h-12" />
+          </div>
+          <ErrorState
+            v-else-if="identitiesError"
+            title="Failed to load identities"
+            @retry="refetchIdentities"
+          />
+          <div v-else-if="identities?.length" class="space-y-2">
+            <RouterLink
+              v-for="identity in identities"
+              :key="identity.id"
+              :to="`/identities/${identity.id}`"
+              class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-raised transition-colors"
+            >
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent text-sm font-medium flex-shrink-0">
+                  {{ getIdentityName(identity).charAt(0).toUpperCase() }}
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-medium text-text-primary truncate">
+                    {{ getIdentityName(identity) }}
+                  </p>
+                  <p class="text-xs text-text-muted truncate">
+                    {{ identity.id }}
+                  </p>
+                </div>
+              </div>
+              <div class="text-xs text-text-muted flex-shrink-0">
+                <TimeAgo :date="identity.created_at" />
+              </div>
+            </RouterLink>
+          </div>
+          <div v-else class="py-8 text-center text-sm text-text-muted">
+            No identities found
+          </div>
+        </CardContent>
+      </Card>
+
+      <!-- Recent sessions -->
+      <Card>
+        <CardHeader class="flex flex-row items-center justify-between pb-2">
+          <CardTitle class="text-base">Recent Sessions</CardTitle>
+          <RouterLink
+            to="/sessions"
+            class="text-sm text-accent hover:text-accent-hover flex items-center gap-1"
+          >
+            View all
+            <ArrowRight class="h-3 w-3" />
+          </RouterLink>
+        </CardHeader>
+        <CardContent>
+          <div v-if="sessionsLoading" class="space-y-3">
+            <Skeleton v-for="i in 5" :key="i" class="h-12" />
+          </div>
+          <ErrorState
+            v-else-if="sessionsError"
+            title="Failed to load sessions"
+            @retry="refetchSessions"
+          />
+          <div v-else-if="sessions?.length" class="space-y-2">
+            <RouterLink
+              v-for="session in sessions"
+              :key="session.id"
+              :to="`/sessions/${session.id}`"
+              class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-raised transition-colors"
+            >
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-success/10 text-success flex-shrink-0">
+                  <Key class="h-4 w-4" />
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-medium text-text-primary truncate">
+                    {{ session.id.slice(0, 8) }}...
+                  </p>
+                  <p class="text-xs text-text-muted">
+                    {{ session.identity?.traits?.email || 'Unknown user' }}
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <StatusBadge :status="session.active ? 'active' : 'inactive'" />
+              </div>
+            </RouterLink>
+          </div>
+          <div v-else class="py-8 text-center text-sm text-text-muted">
+            No sessions found
+          </div>
+        </CardContent>
+      </Card>
+
+      <!-- Recent messages -->
+      <Card class="lg:col-span-2">
+        <CardHeader class="flex flex-row items-center justify-between pb-2">
+          <CardTitle class="text-base">Recent Courier Messages</CardTitle>
+          <RouterLink
+            to="/courier"
+            class="text-sm text-accent hover:text-accent-hover flex items-center gap-1"
+          >
+            View all
+            <ArrowRight class="h-3 w-3" />
+          </RouterLink>
+        </CardHeader>
+        <CardContent>
+          <div v-if="messagesLoading" class="space-y-3">
+            <Skeleton v-for="i in 5" :key="i" class="h-12" />
+          </div>
+          <ErrorState
+            v-else-if="messagesError"
+            title="Failed to load messages"
+            @retry="refetchMessages"
+          />
+          <div v-else-if="messages?.length" class="space-y-2">
+            <div
+              v-for="message in messages"
+              :key="message.id"
+              class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-raised transition-colors"
+            >
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-warning/10 text-warning flex-shrink-0">
+                  <Mail class="h-4 w-4" />
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-medium text-text-primary truncate">
+                    {{ message.recipient }}
+                  </p>
+                  <p class="text-xs text-text-muted truncate">
+                    {{ message.subject || message.template_type || 'No subject' }}
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <StatusBadge :status="message.status" />
+                <span class="text-xs text-text-muted">
+                  <TimeAgo :date="message.created_at" />
+                </span>
+              </div>
+            </div>
+          </div>
+          <div v-else class="py-8 text-center text-sm text-text-muted">
+            No messages found
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </div>
+</template>
