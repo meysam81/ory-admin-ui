@@ -32,6 +32,11 @@ export function createApiClient() {
   })
 }
 
+let apiClient: ReturnType<typeof createApiClient> | null = null
+
 export function getApiClient() {
-  return createApiClient()
+  if (!apiClient) {
+    apiClient = createApiClient()
+  }
+  return apiClient
 }
