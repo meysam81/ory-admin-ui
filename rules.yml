@@ -1,0 +1,17 @@
+- id: kratos-admin
+  upstream:
+    url: http://localhost:4434
+  match:
+    url: http://<127.0.0.1|localhost>:4455</?.*>
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+  authenticators:
+    - handler: anonymous
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: noop
