@@ -1,0 +1,5 @@
+export { BasePage } from './BasePage'
+export { IdentitiesPage } from './IdentitiesPage'
+export { IdentityDetailPage } from './IdentityDetailPage'
+export { SessionsPage } from './SessionsPage'
+export { SettingsPage } from './SettingsPage'
