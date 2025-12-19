@@ -23,6 +23,13 @@ import (
 //go:embed dist/*
 var frontend embed.FS
 
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+	builtBy = "unknown"
+)
+
 type Config struct {
 	Host     string `env:"ORY_ADMIN_UI_HOST" envDefault:"localhost"`
 	Port     int    `env:"ORY_ADMIN_UI_PORT" envDefault:"3000"`
@@ -42,13 +49,17 @@ func NewLogger(c *Config) *zerolog.Logger {
 	return logger
 }
 
-func securityHeaders(next http.Handler) http.Handler {
+func (a *AppState) securityHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
 		w.Header().Set("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+		if a.Config.ContentSecurityPolicy != "" {
+			w.Header().Set("Content-Security-Policy", a.Config.ContentSecurityPolicy)
+		}
+
 		next.ServeHTTP(w, r)
 	})
 }
@@ -75,7 +86,8 @@ func startServer(ctx context.Context, appState *AppState) error {
 
 	r := chi.NewRouter()
 
-	r.Use(securityHeaders)
+	r.Use(appState.securityHeaders)
+	r.Use(cacheControl(3600))
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RequestID)
@@ -92,7 +104,6 @@ func startServer(ctx context.Context, appState *AppState) error {
 			}()
 			if stat, err := file.Stat(); err == nil && !stat.IsDir() {
 				appState.Logger.Debug().Str("path", r.URL.Path).Msg("serving static file")
-				w.Header().Set("Cache-Control", "public, max-age=3600")
 				http.ServeContent(w, r, r.URL.Path, stat.ModTime(), file.(io.ReadSeeker))
 				return
 			}
@@ -118,7 +129,6 @@ func startServer(ctx context.Context, appState *AppState) error {
 		}
 
 		appState.Logger.Debug().Str("path", r.URL.Path).Msg("serving index.html for route")
-		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Pragma", "no-cache")
 		w.Header().Set("Expires", "0")
 		http.ServeContent(w, r, "/", stat.ModTime(), indexFile.(io.ReadSeeker))
@@ -187,7 +197,7 @@ func main() {
 		Usage:                 "Ory Admin UI server",
 		Suggest:               true,
 		EnableShellCompletion: true,
-		Version:               "1.0.0",
+		Version:               version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "host",

@@ -149,3 +149,4 @@ kratos.db*
 ory-admin-ui
 tmp/
 .envrc
+.goreleaser-dist/
