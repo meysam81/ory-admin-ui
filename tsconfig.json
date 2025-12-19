@@ -17,6 +17,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@test/*": [
+        "./test/*"
       ]
     },
     "resolveJsonModule": true,
@@ -25,14 +28,17 @@
     "target": "ESNext",
     "types": [
       "node",
-      "vite/client"
+      "vite/client",
+      "vitest/globals"
     ],
     "useDefineForClassFields": true
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "test/**/*.ts",
+    "e2e/**/*.ts"
   ],
   "references": [
     {
