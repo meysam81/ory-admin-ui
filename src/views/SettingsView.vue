@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useSettingsStore } from '@/stores/settings'
-import { useThemeStore } from '@/stores/theme'
-import { useHealthAlive, useVersion } from '@/composables/useHealth'
-import Card from '@/components/ui/Card.vue'
-import CardHeader from '@/components/ui/CardHeader.vue'
-import CardTitle from '@/components/ui/CardTitle.vue'
-import CardDescription from '@/components/ui/CardDescription.vue'
-import CardContent from '@/components/ui/CardContent.vue'
-import Button from '@/components/ui/Button.vue'
-import Input from '@/components/ui/Input.vue'
-import Label from '@/components/ui/Label.vue'
-import Badge from '@/components/ui/Badge.vue'
+import { ref, computed } from "vue"
+import { useSettingsStore } from "@/stores/settings"
+import { useThemeStore } from "@/stores/theme"
+import { useHealthAlive, useVersion } from "@/composables/useHealth"
+import Card from "@/components/ui/Card.vue"
+import CardHeader from "@/components/ui/CardHeader.vue"
+import CardTitle from "@/components/ui/CardTitle.vue"
+import CardDescription from "@/components/ui/CardDescription.vue"
+import CardContent from "@/components/ui/CardContent.vue"
+import Button from "@/components/ui/Button.vue"
+import Input from "@/components/ui/Input.vue"
+import Label from "@/components/ui/Label.vue"
+import Badge from "@/components/ui/Badge.vue"
 import {
   Settings,
   Server,
@@ -23,8 +23,8 @@ import {
   Sun,
   Moon,
   Monitor,
-} from 'lucide-vue-next'
-import { toast } from 'vue-sonner'
+} from "lucide-vue-next"
+import { toast } from "vue-sonner"
 
 const settingsStore = useSettingsStore()
 const themeStore = useThemeStore()
@@ -43,17 +43,17 @@ const hasChanges = computed(() => {
 
 function saveSettings() {
   settingsStore.setApiEndpoint(apiEndpoint.value)
-  themeStore.setTheme(theme.value as 'light' | 'dark' | 'system')
-  toast.success('Settings saved successfully')
+  themeStore.setTheme(theme.value as "light" | "dark" | "system")
+  toast.success("Settings saved successfully")
   checkHealth()
 }
 
 function resetSettings() {
   settingsStore.resetSettings()
-  themeStore.setTheme('dark')
+  themeStore.setTheme("dark")
   apiEndpoint.value = settingsStore.apiEndpoint
-  theme.value = 'dark'
-  toast.info('Settings reset to defaults')
+  theme.value = "dark"
+  toast.info("Settings reset to defaults")
   checkHealth()
 }
 
@@ -71,42 +71,42 @@ const isValidUrl = computed(() => {
 const isTesting = ref(false)
 async function testConnection() {
   if (!isValidUrl.value) {
-    toast.error('Please enter a valid URL')
+    toast.error("Please enter a valid URL")
     return
   }
 
   isTesting.value = true
   settingsStore.setApiEndpoint(apiEndpoint.value)
 
-  await new Promise(resolve => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 500))
   await checkHealth()
 
   isTesting.value = false
 
   if (healthError.value) {
-    toast.error('Connection failed', {
-      description: 'Could not connect to the Kratos API at the specified endpoint',
+    toast.error("Connection failed", {
+      description: "Could not connect to the Kratos API at the specified endpoint",
     })
   } else {
-    toast.success('Connection successful', {
-      description: `Connected to Kratos ${version.value?.version || ''}`,
+    toast.success("Connection successful", {
+      description: `Connected to Kratos ${version.value?.version || ""}`,
     })
   }
 }
 </script>
 
 <template>
-  <div class="space-y-6 max-w-2xl">
+  <div class="max-w-2xl space-y-6">
     <!-- Page header -->
     <div>
       <h1 class="text-2xl font-semibold text-text-primary">Settings</h1>
-      <p class="text-sm text-text-muted mt-1">Configure the Ory Admin UI</p>
+      <p class="mt-1 text-sm text-text-muted">Configure the Ory Admin UI</p>
     </div>
 
     <!-- API Configuration -->
     <Card>
       <CardHeader>
-        <CardTitle class="text-base flex items-center gap-2">
+        <CardTitle class="flex items-center gap-2 text-base">
           <Server class="h-4 w-4" />
           API Configuration
         </CardTitle>
@@ -123,12 +123,8 @@ async function testConnection() {
               placeholder="http://localhost:4434"
               :class="!isValidUrl && apiEndpoint ? 'border-destructive' : ''"
             />
-            <Button
-              variant="outline"
-              @click="testConnection"
-              :disabled="!isValidUrl || isTesting"
-            >
-              {{ isTesting ? 'Testing...' : 'Test' }}
+            <Button variant="outline" @click="testConnection" :disabled="!isValidUrl || isTesting">
+              {{ isTesting ? "Testing..." : "Test" }}
             </Button>
           </div>
           <p v-if="!isValidUrl && apiEndpoint" class="text-xs text-destructive">
@@ -140,7 +136,7 @@ async function testConnection() {
         </div>
 
         <!-- Connection status -->
-        <div class="flex items-center justify-between p-4 bg-surface-raised rounded-lg">
+        <div class="flex items-center justify-between rounded-lg bg-surface-raised p-4">
           <div class="flex items-center gap-3">
             <div
               :class="[
@@ -153,15 +149,19 @@ async function testConnection() {
             </div>
             <div>
               <p class="text-sm font-medium text-text-primary">
-                {{ healthError ? 'Disconnected' : 'Connected' }}
+                {{ healthError ? "Disconnected" : "Connected" }}
               </p>
               <p class="text-xs text-text-muted">
-                {{ healthError ? 'Unable to reach the API' : `Kratos ${version?.version || 'Unknown version'}` }}
+                {{
+                  healthError
+                    ? "Unable to reach the API"
+                    : `Kratos ${version?.version || "Unknown version"}`
+                }}
               </p>
             </div>
           </div>
           <Badge :variant="healthError ? 'destructive' : 'success'">
-            {{ healthError ? 'Offline' : 'Online' }}
+            {{ healthError ? "Offline" : "Online" }}
           </Badge>
         </div>
       </CardContent>
@@ -170,7 +170,7 @@ async function testConnection() {
     <!-- Appearance -->
     <Card>
       <CardHeader>
-        <CardTitle class="text-base flex items-center gap-2">
+        <CardTitle class="flex items-center gap-2 text-base">
           <Palette class="h-4 w-4" />
           Appearance
         </CardTitle>
@@ -183,10 +183,10 @@ async function testConnection() {
             <button
               @click="theme = 'light'"
               :class="[
-                'flex items-center justify-center gap-2 p-3 rounded-lg border transition-colors',
+                'flex items-center justify-center gap-2 rounded-lg border p-3 transition-colors',
                 theme === 'light'
                   ? 'border-accent bg-accent/10 text-accent'
-                  : 'border-border-subtle hover:border-border-default text-text-secondary',
+                  : 'hover:border-border-default border-border-subtle text-text-secondary',
               ]"
             >
               <Sun class="h-4 w-4" />
@@ -195,10 +195,10 @@ async function testConnection() {
             <button
               @click="theme = 'dark'"
               :class="[
-                'flex items-center justify-center gap-2 p-3 rounded-lg border transition-colors',
+                'flex items-center justify-center gap-2 rounded-lg border p-3 transition-colors',
                 theme === 'dark'
                   ? 'border-accent bg-accent/10 text-accent'
-                  : 'border-border-subtle hover:border-border-default text-text-secondary',
+                  : 'hover:border-border-default border-border-subtle text-text-secondary',
               ]"
             >
               <Moon class="h-4 w-4" />
@@ -207,10 +207,10 @@ async function testConnection() {
             <button
               @click="theme = 'system'"
               :class="[
-                'flex items-center justify-center gap-2 p-3 rounded-lg border transition-colors',
+                'flex items-center justify-center gap-2 rounded-lg border p-3 transition-colors',
                 theme === 'system'
                   ? 'border-accent bg-accent/10 text-accent'
-                  : 'border-border-subtle hover:border-border-default text-text-secondary',
+                  : 'hover:border-border-default border-border-subtle text-text-secondary',
               ]"
             >
               <Monitor class="h-4 w-4" />
@@ -227,20 +227,20 @@ async function testConnection() {
     <!-- About -->
     <Card>
       <CardHeader>
-        <CardTitle class="text-base flex items-center gap-2">
+        <CardTitle class="flex items-center gap-2 text-base">
           <Settings class="h-4 w-4" />
           About
         </CardTitle>
       </CardHeader>
       <CardContent class="space-y-3">
-        <div class="flex justify-between py-2 border-b border-border-subtle">
+        <div class="flex justify-between border-b border-border-subtle py-2">
           <span class="text-sm text-text-muted">Admin UI Version</span>
-          <span class="text-sm text-text-primary font-mono">1.0.0</span>
+          <span class="font-mono text-sm text-text-primary">1.0.0</span>
         </div>
-        <div class="flex justify-between py-2 border-b border-border-subtle">
+        <div class="flex justify-between border-b border-border-subtle py-2">
           <span class="text-sm text-text-muted">Kratos Version</span>
-          <span class="text-sm text-text-primary font-mono">
-            {{ version?.version || 'Unknown' }}
+          <span class="font-mono text-sm text-text-primary">
+            {{ version?.version || "Unknown" }}
           </span>
         </div>
         <div class="flex justify-between py-2">
@@ -260,11 +260,11 @@ async function testConnection() {
     <!-- Actions -->
     <div class="flex justify-between">
       <Button variant="outline" @click="resetSettings">
-        <RotateCcw class="h-4 w-4 mr-2" />
+        <RotateCcw class="mr-2 h-4 w-4" />
         Reset to Defaults
       </Button>
       <Button @click="saveSettings" :disabled="!hasChanges">
-        <Save class="h-4 w-4 mr-2" />
+        <Save class="mr-2 h-4 w-4" />
         Save Settings
       </Button>
     </div>

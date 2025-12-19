@@ -1,4 +1,4 @@
-export { default as Select } from '../Select.vue'
+export { default as Select } from "../Select.vue"
 
 // Re-export Radix Vue select components
 export {
@@ -14,4 +14,4 @@ export {
   SelectScrollUpButton,
   SelectScrollDownButton,
   SelectViewport,
-} from 'radix-vue'
+} from "radix-vue"

@@ -1,18 +1,18 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { defineStore } from "pinia"
+import { ref } from "vue"
 
-export const useUIStore = defineStore('ui', () => {
-  const sidebarCollapsed = ref(localStorage.getItem('sidebarCollapsed') === 'true')
+export const useUIStore = defineStore("ui", () => {
+  const sidebarCollapsed = ref(localStorage.getItem("sidebarCollapsed") === "true")
   const commandPaletteOpen = ref(false)
 
   function toggleSidebar() {
     sidebarCollapsed.value = !sidebarCollapsed.value
-    localStorage.setItem('sidebarCollapsed', String(sidebarCollapsed.value))
+    localStorage.setItem("sidebarCollapsed", String(sidebarCollapsed.value))
   }
 
   function setSidebarCollapsed(collapsed: boolean) {
     sidebarCollapsed.value = collapsed
-    localStorage.setItem('sidebarCollapsed', String(collapsed))
+    localStorage.setItem("sidebarCollapsed", String(collapsed))
   }
 
   function openCommandPalette() {

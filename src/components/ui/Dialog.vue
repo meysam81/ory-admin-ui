@@ -8,8 +8,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogClose,
-} from 'radix-vue'
-import { X } from 'lucide-vue-next'
+} from "radix-vue"
+import { X } from "lucide-vue-next"
 
 interface Props {
   open?: boolean
@@ -22,7 +22,7 @@ withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  'update:open': [value: boolean]
+  "update:open": [value: boolean]
 }>()
 </script>
 

@@ -1,34 +1,45 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useSchemas } from '@/composables/useSchemas'
-import { useCreateIdentity } from '@/composables/useIdentities'
-import Card from '@/components/ui/Card.vue'
-import CardHeader from '@/components/ui/CardHeader.vue'
-import CardTitle from '@/components/ui/CardTitle.vue'
-import CardDescription from '@/components/ui/CardDescription.vue'
-import CardContent from '@/components/ui/CardContent.vue'
-import Button from '@/components/ui/Button.vue'
-import Label from '@/components/ui/Label.vue'
-import Textarea from '@/components/ui/Textarea.vue'
-import { SelectRoot as Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from 'radix-vue'
-import Skeleton from '@/components/ui/Skeleton.vue'
-import ErrorState from '@/components/common/ErrorState.vue'
-import { ArrowLeft, Save, FileJson } from 'lucide-vue-next'
+import { ref, computed } from "vue"
+import { useRouter } from "vue-router"
+import { useSchemas } from "@/composables/useSchemas"
+import { useCreateIdentity } from "@/composables/useIdentities"
+import Card from "@/components/ui/Card.vue"
+import CardHeader from "@/components/ui/CardHeader.vue"
+import CardTitle from "@/components/ui/CardTitle.vue"
+import CardDescription from "@/components/ui/CardDescription.vue"
+import CardContent from "@/components/ui/CardContent.vue"
+import Button from "@/components/ui/Button.vue"
+import Label from "@/components/ui/Label.vue"
+import Textarea from "@/components/ui/Textarea.vue"
+import {
+  SelectRoot as Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "radix-vue"
+import Skeleton from "@/components/ui/Skeleton.vue"
+import ErrorState from "@/components/common/ErrorState.vue"
+import { ArrowLeft, Save, FileJson } from "lucide-vue-next"
 
 const router = useRouter()
 
-const { data: schemas, isLoading: schemasLoading, isError: schemasError, refetch: refetchSchemas } = useSchemas()
+const {
+  data: schemas,
+  isLoading: schemasLoading,
+  isError: schemasError,
+  refetch: refetchSchemas,
+} = useSchemas()
 const { mutate: createIdentity, isPending: isCreating } = useCreateIdentity()
 
-const selectedSchemaId = ref('')
-const traitsJson = ref('{}')
-const metadataPublicJson = ref('{}')
-const metadataAdminJson = ref('{}')
+const selectedSchemaId = ref("")
+const traitsJson = ref("{}")
+const metadataPublicJson = ref("{}")
+const metadataAdminJson = ref("{}")
 const jsonError = ref<string | null>(null)
 
 const selectedSchema = computed(() => {
-  return schemas.value?.find(s => s.id === selectedSchemaId.value)
+  return schemas.value?.find((s) => s.id === selectedSchemaId.value)
 })
 
 function validateJson(json: string): boolean {
@@ -37,7 +48,7 @@ function validateJson(json: string): boolean {
     jsonError.value = null
     return true
   } catch (e) {
-    jsonError.value = e instanceof Error ? e.message : 'Invalid JSON'
+    jsonError.value = e instanceof Error ? e.message : "Invalid JSON"
     return false
   }
 }
@@ -76,15 +87,15 @@ function generateTraitsTemplate() {
   if (schema.properties?.traits?.properties) {
     const traitProps = schema.properties.traits.properties as Record<string, any>
     for (const [key, prop] of Object.entries(traitProps) as [string, any][]) {
-      if (prop.type === 'string') {
-        template[key] = ''
-      } else if (prop.type === 'number' || prop.type === 'integer') {
+      if (prop.type === "string") {
+        template[key] = ""
+      } else if (prop.type === "number" || prop.type === "integer") {
         template[key] = 0
-      } else if (prop.type === 'boolean') {
+      } else if (prop.type === "boolean") {
         template[key] = false
-      } else if (prop.type === 'object') {
+      } else if (prop.type === "object") {
         template[key] = {}
-      } else if (prop.type === 'array') {
+      } else if (prop.type === "array") {
         template[key] = []
       }
     }
@@ -95,17 +106,17 @@ function generateTraitsTemplate() {
 </script>
 
 <template>
-  <div class="space-y-6 max-w-2xl">
+  <div class="max-w-2xl space-y-6">
     <!-- Back button -->
     <Button variant="ghost" @click="router.push('/identities')" class="-ml-2">
-      <ArrowLeft class="h-4 w-4 mr-2" />
+      <ArrowLeft class="mr-2 h-4 w-4" />
       Back to Identities
     </Button>
 
     <!-- Header -->
     <div>
       <h1 class="text-2xl font-semibold text-text-primary">Create Identity</h1>
-      <p class="text-sm text-text-muted mt-1">Create a new user identity in your Kratos instance</p>
+      <p class="mt-1 text-sm text-text-muted">Create a new user identity in your Kratos instance</p>
     </div>
 
     <!-- Loading state -->
@@ -127,11 +138,13 @@ function generateTraitsTemplate() {
       <!-- Schema selection -->
       <Card>
         <CardHeader>
-          <CardTitle class="text-base flex items-center gap-2">
+          <CardTitle class="flex items-center gap-2 text-base">
             <FileJson class="h-4 w-4" />
             Identity Schema
           </CardTitle>
-          <CardDescription>Select the schema that defines the structure of this identity</CardDescription>
+          <CardDescription
+            >Select the schema that defines the structure of this identity</CardDescription
+          >
         </CardHeader>
         <CardContent>
           <div class="space-y-2">
@@ -153,7 +166,7 @@ function generateTraitsTemplate() {
       <!-- Traits -->
       <Card>
         <CardHeader>
-          <CardTitle class="text-base flex items-center gap-2">
+          <CardTitle class="flex items-center gap-2 text-base">
             <User class="h-4 w-4" />
             Traits
           </CardTitle>
@@ -211,8 +224,8 @@ function generateTraitsTemplate() {
           Cancel
         </Button>
         <Button type="submit" :disabled="!selectedSchemaId || isCreating">
-          <Save class="h-4 w-4 mr-2" />
-          {{ isCreating ? 'Creating...' : 'Create Identity' }}
+          <Save class="mr-2 h-4 w-4" />
+          {{ isCreating ? "Creating..." : "Create Identity" }}
         </Button>
       </div>
     </form>

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useVersion } from '@/composables/useHealth'
+import { useVersion } from "@/composables/useHealth"
 
 const { data: versionData } = useVersion()
 </script>
 
 <template>
-  <footer class="border-t border-border-subtle py-4 px-6 text-sm text-text-muted">
-    <div class="flex items-center justify-between max-w-screen-2xl mx-auto">
+  <footer class="border-t border-border-subtle px-6 py-4 text-sm text-text-muted">
+    <div class="mx-auto flex max-w-screen-2xl items-center justify-between">
       <div class="flex items-center gap-2">
         <span>Ory Kratos Admin UI</span>
         <span v-if="versionData?.version" class="text-text-muted">
@@ -18,7 +18,7 @@ const { data: versionData } = useVersion()
           href="https://github.com/meysam81/ory-admin-ui"
           target="_blank"
           rel="noopener noreferrer"
-          class="hover:text-text-secondary transition-colors"
+          class="transition-colors hover:text-text-secondary"
         >
           GitHub
         </a>
@@ -26,7 +26,7 @@ const { data: versionData } = useVersion()
           href="https://www.ory.sh/docs/kratos"
           target="_blank"
           rel="noopener noreferrer"
-          class="hover:text-text-secondary transition-colors"
+          class="transition-colors hover:text-text-secondary"
         >
           Kratos Docs
         </a>

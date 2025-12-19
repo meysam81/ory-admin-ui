@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { cn } from '@/lib/utils'
+import { computed } from "vue"
+import { cn } from "@/lib/utils"
 
 interface Props {
   class?: string
@@ -9,7 +9,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const classes = computed(() =>
-  cn('text-lg font-medium tracking-tight text-text-primary', props.class)
+  cn("text-lg font-medium tracking-tight text-text-primary", props.class)
 )
 </script>
 

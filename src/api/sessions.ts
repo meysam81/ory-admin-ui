@@ -1,18 +1,18 @@
-import { getApiClient } from './client'
-import type { Session, PaginationParams } from '@/types/api'
+import { getApiClient } from "./client"
+import type { Session, PaginationParams } from "@/types/api"
 
 export const sessionsApi = {
   list: async (params?: PaginationParams & { active?: boolean; expand?: string[] }) => {
     const client = getApiClient()
     const searchParams = new URLSearchParams()
-    if (params?.page_size) searchParams.set('page_size', String(params.page_size))
-    if (params?.page_token) searchParams.set('page_token', params.page_token)
-    if (params?.active !== undefined) searchParams.set('active', String(params.active))
+    if (params?.page_size) searchParams.set("page_size", String(params.page_size))
+    if (params?.page_token) searchParams.set("page_token", params.page_token)
+    if (params?.active !== undefined) searchParams.set("active", String(params.active))
     if (params?.expand?.length) {
-      params.expand.forEach(e => searchParams.append('expand', e))
+      params.expand.forEach((e) => searchParams.append("expand", e))
     }
     return client
-      .get('admin/sessions', {
+      .get("admin/sessions", {
         searchParams: searchParams.toString() ? searchParams : undefined,
       })
       .json<Session[]>()
@@ -22,7 +22,7 @@ export const sessionsApi = {
     const client = getApiClient()
     const searchParams = new URLSearchParams()
     if (expand?.length) {
-      expand.forEach(e => searchParams.append('expand', e))
+      expand.forEach((e) => searchParams.append("expand", e))
     }
     return client
       .get(`admin/sessions/${id}`, {

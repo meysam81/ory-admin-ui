@@ -1,13 +1,15 @@
-import { getApiClient } from './client'
-import type { Message, PaginationParams } from '@/types/api'
+import { getApiClient } from "./client"
+import type { Message, PaginationParams } from "@/types/api"
 
-type MessageStatus = 'queued' | 'sent' | 'processing' | 'abandoned'
+type MessageStatus = "queued" | "sent" | "processing" | "abandoned"
 
 export const courierApi = {
-  listMessages: async (params?: PaginationParams & { status?: MessageStatus; recipient?: string }) => {
+  listMessages: async (
+    params?: PaginationParams & { status?: MessageStatus; recipient?: string }
+  ) => {
     const client = getApiClient()
     return client
-      .get('admin/courier/messages', {
+      .get("admin/courier/messages", {
         searchParams: params as Record<string, string | number>,
       })
       .json<Message[]>()

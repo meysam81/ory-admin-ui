@@ -2,7 +2,7 @@ export interface Identity {
   id: string
   schema_id: string
   schema_url: string
-  state: 'active' | 'inactive'
+  state: "active" | "inactive"
   state_changed_at?: string
   traits: Record<string, unknown>
   verifiable_addresses?: VerifiableAddress[]
@@ -27,7 +27,7 @@ export interface VerifiableAddress {
   id: string
   value: string
   verified: boolean
-  via: 'email' | 'sms'
+  via: "email" | "sms"
   status: string
   verified_at?: string
   created_at: string
@@ -47,7 +47,7 @@ export interface Session {
   active: boolean
   expires_at: string
   authenticated_at: string
-  authenticator_assurance_level: 'aal0' | 'aal1' | 'aal2' | 'aal3'
+  authenticator_assurance_level: "aal0" | "aal1" | "aal2" | "aal3"
   authentication_methods?: AuthenticationMethod[]
   issued_at: string
   identity?: Identity
@@ -69,8 +69,8 @@ export interface SessionDevice {
 
 export interface Message {
   id: string
-  type: 'email' | 'phone'
-  status: 'queued' | 'sent' | 'processing' | 'abandoned'
+  type: "email" | "phone"
+  status: "queued" | "sent" | "processing" | "abandoned"
   recipient: string
   subject: string
   body: string
@@ -84,7 +84,7 @@ export interface Message {
 export interface MessageDispatch {
   id: string
   message_id: string
-  status: 'failed' | 'success'
+  status: "failed" | "success"
   error?: Record<string, unknown>
   created_at: string
   updated_at: string
@@ -106,7 +106,7 @@ export interface Version {
 export interface CreateIdentityBody {
   schema_id: string
   traits: Record<string, unknown>
-  state?: 'active' | 'inactive'
+  state?: "active" | "inactive"
   metadata_admin?: Record<string, unknown>
   metadata_public?: Record<string, unknown>
   credentials?: {
@@ -121,7 +121,7 @@ export interface CreateIdentityBody {
 export interface UpdateIdentityBody {
   schema_id: string
   traits: Record<string, unknown>
-  state: 'active' | 'inactive'
+  state: "active" | "inactive"
   metadata_admin?: Record<string, unknown>
   metadata_public?: Record<string, unknown>
 }

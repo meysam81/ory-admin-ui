@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-vue-next'
-import Button from '@/components/ui/Button.vue'
+import { computed } from "vue"
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-vue-next"
+import Button from "@/components/ui/Button.vue"
 
 interface Props {
   page: number
@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  'update:page': [page: number]
+  "update:page": [page: number]
 }>()
 
 const totalPages = computed(() => {
@@ -42,7 +42,7 @@ const displayRange = computed(() => {
 
 function goToPage(page: number) {
   if (page >= 1 && (totalPages.value === undefined || page <= totalPages.value)) {
-    emit('update:page', page)
+    emit("update:page", page)
   }
 }
 </script>

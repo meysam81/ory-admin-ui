@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Copy, Check } from 'lucide-vue-next'
-import Button from '@/components/ui/Button.vue'
-import { toast } from 'vue-sonner'
+import { ref } from "vue"
+import { Copy, Check } from "lucide-vue-next"
+import Button from "@/components/ui/Button.vue"
+import { toast } from "vue-sonner"
 
 interface Props {
   text: string
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  label: 'Copy',
+  label: "Copy",
 })
 
 const copied = ref(false)
@@ -19,12 +19,12 @@ async function copyToClipboard() {
   try {
     await navigator.clipboard.writeText(props.text)
     copied.value = true
-    toast.success('Copied to clipboard')
+    toast.success("Copied to clipboard")
     setTimeout(() => {
       copied.value = false
     }, 2000)
   } catch {
-    toast.error('Failed to copy to clipboard')
+    toast.error("Failed to copy to clipboard")
   }
 }
 </script>

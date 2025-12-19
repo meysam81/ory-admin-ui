@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TabsRoot, TabsList, TabsTrigger, TabsContent } from 'radix-vue'
+import { TabsRoot, TabsList, TabsTrigger, TabsContent } from "radix-vue"
 
 interface Tab {
   value: string
@@ -17,7 +17,7 @@ withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string]
+  "update:modelValue": [value: string]
 }>()
 </script>
 
@@ -28,7 +28,7 @@ const emit = defineEmits<{
     @update:model-value="emit('update:modelValue', $event)"
   >
     <TabsList
-      class="inline-flex h-9 items-center justify-center rounded-lg bg-surface p-1 border border-border-subtle"
+      class="inline-flex h-9 items-center justify-center rounded-lg border border-border-subtle bg-surface p-1"
     >
       <TabsTrigger
         v-for="tab in tabs"

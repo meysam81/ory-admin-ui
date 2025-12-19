@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { cn } from '@/lib/utils'
+import { computed } from "vue"
+import { cn } from "@/lib/utils"
 
 interface Props {
   for?: string
@@ -11,7 +11,7 @@ const props = defineProps<Props>()
 
 const classes = computed(() =>
   cn(
-    'text-sm font-medium text-text-secondary leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+    "text-sm font-medium text-text-secondary leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
     props.class
   )
 )

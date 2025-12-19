@@ -1,8 +1,8 @@
-import ky from 'ky'
-import log from 'loglevel'
-import { useSettingsStore } from '@/stores/settings'
+import ky from "ky"
+import log from "loglevel"
+import { useSettingsStore } from "@/stores/settings"
 
-log.setLevel(import.meta.env.DEV ? 'debug' : 'warn')
+log.setLevel(import.meta.env.DEV ? "debug" : "warn")
 
 export function createApiClient() {
   const settings = useSettingsStore()

@@ -7,6 +7,7 @@ This document provides comprehensive guidance for AI assistants working on this 
 Ory Admin UI is a production-grade single-page application for managing identities and access control in Ory Kratos identity servers. It provides an intuitive interface for CRUD operations on identities, sessions, courier messages, and identity schemas.
 
 **Key Features:**
+
 - Identity management (create, read, update, delete)
 - Session management and revocation
 - Courier message viewing
@@ -16,22 +17,22 @@ Ory Admin UI is a production-grade single-page application for managing identiti
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| Framework | Vue 3.5 (Composition API with `<script setup>`) |
-| Language | TypeScript 5.7 (strict mode) |
-| Build Tool | Vite 6 |
-| Package Manager | Bun (primary) or npm |
-| State Management | Pinia |
-| Data Fetching | TanStack Vue Query |
-| HTTP Client | ky |
-| Styling | Tailwind CSS 3.4 |
-| UI Components | Radix Vue primitives |
-| Icons | Lucide Vue Next |
-| Notifications | vue-sonner |
-| Linting | oxlint, ESLint |
-| Formatting | Prettier |
-| Testing | Vitest |
+| Category         | Technology                                      |
+| ---------------- | ----------------------------------------------- |
+| Framework        | Vue 3.5 (Composition API with `<script setup>`) |
+| Language         | TypeScript 5.7 (strict mode)                    |
+| Build Tool       | Vite 6                                          |
+| Package Manager  | Bun (primary) or npm                            |
+| State Management | Pinia                                           |
+| Data Fetching    | TanStack Vue Query                              |
+| HTTP Client      | ky                                              |
+| Styling          | Tailwind CSS 3.4                                |
+| UI Components    | Radix Vue primitives                            |
+| Icons            | Lucide Vue Next                                 |
+| Notifications    | vue-sonner                                      |
+| Linting          | oxlint, ESLint                                  |
+| Formatting       | Prettier                                        |
+| Testing          | Vitest                                          |
 
 ## Project Structure
 
@@ -158,33 +159,35 @@ The API endpoint can also be configured at runtime in the Settings page.
 ### Component Patterns
 
 1. **Composition API with `<script setup>`** - All components use the modern Vue 3 syntax:
+
    ```vue
    <script setup lang="ts">
-   import { ref, computed } from 'vue'
+   import { ref, computed } from "vue"
    // Component logic here
    </script>
    ```
 
 2. **Props with TypeScript interfaces**:
+
    ```typescript
    interface Props {
-     variant?: 'default' | 'destructive'
+     variant?: "default" | "destructive"
      disabled?: boolean
    }
    const props = withDefaults(defineProps<Props>(), {
-     variant: 'default',
+     variant: "default",
      disabled: false,
    })
    ```
 
 3. **Class Variance Authority (CVA)** for component variants:
    ```typescript
-   const buttonVariants = cva('base-classes', {
+   const buttonVariants = cva("base-classes", {
      variants: {
-       variant: { default: '...', destructive: '...' },
-       size: { sm: '...', default: '...', lg: '...' },
+       variant: { default: "...", destructive: "..." },
+       size: { sm: "...", default: "...", lg: "..." },
      },
-     defaultVariants: { variant: 'default', size: 'default' },
+     defaultVariants: { variant: "default", size: "default" },
    })
    ```
 
@@ -196,7 +199,7 @@ Uses TanStack Vue Query for server state management:
 // In composables/useIdentities.ts
 export function useIdentities(params?: Ref<PaginationParams>) {
   return useQuery({
-    queryKey: ['identities', params],
+    queryKey: ["identities", params],
     queryFn: () => identitiesApi.list(params?.value),
     staleTime: 30_000,
   })
@@ -207,8 +210,8 @@ export function useCreateIdentity() {
   return useMutation({
     mutationFn: (body: CreateIdentityBody) => identitiesApi.create(body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['identities'] })
-      toast.success('Identity created successfully')
+      queryClient.invalidateQueries({ queryKey: ["identities"] })
+      toast.success("Identity created successfully")
     },
     onError: (error: Error) => {
       toast.error(`Failed to create identity: ${error.message}`)
@@ -228,7 +231,9 @@ export function createApiClient() {
   return ky.create({
     prefixUrl: settings.apiEndpoint,
     timeout: 30000,
-    hooks: { /* logging hooks */ },
+    hooks: {
+      /* logging hooks */
+    },
   })
 }
 ```
@@ -238,11 +243,13 @@ export function createApiClient() {
 Pinia stores use the setup syntax:
 
 ```typescript
-export const useThemeStore = defineStore('theme', () => {
-  const theme = ref<ThemeMode>('dark')
-  const isDark = computed(() => theme.value === 'dark')
+export const useThemeStore = defineStore("theme", () => {
+  const theme = ref<ThemeMode>("dark")
+  const isDark = computed(() => theme.value === "dark")
 
-  function setTheme(newTheme: ThemeMode) { /* ... */ }
+  function setTheme(newTheme: ThemeMode) {
+    /* ... */
+  }
 
   return { theme, isDark, setTheme }
 })
@@ -278,8 +285,8 @@ export const useThemeStore = defineStore('theme', () => {
 - **Dark mode** - Class-based (`darkMode: 'class'`), dark is default
 - **cn() utility** - Use for conditional class merging:
   ```typescript
-  import { cn } from '@/lib/utils'
-  const classes = cn('base-class', props.class, { 'conditional-class': condition })
+  import { cn } from "@/lib/utils"
+  const classes = cn("base-class", props.class, { "conditional-class": condition })
   ```
 
 ### Routing
@@ -312,12 +319,14 @@ docker run -p 8080:8080 ory-admin-ui
 ```
 
 The Dockerfile uses:
+
 - `oven/bun:1` for building
 - `static-web-server:2` for serving (lightweight, ~2MB)
 
 ### CI/CD
 
 GitHub Actions workflow (`.github/workflows/ci.yml`):
+
 - Builds Docker images on push to main and PRs
 - Uses cosign for image signing
 - Kubescape security scanning
@@ -326,18 +335,18 @@ GitHub Actions workflow (`.github/workflows/ci.yml`):
 
 ## Key Files Reference
 
-| File | Purpose |
-|------|---------|
-| `src/main.ts` | App initialization (Pinia, Router, Vue Query) |
-| `src/router/index.ts` | Route definitions |
-| `src/api/client.ts` | HTTP client factory |
-| `src/types/api.ts` | API type definitions |
-| `src/lib/utils.ts` | Utility functions |
-| `src/stores/settings.ts` | API endpoint configuration |
-| `src/stores/theme.ts` | Theme management |
-| `tailwind.config.js` | Tailwind customization |
-| `vite.config.ts` | Vite build configuration |
-| `tsconfig.json` | TypeScript configuration |
+| File                     | Purpose                                       |
+| ------------------------ | --------------------------------------------- |
+| `src/main.ts`            | App initialization (Pinia, Router, Vue Query) |
+| `src/router/index.ts`    | Route definitions                             |
+| `src/api/client.ts`      | HTTP client factory                           |
+| `src/types/api.ts`       | API type definitions                          |
+| `src/lib/utils.ts`       | Utility functions                             |
+| `src/stores/settings.ts` | API endpoint configuration                    |
+| `src/stores/theme.ts`    | Theme management                              |
+| `tailwind.config.js`     | Tailwind customization                        |
+| `vite.config.ts`         | Vite build configuration                      |
+| `tsconfig.json`          | TypeScript configuration                      |
 
 ## Common Tasks
 
@@ -369,6 +378,7 @@ GitHub Actions workflow (`.github/workflows/ci.yml`):
 ## Pre-commit Hooks
 
 The project uses pre-commit with:
+
 - Standard hooks (trailing whitespace, file size, JSON formatting)
 - Commitlint (conventional commits required)
 - ESLint with auto-fix

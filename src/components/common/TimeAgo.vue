@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from "vue"
 
 interface Props {
   date: string | Date
@@ -24,7 +24,7 @@ const timeAgo = computed(() => {
   const date = new Date(props.date)
   const seconds = Math.floor((now.value - date.getTime()) / 1000)
 
-  if (seconds < 60) return 'just now'
+  if (seconds < 60) return "just now"
   if (seconds < 3600) {
     const minutes = Math.floor(seconds / 60)
     return `${minutes}m ago`

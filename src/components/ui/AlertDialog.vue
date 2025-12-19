@@ -9,8 +9,8 @@ import {
   AlertDialogDescription,
   AlertDialogCancel,
   AlertDialogAction,
-} from 'radix-vue'
-import Button from './Button.vue'
+} from "radix-vue"
+import Button from "./Button.vue"
 
 interface Props {
   open?: boolean
@@ -18,31 +18,31 @@ interface Props {
   description?: string
   confirmText?: string
   cancelText?: string
-  variant?: 'default' | 'destructive'
+  variant?: "default" | "destructive"
 }
 
 withDefaults(defineProps<Props>(), {
   open: false,
-  title: 'Are you sure?',
-  confirmText: 'Confirm',
-  cancelText: 'Cancel',
-  variant: 'default',
+  title: "Are you sure?",
+  confirmText: "Confirm",
+  cancelText: "Cancel",
+  variant: "default",
 })
 
 const emit = defineEmits<{
-  'update:open': [value: boolean]
+  "update:open": [value: boolean]
   confirm: []
   cancel: []
 }>()
 
 function handleConfirm() {
-  emit('confirm')
-  emit('update:open', false)
+  emit("confirm")
+  emit("update:open", false)
 }
 
 function handleCancel() {
-  emit('cancel')
-  emit('update:open', false)
+  emit("cancel")
+  emit("update:open", false)
 }
 </script>
 

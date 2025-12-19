@@ -1,38 +1,38 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { useThemeStore } from '@/stores/theme'
-import { useHealthAlive } from '@/composables/useHealth'
-import { Sun, Moon, Github, Settings, Circle } from 'lucide-vue-next'
-import Button from '@/components/ui/Button.vue'
-import Tooltip from '@/components/ui/Tooltip.vue'
-import { TooltipProvider } from 'radix-vue'
+import { useRoute } from "vue-router"
+import { useThemeStore } from "@/stores/theme"
+import { useHealthAlive } from "@/composables/useHealth"
+import { Sun, Moon, Github, Settings, Circle } from "lucide-vue-next"
+import Button from "@/components/ui/Button.vue"
+import Tooltip from "@/components/ui/Tooltip.vue"
+import { TooltipProvider } from "radix-vue"
 
 const route = useRoute()
 const themeStore = useThemeStore()
 const { isError: healthError } = useHealthAlive()
 
 const breadcrumbs = [
-  { path: '/', name: 'Dashboard' },
-  { path: '/identities', name: 'Identities' },
-  { path: '/sessions', name: 'Sessions' },
-  { path: '/courier', name: 'Courier' },
-  { path: '/schemas', name: 'Schemas' },
-  { path: '/settings', name: 'Settings' },
+  { path: "/", name: "Dashboard" },
+  { path: "/identities", name: "Identities" },
+  { path: "/sessions", name: "Sessions" },
+  { path: "/courier", name: "Courier" },
+  { path: "/schemas", name: "Schemas" },
+  { path: "/settings", name: "Settings" },
 ]
 
 function getCurrentBreadcrumb() {
   const current = breadcrumbs.find((b) => {
-    if (b.path === '/') return route.path === '/'
+    if (b.path === "/") return route.path === "/"
     return route.path.startsWith(b.path)
   })
-  return current?.name || 'Dashboard'
+  return current?.name || "Dashboard"
 }
 </script>
 
 <template>
   <TooltipProvider>
     <header
-      class="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border-subtle bg-surface/80 backdrop-blur-sm px-6"
+      class="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border-subtle bg-surface/80 px-6 backdrop-blur-sm"
     >
       <!-- Breadcrumb -->
       <div class="flex items-center gap-2">
@@ -50,15 +50,12 @@ function getCurrentBreadcrumb() {
           :content="healthError ? 'Disconnected from API' : 'Connected to API'"
           side="bottom"
         >
-          <div class="flex items-center gap-2 px-2 py-1 rounded-md">
+          <div class="flex items-center gap-2 rounded-md px-2 py-1">
             <Circle
-              :class="[
-                'h-2 w-2 fill-current',
-                healthError ? 'text-destructive' : 'text-success',
-              ]"
+              :class="['h-2 w-2 fill-current', healthError ? 'text-destructive' : 'text-success']"
             />
-            <span class="text-xs text-text-muted hidden sm:inline">
-              {{ healthError ? 'Disconnected' : 'Connected' }}
+            <span class="hidden text-xs text-text-muted sm:inline">
+              {{ healthError ? "Disconnected" : "Connected" }}
             </span>
           </div>
         </Tooltip>
@@ -77,7 +74,7 @@ function getCurrentBreadcrumb() {
             href="https://github.com/meysam81/ory-admin-ui"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors px-2 py-1"
+            class="inline-flex items-center gap-2 px-2 py-1 text-sm text-text-secondary transition-colors hover:text-text-primary"
           >
             <Github class="h-4 w-4" />
             <span class="hidden sm:inline">GitHub</span>

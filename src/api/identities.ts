@@ -1,4 +1,4 @@
-import { getApiClient } from './client'
+import { getApiClient } from "./client"
 import type {
   Identity,
   CreateIdentityBody,
@@ -7,13 +7,13 @@ import type {
   RecoveryCodeResponse,
   PaginationParams,
   Session,
-} from '@/types/api'
+} from "@/types/api"
 
 export const identitiesApi = {
   list: async (params?: PaginationParams & { credentials_identifier?: string }) => {
     const client = getApiClient()
     return client
-      .get('admin/identities', {
+      .get("admin/identities", {
         searchParams: params as Record<string, string | number>,
       })
       .json<Identity[]>()
@@ -23,7 +23,7 @@ export const identitiesApi = {
     const client = getApiClient()
     const searchParams = new URLSearchParams()
     if (includeCredentials?.length) {
-      includeCredentials.forEach(c => searchParams.append('include_credential', c))
+      includeCredentials.forEach((c) => searchParams.append("include_credential", c))
     }
     return client
       .get(`admin/identities/${id}`, {
@@ -34,7 +34,7 @@ export const identitiesApi = {
 
   create: async (body: CreateIdentityBody) => {
     const client = getApiClient()
-    return client.post('admin/identities', { json: body }).json<Identity>()
+    return client.post("admin/identities", { json: body }).json<Identity>()
   },
 
   update: async (id: string, body: UpdateIdentityBody) => {
@@ -74,7 +74,7 @@ export const identitiesApi = {
   createRecoveryLink: async (identityId: string, expiresIn?: string) => {
     const client = getApiClient()
     return client
-      .post('admin/recovery/link', {
+      .post("admin/recovery/link", {
         json: {
           identity_id: identityId,
           expires_in: expiresIn,
@@ -86,7 +86,7 @@ export const identitiesApi = {
   createRecoveryCode: async (identityId: string, expiresIn?: string) => {
     const client = getApiClient()
     return client
-      .post('admin/recovery/code', {
+      .post("admin/recovery/code", {
         json: {
           identity_id: identityId,
           expires_in: expiresIn,

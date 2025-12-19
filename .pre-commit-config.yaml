@@ -1,4 +1,9 @@
 repos:
+  - repo: https://github.com/oxc-project/mirrors-oxlint
+    rev: v1.32.0
+    hooks:
+      - id: oxlint
+        verbose: false
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
@@ -61,9 +66,10 @@ repos:
       - id: commitlint
         stages: [commit-msg]
         additional_dependencies: ["@commitlint/config-conventional"]
-  - repo: https://github.com/eslint/eslint
-    rev: v9.17.0
+  - repo: local
     hooks:
-      - id: eslint
-        args:
-          - --fix
+      - id: prettier
+        name: prettier
+        language: system
+        pass_filenames: false
+        entry: bunx prettier --write .

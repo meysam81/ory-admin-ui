@@ -9,8 +9,8 @@ import {
   SelectItem,
   SelectItemText,
   SelectItemIndicator,
-} from 'radix-vue'
-import { ChevronDown, Check } from 'lucide-vue-next'
+} from "radix-vue"
+import { ChevronDown, Check } from "lucide-vue-next"
 
 interface Option {
   value: string
@@ -25,11 +25,11 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  placeholder: 'Select an option',
+  placeholder: "Select an option",
 })
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string]
+  "update:modelValue": [value: string]
 }>()
 </script>
 
@@ -44,7 +44,7 @@ const emit = defineEmits<{
     </SelectTrigger>
     <SelectPortal>
       <SelectContent
-        class="relative z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-surface-raised shadow-lg animate-fade-in"
+        class="relative z-50 min-w-[8rem] animate-fade-in overflow-hidden rounded-md border border-border bg-surface-raised shadow-lg"
         position="popper"
         :side-offset="4"
       >
@@ -53,9 +53,11 @@ const emit = defineEmits<{
             v-for="option in options"
             :key="option.value"
             :value="option.value"
-            class="relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm text-text-primary outline-none focus:bg-surface-overlay data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-surface-overlay"
+            class="relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm text-text-primary outline-none focus:bg-surface-overlay data-[disabled]:pointer-events-none data-[highlighted]:bg-surface-overlay data-[disabled]:opacity-50"
           >
-            <SelectItemIndicator class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+            <SelectItemIndicator
+              class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center"
+            >
               <Check class="h-4 w-4 text-accent" />
             </SelectItemIndicator>
             <SelectItemText>{{ option.label }}</SelectItemText>

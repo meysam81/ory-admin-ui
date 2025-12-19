@@ -3,6 +3,8 @@
   "dependencies": {
     "@tanstack/vue-query": "^5.62.8",
     "@vueuse/core": "^12.4.0",
+    "baseline-browser-mapping": "^2.9.11",
+    "caniuse-lite": "^1.0.30001761",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "ky": "^1.7.4",
@@ -51,11 +53,11 @@
   },
   "scripts": {
     "build": "vue-tsc --noEmit && vite build",
-    "dev": "vite",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/",
     "lint": "oxlint src/",
     "preview": "vite preview",
+    "start": "vite",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "typecheck": "vue-tsc --noEmit"

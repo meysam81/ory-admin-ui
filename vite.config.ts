@@ -1,35 +1,36 @@
-import { defineConfig, loadEnv } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
+import { defineConfig, loadEnv } from "vite"
+import vue from "@vitejs/plugin-vue"
+import { resolve } from "path"
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
+  const env = loadEnv(mode, process.cwd(), "")
   return {
     plugins: [vue()],
     resolve: {
       alias: {
-        '@': resolve(__dirname, 'src'),
+        "@": resolve(__dirname, "src"),
       },
     },
     server: {
-      port: parseInt(env.PORT || '5173'),
+      port: parseInt(env.PORT || "3000", 10),
       host: true,
+      cors: false,
     },
     build: {
-      target: 'esnext',
-      minify: 'esbuild',
+      target: "esnext",
+      minify: "esbuild",
       rollupOptions: {
         output: {
           manualChunks: {
-            vue: ['vue', 'vue-router', 'pinia'],
-            query: ['@tanstack/vue-query'],
-            ui: ['radix-vue', 'lucide-vue-next'],
+            vue: ["vue", "vue-router", "pinia"],
+            query: ["@tanstack/vue-query"],
+            ui: ["radix-vue", "lucide-vue-next"],
           },
         },
       },
     },
     optimizeDeps: {
-      include: ['vue', 'vue-router', 'pinia', '@tanstack/vue-query'],
+      include: ["vue", "vue-router", "pinia", "@tanstack/vue-query"],
     },
   }
 })

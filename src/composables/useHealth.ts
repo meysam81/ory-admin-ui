@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/vue-query'
-import { healthApi } from '@/api/health'
+import { useQuery } from "@tanstack/vue-query"
+import { healthApi } from "@/api/health"
 
 export function useHealthAlive() {
   return useQuery({
-    queryKey: ['health', 'alive'],
+    queryKey: ["health", "alive"],
     queryFn: () => healthApi.alive(),
     staleTime: 10_000,
     refetchInterval: 30_000,
@@ -13,7 +13,7 @@ export function useHealthAlive() {
 
 export function useHealthReady() {
   return useQuery({
-    queryKey: ['health', 'ready'],
+    queryKey: ["health", "ready"],
     queryFn: () => healthApi.ready(),
     staleTime: 10_000,
     retry: 1,
@@ -22,7 +22,7 @@ export function useHealthReady() {
 
 export function useVersion() {
   return useQuery({
-    queryKey: ['version'],
+    queryKey: ["version"],
     queryFn: () => healthApi.version(),
     staleTime: 60_000 * 5,
   })

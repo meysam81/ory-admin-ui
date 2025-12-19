@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { RouterView } from 'vue-router'
-import { useUIStore } from '@/stores/ui'
-import AppSidebar from './AppSidebar.vue'
-import AppHeader from './AppHeader.vue'
-import AppFooter from './AppFooter.vue'
+import { computed } from "vue"
+import { RouterView } from "vue-router"
+import { useUIStore } from "@/stores/ui"
+import AppSidebar from "./AppSidebar.vue"
+import AppHeader from "./AppHeader.vue"
+import AppFooter from "./AppFooter.vue"
 
 const uiStore = useUIStore()
 
-const mainMargin = computed(() => (uiStore.sidebarCollapsed ? 'ml-16' : 'ml-64'))
+const mainMargin = computed(() => (uiStore.sidebarCollapsed ? "ml-16" : "ml-64"))
 </script>
 
 <template>

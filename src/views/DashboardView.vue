@@ -1,58 +1,73 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { RouterLink } from 'vue-router'
-import { useIdentities } from '@/composables/useIdentities'
-import { useSessions } from '@/composables/useSessions'
-import { useCourierMessages } from '@/composables/useCourier'
-import { useHealthAlive, useVersion } from '@/composables/useHealth'
-import Card from '@/components/ui/Card.vue'
-import CardHeader from '@/components/ui/CardHeader.vue'
-import CardTitle from '@/components/ui/CardTitle.vue'
-import CardContent from '@/components/ui/CardContent.vue'
-import Skeleton from '@/components/ui/Skeleton.vue'
-import TimeAgo from '@/components/common/TimeAgo.vue'
-import StatusBadge from '@/components/common/StatusBadge.vue'
-import ErrorState from '@/components/common/ErrorState.vue'
-import { Users, Key, Mail, Activity, ArrowRight } from 'lucide-vue-next'
+import { computed } from "vue"
+import { RouterLink } from "vue-router"
+import { useIdentities } from "@/composables/useIdentities"
+import { useSessions } from "@/composables/useSessions"
+import { useCourierMessages } from "@/composables/useCourier"
+import { useHealthAlive, useVersion } from "@/composables/useHealth"
+import Card from "@/components/ui/Card.vue"
+import CardHeader from "@/components/ui/CardHeader.vue"
+import CardTitle from "@/components/ui/CardTitle.vue"
+import CardContent from "@/components/ui/CardContent.vue"
+import Skeleton from "@/components/ui/Skeleton.vue"
+import TimeAgo from "@/components/common/TimeAgo.vue"
+import StatusBadge from "@/components/common/StatusBadge.vue"
+import ErrorState from "@/components/common/ErrorState.vue"
+import { Users, Key, Mail, Activity, ArrowRight } from "lucide-vue-next"
 
-const { data: identities, isLoading: identitiesLoading, isError: identitiesError, refetch: refetchIdentities } = useIdentities()
-const { data: sessions, isLoading: sessionsLoading, isError: sessionsError, refetch: refetchSessions } = useSessions()
-const { data: messages, isLoading: messagesLoading, isError: messagesError, refetch: refetchMessages } = useCourierMessages()
+const {
+  data: identities,
+  isLoading: identitiesLoading,
+  isError: identitiesError,
+  refetch: refetchIdentities,
+} = useIdentities()
+const {
+  data: sessions,
+  isLoading: sessionsLoading,
+  isError: sessionsError,
+  refetch: refetchSessions,
+} = useSessions()
+const {
+  data: messages,
+  isLoading: messagesLoading,
+  isError: messagesError,
+  refetch: refetchMessages,
+} = useCourierMessages()
 const { isError: healthError } = useHealthAlive()
 const { data: version } = useVersion()
 
 const stats = computed(() => [
   {
-    name: 'Identities',
+    name: "Identities",
     value: identities.value?.length ?? 0,
     icon: Users,
-    href: '/identities',
-    color: 'text-accent',
-    bgColor: 'bg-accent/10',
+    href: "/identities",
+    color: "text-accent",
+    bgColor: "bg-accent/10",
   },
   {
-    name: 'Active Sessions',
+    name: "Active Sessions",
     value: sessions.value?.length ?? 0,
     icon: Key,
-    href: '/sessions',
-    color: 'text-success',
-    bgColor: 'bg-success/10',
+    href: "/sessions",
+    color: "text-success",
+    bgColor: "bg-success/10",
   },
   {
-    name: 'Messages',
+    name: "Messages",
     value: messages.value?.length ?? 0,
     icon: Mail,
-    href: '/courier',
-    color: 'text-warning',
-    bgColor: 'bg-warning/10',
+    href: "/courier",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
   },
   {
-    name: 'API Status',
-    value: healthError ? 'Offline' : 'Online',
+    name: "API Status",
+    value: healthError ? "Offline" : "Online",
     icon: Activity,
-    href: '/settings',
-    color: healthError ? 'text-destructive' : 'text-success',
-    bgColor: healthError ? 'bg-destructive/10' : 'bg-success/10',
+    href: "/settings",
+    color: healthError ? "text-destructive" : "text-success",
+    bgColor: healthError ? "bg-destructive/10" : "bg-success/10",
   },
 ])
 
@@ -67,28 +82,21 @@ function getIdentityName(identity: any): string {
     <!-- Page header -->
     <div>
       <h1 class="text-2xl font-semibold text-text-primary">Dashboard</h1>
-      <p class="text-sm text-text-muted mt-1">
+      <p class="mt-1 text-sm text-text-muted">
         Overview of your Ory Kratos instance
-        <span v-if="version?.version" class="text-text-secondary">
-          (v{{ version.version }})
-        </span>
+        <span v-if="version?.version" class="text-text-secondary"> (v{{ version.version }}) </span>
       </p>
     </div>
 
     <!-- Stats grid -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <RouterLink
-        v-for="stat in stats"
-        :key="stat.name"
-        :to="stat.href"
-        class="group"
-      >
-        <Card class="transition-colors hover:border-border-default">
+      <RouterLink v-for="stat in stats" :key="stat.name" :to="stat.href" class="group">
+        <Card class="hover:border-border-default transition-colors">
           <CardContent class="p-4">
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm text-text-muted">{{ stat.name }}</p>
-                <p class="text-2xl font-semibold text-text-primary mt-1">
+                <p class="mt-1 text-2xl font-semibold text-text-primary">
                   {{ stat.value }}
                 </p>
               </div>
@@ -109,7 +117,7 @@ function getIdentityName(identity: any): string {
           <CardTitle class="text-base">Recent Identities</CardTitle>
           <RouterLink
             to="/identities"
-            class="text-sm text-accent hover:text-accent-hover flex items-center gap-1"
+            class="flex items-center gap-1 text-sm text-accent hover:text-accent-hover"
           >
             View all
             <ArrowRight class="h-3 w-3" />
@@ -129,29 +137,29 @@ function getIdentityName(identity: any): string {
               v-for="identity in identities"
               :key="identity.id"
               :to="`/identities/${identity.id}`"
-              class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-raised transition-colors"
+              class="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-surface-raised"
             >
-              <div class="flex items-center gap-3 min-w-0">
-                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent text-sm font-medium flex-shrink-0">
+              <div class="flex min-w-0 items-center gap-3">
+                <div
+                  class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-accent/10 text-sm font-medium text-accent"
+                >
                   {{ getIdentityName(identity).charAt(0).toUpperCase() }}
                 </div>
                 <div class="min-w-0">
-                  <p class="text-sm font-medium text-text-primary truncate">
+                  <p class="truncate text-sm font-medium text-text-primary">
                     {{ getIdentityName(identity) }}
                   </p>
-                  <p class="text-xs text-text-muted truncate">
+                  <p class="truncate text-xs text-text-muted">
                     {{ identity.id }}
                   </p>
                 </div>
               </div>
-              <div class="text-xs text-text-muted flex-shrink-0">
+              <div class="flex-shrink-0 text-xs text-text-muted">
                 <TimeAgo :date="identity.created_at" />
               </div>
             </RouterLink>
           </div>
-          <div v-else class="py-8 text-center text-sm text-text-muted">
-            No identities found
-          </div>
+          <div v-else class="py-8 text-center text-sm text-text-muted">No identities found</div>
         </CardContent>
       </Card>
 
@@ -161,7 +169,7 @@ function getIdentityName(identity: any): string {
           <CardTitle class="text-base">Recent Sessions</CardTitle>
           <RouterLink
             to="/sessions"
-            class="text-sm text-accent hover:text-accent-hover flex items-center gap-1"
+            class="flex items-center gap-1 text-sm text-accent hover:text-accent-hover"
           >
             View all
             <ArrowRight class="h-3 w-3" />
@@ -181,29 +189,29 @@ function getIdentityName(identity: any): string {
               v-for="session in sessions"
               :key="session.id"
               :to="`/sessions/${session.id}`"
-              class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-raised transition-colors"
+              class="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-surface-raised"
             >
-              <div class="flex items-center gap-3 min-w-0">
-                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-success/10 text-success flex-shrink-0">
+              <div class="flex min-w-0 items-center gap-3">
+                <div
+                  class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-success/10 text-success"
+                >
                   <Key class="h-4 w-4" />
                 </div>
                 <div class="min-w-0">
-                  <p class="text-sm font-medium text-text-primary truncate">
+                  <p class="truncate text-sm font-medium text-text-primary">
                     {{ session.id.slice(0, 8) }}...
                   </p>
                   <p class="text-xs text-text-muted">
-                    {{ session.identity?.traits?.email || 'Unknown user' }}
+                    {{ session.identity?.traits?.email || "Unknown user" }}
                   </p>
                 </div>
               </div>
-              <div class="flex items-center gap-2 flex-shrink-0">
+              <div class="flex flex-shrink-0 items-center gap-2">
                 <StatusBadge :status="session.active ? 'active' : 'inactive'" />
               </div>
             </RouterLink>
           </div>
-          <div v-else class="py-8 text-center text-sm text-text-muted">
-            No sessions found
-          </div>
+          <div v-else class="py-8 text-center text-sm text-text-muted">No sessions found</div>
         </CardContent>
       </Card>
 
@@ -213,7 +221,7 @@ function getIdentityName(identity: any): string {
           <CardTitle class="text-base">Recent Courier Messages</CardTitle>
           <RouterLink
             to="/courier"
-            class="text-sm text-accent hover:text-accent-hover flex items-center gap-1"
+            class="flex items-center gap-1 text-sm text-accent hover:text-accent-hover"
           >
             View all
             <ArrowRight class="h-3 w-3" />
@@ -232,22 +240,24 @@ function getIdentityName(identity: any): string {
             <div
               v-for="message in messages"
               :key="message.id"
-              class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-raised transition-colors"
+              class="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-surface-raised"
             >
-              <div class="flex items-center gap-3 min-w-0">
-                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-warning/10 text-warning flex-shrink-0">
+              <div class="flex min-w-0 items-center gap-3">
+                <div
+                  class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-warning/10 text-warning"
+                >
                   <Mail class="h-4 w-4" />
                 </div>
                 <div class="min-w-0">
-                  <p class="text-sm font-medium text-text-primary truncate">
+                  <p class="truncate text-sm font-medium text-text-primary">
                     {{ message.recipient }}
                   </p>
-                  <p class="text-xs text-text-muted truncate">
-                    {{ message.subject || message.template_type || 'No subject' }}
+                  <p class="truncate text-xs text-text-muted">
+                    {{ message.subject || message.template_type || "No subject" }}
                   </p>
                 </div>
               </div>
-              <div class="flex items-center gap-2 flex-shrink-0">
+              <div class="flex flex-shrink-0 items-center gap-2">
                 <StatusBadge :status="message.status" />
                 <span class="text-xs text-text-muted">
                   <TimeAgo :date="message.created_at" />
@@ -255,9 +265,7 @@ function getIdentityName(identity: any): string {
               </div>
             </div>
           </div>
-          <div v-else class="py-8 text-center text-sm text-text-muted">
-            No messages found
-          </div>
+          <div v-else class="py-8 text-center text-sm text-text-muted">No messages found</div>
         </CardContent>
       </Card>
     </div>

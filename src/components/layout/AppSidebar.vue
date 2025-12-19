@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
-import { useUIStore } from '@/stores/ui'
+import { computed } from "vue"
+import { useRoute, RouterLink } from "vue-router"
+import { useUIStore } from "@/stores/ui"
 import {
   LayoutDashboard,
   Users,
@@ -11,33 +11,31 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-} from 'lucide-vue-next'
-import Tooltip from '@/components/ui/Tooltip.vue'
-import { TooltipProvider } from 'radix-vue'
+} from "lucide-vue-next"
+import Tooltip from "@/components/ui/Tooltip.vue"
+import { TooltipProvider } from "radix-vue"
 
 const route = useRoute()
 const uiStore = useUIStore()
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Identities', href: '/identities', icon: Users },
-  { name: 'Sessions', href: '/sessions', icon: Key },
-  { name: 'Courier', href: '/courier', icon: Mail },
-  { name: 'Schemas', href: '/schemas', icon: FileJson },
+  { name: "Dashboard", href: "/", icon: LayoutDashboard },
+  { name: "Identities", href: "/identities", icon: Users },
+  { name: "Sessions", href: "/sessions", icon: Key },
+  { name: "Courier", href: "/courier", icon: Mail },
+  { name: "Schemas", href: "/schemas", icon: FileJson },
 ]
 
-const bottomNavigation = [
-  { name: 'Settings', href: '/settings', icon: Settings },
-]
+const bottomNavigation = [{ name: "Settings", href: "/settings", icon: Settings }]
 
 function isActive(href: string) {
-  if (href === '/') {
-    return route.path === '/'
+  if (href === "/") {
+    return route.path === "/"
   }
   return route.path.startsWith(href)
 }
 
-const sidebarWidth = computed(() => (uiStore.sidebarCollapsed ? 'w-16' : 'w-64'))
+const sidebarWidth = computed(() => (uiStore.sidebarCollapsed ? "w-16" : "w-64"))
 </script>
 
 <template>
@@ -56,7 +54,7 @@ const sidebarWidth = computed(() => (uiStore.sidebarCollapsed ? 'w-16' : 'w-64')
           </div>
           <span
             v-if="!uiStore.sidebarCollapsed"
-            class="font-medium text-text-primary whitespace-nowrap"
+            class="whitespace-nowrap font-medium text-text-primary"
           >
             Ory Admin
           </span>
@@ -71,8 +69,8 @@ const sidebarWidth = computed(() => (uiStore.sidebarCollapsed ? 'w-16' : 'w-64')
               :to="item.href"
               :class="[
                 isActive(item.href)
-                  ? 'bg-accent/10 text-accent border-accent/30'
-                  : 'text-text-secondary hover:bg-surface-raised hover:text-text-primary border-transparent',
+                  ? 'border-accent/30 bg-accent/10 text-accent'
+                  : 'border-transparent text-text-secondary hover:bg-surface-raised hover:text-text-primary',
                 'group flex items-center gap-3 rounded-lg border px-3 py-2 text-sm font-medium transition-colors',
                 uiStore.sidebarCollapsed ? 'justify-center' : '',
               ]"
@@ -86,8 +84,8 @@ const sidebarWidth = computed(() => (uiStore.sidebarCollapsed ? 'w-16' : 'w-64')
             :to="item.href"
             :class="[
               isActive(item.href)
-                ? 'bg-accent/10 text-accent border-accent/30'
-                : 'text-text-secondary hover:bg-surface-raised hover:text-text-primary border-transparent',
+                ? 'border-accent/30 bg-accent/10 text-accent'
+                : 'border-transparent text-text-secondary hover:bg-surface-raised hover:text-text-primary',
               'group flex items-center gap-3 rounded-lg border px-3 py-2 text-sm font-medium transition-colors',
             ]"
           >
@@ -105,8 +103,8 @@ const sidebarWidth = computed(() => (uiStore.sidebarCollapsed ? 'w-16' : 'w-64')
               :to="item.href"
               :class="[
                 isActive(item.href)
-                  ? 'bg-accent/10 text-accent border-accent/30'
-                  : 'text-text-secondary hover:bg-surface-raised hover:text-text-primary border-transparent',
+                  ? 'border-accent/30 bg-accent/10 text-accent'
+                  : 'border-transparent text-text-secondary hover:bg-surface-raised hover:text-text-primary',
                 'group flex items-center gap-3 rounded-lg border px-3 py-2 text-sm font-medium transition-colors',
                 uiStore.sidebarCollapsed ? 'justify-center' : '',
               ]"
@@ -120,8 +118,8 @@ const sidebarWidth = computed(() => (uiStore.sidebarCollapsed ? 'w-16' : 'w-64')
             :to="item.href"
             :class="[
               isActive(item.href)
-                ? 'bg-accent/10 text-accent border-accent/30'
-                : 'text-text-secondary hover:bg-surface-raised hover:text-text-primary border-transparent',
+                ? 'border-accent/30 bg-accent/10 text-accent'
+                : 'border-transparent text-text-secondary hover:bg-surface-raised hover:text-text-primary',
               'group flex items-center gap-3 rounded-lg border px-3 py-2 text-sm font-medium transition-colors',
             ]"
           >
@@ -133,7 +131,7 @@ const sidebarWidth = computed(() => (uiStore.sidebarCollapsed ? 'w-16' : 'w-64')
         <!-- Collapse toggle -->
         <button
           @click="uiStore.toggleSidebar"
-          class="mt-2 flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm text-text-muted hover:bg-surface-raised hover:text-text-primary transition-colors"
+          class="mt-2 flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm text-text-muted transition-colors hover:bg-surface-raised hover:text-text-primary"
         >
           <ChevronLeft v-if="!uiStore.sidebarCollapsed" class="h-4 w-4" />
           <ChevronRight v-else class="h-4 w-4" />

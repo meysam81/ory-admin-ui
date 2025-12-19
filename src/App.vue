@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import { Toaster } from 'vue-sonner'
-import { useThemeStore } from '@/stores/theme'
+import { RouterView } from "vue-router"
+import { Toaster } from "vue-sonner"
+import { useThemeStore } from "@/stores/theme"
 
 const themeStore = useThemeStore()
 themeStore.initTheme()

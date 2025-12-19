@@ -55,10 +55,10 @@
   }
 
   body {
-    @apply bg-surface text-text-primary font-sans;
+    @apply bg-surface font-sans text-text-primary;
     font-feature-settings:
-      'rlig' 1,
-      'calt' 1;
+      "rlig" 1,
+      "calt" 1;
   }
 
   .light body {
@@ -67,7 +67,7 @@
 
   /* Custom scrollbar */
   ::-webkit-scrollbar {
-    @apply w-2 h-2;
+    @apply h-2 w-2;
   }
 
   ::-webkit-scrollbar-track {
@@ -75,7 +75,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full;
+    @apply rounded-full bg-border;
   }
 
   ::-webkit-scrollbar-thumb:hover {

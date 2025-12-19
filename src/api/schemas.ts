@@ -1,11 +1,11 @@
-import { getApiClient } from './client'
-import type { IdentitySchema, PaginationParams } from '@/types/api'
+import { getApiClient } from "./client"
+import type { IdentitySchema, PaginationParams } from "@/types/api"
 
 export const schemasApi = {
   list: async (params?: PaginationParams) => {
     const client = getApiClient()
     return client
-      .get('schemas', {
+      .get("schemas", {
         searchParams: params as Record<string, string | number>,
       })
       .json<IdentitySchema[]>()
