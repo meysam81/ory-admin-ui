@@ -3,7 +3,7 @@ FROM oven/bun:1 AS builder
 WORKDIR /app
 COPY . .
 
-RUN bun install --frozen-lockfile && \
+RUN bun install && \
     bun run build
 
 FROM ghcr.io/static-web-server/static-web-server:2 AS runner
