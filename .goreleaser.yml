@@ -12,7 +12,7 @@ before:
   hooks:
     - go mod download
     - go mod verify
-    - bun install --frozen-lockfile
+    - bun install
     - bun run build
 
 builds:
