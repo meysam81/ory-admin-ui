@@ -12,6 +12,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/caarlos0/env/v11"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/zerolog"
@@ -28,11 +29,16 @@ var (
 	commit  = "none"
 	date    = "unknown"
 	builtBy = "unknown"
+
+	cmdHost     string
+	cmdPort     int
+	cmdLogLevel string
+	cmdDebug    bool
 )
 
 type Config struct {
-	Host     string `env:"ORY_ADMIN_UI_HOST" envDefault:"localhost"`
-	Port     int    `env:"ORY_ADMIN_UI_PORT" envDefault:"3000"`
+	Host     string `env:"HOST" envDefault:"localhost"`
+	Port     int    `env:"PORT" envDefault:"3000"`
 	LogLevel string `env:"LOG_LEVEL" envDefault:"info"`
 	Debug    bool   `env:"DEBUG" envDefault:"false"`
 
@@ -171,11 +177,24 @@ func startServer(ctx context.Context, appState *AppState) error {
 }
 
 func runAction(ctx context.Context, cmd *cli.Command) error {
-	cfg := &Config{
-		Host:     cmd.String("host"),
-		Port:     cmd.Int("port"),
-		LogLevel: cmd.String("log-level"),
-		Debug:    cmd.Bool("debug"),
+	cfg := &Config{}
+	err := env.Parse(cfg)
+	if err != nil {
+		return err
+	}
+
+	// cli args have precedence over env vars
+	if cmdHost != "" {
+		cfg.Host = cmdHost
+	}
+	if cmdPort > 0 {
+		cfg.Port = cmdPort
+	}
+	if cmdLogLevel != "" {
+		cfg.LogLevel = cmdLogLevel
+	}
+	if cfg.Debug {
+		cfg.Debug = cmdDebug
 	}
 
 	logger := NewLogger(cfg)
@@ -203,32 +222,49 @@ func main() {
 		Version:               version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:    "host",
-				Aliases: []string{"h"},
-				Usage:   "Server host",
-				Value:   "localhost",
-				Sources: cli.EnvVars("ORY_ADMIN_UI_HOST"),
+				Name:        "host",
+				Aliases:     []string{"h"},
+				Usage:       "Server host",
+				Value:       "localhost",
+				Sources:     cli.EnvVars("HOST"),
+				Destination: &cmdHost,
 			},
 			&cli.IntFlag{
-				Name:    "port",
-				Aliases: []string{"p"},
-				Usage:   "Server port",
-				Value:   3000,
-				Sources: cli.EnvVars("ORY_ADMIN_UI_PORT"),
+				Name:        "port",
+				Aliases:     []string{"p"},
+				Usage:       "Server port",
+				Value:       3000,
+				Sources:     cli.EnvVars("PORT"),
+				Destination: &cmdPort,
 			},
 			&cli.StringFlag{
-				Name:    "log-level",
-				Aliases: []string{"l"},
-				Usage:   "Log level",
-				Value:   "info",
-				Sources: cli.EnvVars("LOG_LEVEL"),
+				Name:        "log-level",
+				Aliases:     []string{"l"},
+				Usage:       "Log level",
+				Value:       "info",
+				Sources:     cli.EnvVars("LOG_LEVEL"),
+				Destination: &cmdLogLevel,
 			},
 			&cli.BoolFlag{
-				Name:    "debug",
-				Aliases: []string{"d"},
-				Usage:   "Enable debug mode",
-				Value:   false,
-				Sources: cli.EnvVars("DEBUG"),
+				Name:        "debug",
+				Aliases:     []string{"d"},
+				Usage:       "Enable debug mode",
+				Value:       false,
+				Sources:     cli.EnvVars("DEBUG"),
+				Destination: &cmdDebug,
+			},
+		},
+		Commands: []*cli.Command{
+			{
+				Name:  "version",
+				Usage: "Show version information",
+				Action: func(ctx context.Context, cmd *cli.Command) error {
+					fmt.Printf("Version:    %s\n", version)
+					fmt.Printf("Commit:     %s\n", commit)
+					fmt.Printf("Build Date: %s\n", date)
+					fmt.Printf("Built By:   %s\n", builtBy)
+					return nil
+				},
 			},
 		},
 		Action: runAction,
