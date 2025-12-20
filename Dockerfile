@@ -1,10 +1,12 @@
-FROM oven/bun:1 AS builder
+FROM node:22-slim AS builder
 
 WORKDIR /app
-COPY . .
+COPY package.json package-lock.json ./
 
-RUN bun install --frozen-lockfile && \
-    bun run build
+RUN npm ci
+
+COPY . .
+RUN npm run build
 
 FROM ghcr.io/static-web-server/static-web-server:2 AS runner
 
