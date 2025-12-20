@@ -8,6 +8,7 @@ require (
 )
 
 require (
+	github.com/caarlos0/env/v11 v11.3.1 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/meysam81/go-zerolog v0.0.0-20251215045746-03bbe9b625bc // indirect
