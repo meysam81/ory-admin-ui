@@ -1,0 +1,12 @@
+*
+!public
+!src
+!bun.lockb
+!index.html
+!LICENSE
+!package*.json
+!postcss.config.js
+!tailwind.config.js
+!tsconfig*.json
+!vite.config.js
+!README.md
