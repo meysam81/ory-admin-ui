@@ -1,7 +1,7 @@
-import { http, HttpResponse, delay } from 'msw'
-import { mockSessions } from '@test/fixtures/sessions'
+import { http, HttpResponse, delay } from "msw"
+import { mockSessions } from "@test/fixtures/sessions"
 
-const BASE_URL = 'http://localhost:4434'
+const BASE_URL = "http://localhost:4434"
 
 export const sessionHandlers = [
   // List all sessions
@@ -9,13 +9,13 @@ export const sessionHandlers = [
     await delay(100)
 
     const url = new URL(request.url)
-    const active = url.searchParams.get('active')
+    const active = url.searchParams.get("active")
 
     let sessions = [...mockSessions]
 
-    if (active === 'true') {
+    if (active === "true") {
       sessions = sessions.filter((s) => s.active)
-    } else if (active === 'false') {
+    } else if (active === "false") {
       sessions = sessions.filter((s) => !s.active)
     }
 
@@ -30,7 +30,10 @@ export const sessionHandlers = [
     const session = mockSessions.find((s) => s.id === id)
 
     if (!session) {
-      return HttpResponse.json({ error: { code: 404, message: 'Session not found' } }, { status: 404 })
+      return HttpResponse.json(
+        { error: { code: 404, message: "Session not found" } },
+        { status: 404 }
+      )
     }
 
     return HttpResponse.json(session)
@@ -44,7 +47,10 @@ export const sessionHandlers = [
     const session = mockSessions.find((s) => s.id === id)
 
     if (!session) {
-      return HttpResponse.json({ error: { code: 404, message: 'Session not found' } }, { status: 404 })
+      return HttpResponse.json(
+        { error: { code: 404, message: "Session not found" } },
+        { status: 404 }
+      )
     }
 
     return new HttpResponse(null, { status: 204 })
@@ -58,7 +64,10 @@ export const sessionHandlers = [
     const session = mockSessions.find((s) => s.id === id)
 
     if (!session) {
-      return HttpResponse.json({ error: { code: 404, message: 'Session not found' } }, { status: 404 })
+      return HttpResponse.json(
+        { error: { code: 404, message: "Session not found" } },
+        { status: 404 }
+      )
     }
 
     return HttpResponse.json({

@@ -1,7 +1,7 @@
-import { http, HttpResponse, delay } from 'msw'
-import { mockSchemas } from '@test/fixtures/schemas'
+import { http, HttpResponse, delay } from "msw"
+import { mockSchemas } from "@test/fixtures/schemas"
 
-const BASE_URL = 'http://localhost:4434'
+const BASE_URL = "http://localhost:4434"
 
 export const schemaHandlers = [
   http.get(`${BASE_URL}/schemas`, async () => {
@@ -16,7 +16,10 @@ export const schemaHandlers = [
     const schema = mockSchemas.find((s) => s.id === id)
 
     if (!schema) {
-      return HttpResponse.json({ error: { code: 404, message: 'Schema not found' } }, { status: 404 })
+      return HttpResponse.json(
+        { error: { code: 404, message: "Schema not found" } },
+        { status: 404 }
+      )
     }
 
     return HttpResponse.json(schema)

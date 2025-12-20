@@ -1,6 +1,6 @@
-import type { Page, Locator } from '@playwright/test'
-import { expect } from '@playwright/test'
-import { BasePage } from './BasePage'
+import type { Page, Locator } from "@playwright/test"
+import { expect } from "@playwright/test"
+import { BasePage } from "./BasePage"
 
 export class IdentityDetailPage extends BasePage {
   readonly identityId: Locator

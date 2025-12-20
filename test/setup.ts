@@ -1,12 +1,12 @@
-import { beforeAll, afterAll, afterEach, beforeEach, vi } from 'vitest'
-import { config } from '@vue/test-utils'
-import { createPinia, setActivePinia } from 'pinia'
-import { VueQueryPlugin } from '@tanstack/vue-query'
-import { server } from './mocks/server'
+import { beforeAll, afterAll, afterEach, beforeEach, vi } from "vitest"
+import { config } from "@vue/test-utils"
+import { createPinia, setActivePinia } from "pinia"
+import { VueQueryPlugin } from "@tanstack/vue-query"
+import { server } from "./mocks/server"
 
 // Start MSW server before all tests
 beforeAll(() => {
-  server.listen({ onUnhandledRequest: 'error' })
+  server.listen({ onUnhandledRequest: "error" })
 })
 
 // Reset handlers after each test
@@ -29,10 +29,10 @@ beforeEach(() => {
 config.global.plugins = [createPinia(), VueQueryPlugin]
 
 // Mock window.matchMedia for theme tests
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: vi.fn().mockImplementation((query: string) => ({
-    matches: query === '(prefers-color-scheme: dark)',
+    matches: query === "(prefers-color-scheme: dark)",
     media: query,
     onchange: null,
     addListener: vi.fn(),
@@ -60,14 +60,14 @@ const localStorageMock = (() => {
   }
 })()
 
-Object.defineProperty(window, 'localStorage', {
+Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
 })
 
 // Mock clipboard API
-Object.defineProperty(navigator, 'clipboard', {
+Object.defineProperty(navigator, "clipboard", {
   value: {
     writeText: vi.fn().mockResolvedValue(undefined),
-    readText: vi.fn().mockResolvedValue(''),
+    readText: vi.fn().mockResolvedValue(""),
   },
 })

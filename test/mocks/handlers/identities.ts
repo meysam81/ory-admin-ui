@@ -1,12 +1,12 @@
-import { http, HttpResponse, delay } from 'msw'
+import { http, HttpResponse, delay } from "msw"
 import {
   mockIdentities,
   mockIdentity,
   mockIdentityWithCredentials,
   mockIdentitySessions,
-} from '@test/fixtures/identities'
+} from "@test/fixtures/identities"
 
-const BASE_URL = 'http://localhost:4434'
+const BASE_URL = "http://localhost:4434"
 
 export const identityHandlers = [
   // List identities
@@ -14,8 +14,8 @@ export const identityHandlers = [
     await delay(100)
 
     const url = new URL(request.url)
-    const pageSize = parseInt(url.searchParams.get('page_size') || '250')
-    const pageToken = url.searchParams.get('page_token')
+    const pageSize = parseInt(url.searchParams.get("page_size") || "250")
+    const pageToken = url.searchParams.get("page_token")
 
     // Simulate pagination
     const startIndex = pageToken ? parseInt(pageToken) : 0
@@ -26,7 +26,7 @@ export const identityHandlers = [
 
     // Add pagination headers
     if (endIndex < mockIdentities.length) {
-      response.headers.set('X-Next-Page-Token', String(endIndex))
+      response.headers.set("X-Next-Page-Token", String(endIndex))
     }
 
     return response
@@ -38,12 +38,15 @@ export const identityHandlers = [
 
     const { id } = params
     const url = new URL(request.url)
-    const includeCredentials = url.searchParams.getAll('include_credential')
+    const includeCredentials = url.searchParams.getAll("include_credential")
 
     const identity = mockIdentities.find((i) => i.id === id)
 
     if (!identity) {
-      return HttpResponse.json({ error: { code: 404, message: 'Identity not found' } }, { status: 404 })
+      return HttpResponse.json(
+        { error: { code: 404, message: "Identity not found" } },
+        { status: 404 }
+      )
     }
 
     // Return with credentials if requested
@@ -61,7 +64,10 @@ export const identityHandlers = [
     const body = (await request.json()) as { schema_id: string; traits: Record<string, unknown> }
 
     if (!body.schema_id || !body.traits) {
-      return HttpResponse.json({ error: { code: 400, message: 'Missing required fields' } }, { status: 400 })
+      return HttpResponse.json(
+        { error: { code: 400, message: "Missing required fields" } },
+        { status: 400 }
+      )
     }
 
     const newIdentity = {
@@ -86,7 +92,10 @@ export const identityHandlers = [
     const identity = mockIdentities.find((i) => i.id === id)
 
     if (!identity) {
-      return HttpResponse.json({ error: { code: 404, message: 'Identity not found' } }, { status: 404 })
+      return HttpResponse.json(
+        { error: { code: 404, message: "Identity not found" } },
+        { status: 404 }
+      )
     }
 
     return HttpResponse.json({
@@ -106,7 +115,10 @@ export const identityHandlers = [
     const identity = mockIdentities.find((i) => i.id === id)
 
     if (!identity) {
-      return HttpResponse.json({ error: { code: 404, message: 'Identity not found' } }, { status: 404 })
+      return HttpResponse.json(
+        { error: { code: 404, message: "Identity not found" } },
+        { status: 404 }
+      )
     }
 
     return HttpResponse.json({
@@ -124,7 +136,10 @@ export const identityHandlers = [
     const identity = mockIdentities.find((i) => i.id === id)
 
     if (!identity) {
-      return HttpResponse.json({ error: { code: 404, message: 'Identity not found' } }, { status: 404 })
+      return HttpResponse.json(
+        { error: { code: 404, message: "Identity not found" } },
+        { status: 404 }
+      )
     }
 
     return new HttpResponse(null, { status: 204 })
@@ -162,7 +177,10 @@ export const identityHandlers = [
     const body = (await request.json()) as { identity_id: string }
 
     if (!body.identity_id) {
-      return HttpResponse.json({ error: { code: 400, message: 'Missing identity_id' } }, { status: 400 })
+      return HttpResponse.json(
+        { error: { code: 400, message: "Missing identity_id" } },
+        { status: 400 }
+      )
     }
 
     return HttpResponse.json({
@@ -178,12 +196,15 @@ export const identityHandlers = [
     const body = (await request.json()) as { identity_id: string }
 
     if (!body.identity_id) {
-      return HttpResponse.json({ error: { code: 400, message: 'Missing identity_id' } }, { status: 400 })
+      return HttpResponse.json(
+        { error: { code: 400, message: "Missing identity_id" } },
+        { status: 400 }
+      )
     }
 
     return HttpResponse.json({
       recovery_link: `http://localhost:4433/self-service/recovery?code=123456`,
-      recovery_code: '123456',
+      recovery_code: "123456",
       expires_at: new Date(Date.now() + 3600000).toISOString(),
     })
   }),

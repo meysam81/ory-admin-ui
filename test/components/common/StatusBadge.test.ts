@@ -1,186 +1,186 @@
-import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
-import StatusBadge from '@/components/common/StatusBadge.vue'
-import Badge from '@/components/ui/Badge.vue'
+import { describe, it, expect } from "vitest"
+import { mount } from "@vue/test-utils"
+import StatusBadge from "@/components/common/StatusBadge.vue"
+import Badge from "@/components/ui/Badge.vue"
 
-describe('StatusBadge', () => {
-  it('renders active status with success variant', () => {
+describe("StatusBadge", () => {
+  it("renders active status with success variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'active' },
+      props: { status: "active" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Active')
+    expect(wrapper.text()).toBe("Active")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('success')
+    expect(badge.props("variant")).toBe("success")
   })
 
-  it('renders inactive status with secondary variant', () => {
+  it("renders inactive status with secondary variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'inactive' },
+      props: { status: "inactive" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Inactive')
+    expect(wrapper.text()).toBe("Inactive")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('secondary')
+    expect(badge.props("variant")).toBe("secondary")
   })
 
-  it('renders sent status with success variant', () => {
+  it("renders sent status with success variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'sent' },
+      props: { status: "sent" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Sent')
+    expect(wrapper.text()).toBe("Sent")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('success')
+    expect(badge.props("variant")).toBe("success")
   })
 
-  it('renders queued status with warning variant', () => {
+  it("renders queued status with warning variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'queued' },
+      props: { status: "queued" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Queued')
+    expect(wrapper.text()).toBe("Queued")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('warning')
+    expect(badge.props("variant")).toBe("warning")
   })
 
-  it('renders processing status with warning variant', () => {
+  it("renders processing status with warning variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'processing' },
+      props: { status: "processing" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Processing')
+    expect(wrapper.text()).toBe("Processing")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('warning')
+    expect(badge.props("variant")).toBe("warning")
   })
 
-  it('renders failed status with destructive variant', () => {
+  it("renders failed status with destructive variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'failed' },
+      props: { status: "failed" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Failed')
+    expect(wrapper.text()).toBe("Failed")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('destructive')
+    expect(badge.props("variant")).toBe("destructive")
   })
 
-  it('renders error status with destructive variant', () => {
+  it("renders error status with destructive variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'error' },
+      props: { status: "error" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Error')
+    expect(wrapper.text()).toBe("Error")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('destructive')
+    expect(badge.props("variant")).toBe("destructive")
   })
 
-  it('renders success status with success variant', () => {
+  it("renders success status with success variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'success' },
+      props: { status: "success" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Success')
+    expect(wrapper.text()).toBe("Success")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('success')
+    expect(badge.props("variant")).toBe("success")
   })
 
-  it('renders delivered status with success variant', () => {
+  it("renders delivered status with success variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'delivered' },
+      props: { status: "delivered" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Delivered')
+    expect(wrapper.text()).toBe("Delivered")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('success')
+    expect(badge.props("variant")).toBe("success")
   })
 
-  it('renders pending status with warning variant', () => {
+  it("renders pending status with warning variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'pending' },
+      props: { status: "pending" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Pending')
+    expect(wrapper.text()).toBe("Pending")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('warning')
+    expect(badge.props("variant")).toBe("warning")
   })
 
-  it('renders revoked status with secondary variant', () => {
+  it("renders revoked status with secondary variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'revoked' },
+      props: { status: "revoked" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Revoked')
+    expect(wrapper.text()).toBe("Revoked")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('secondary')
+    expect(badge.props("variant")).toBe("secondary")
   })
 
-  it('renders abandoned status with secondary variant', () => {
+  it("renders abandoned status with secondary variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'abandoned' },
+      props: { status: "abandoned" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Abandoned')
+    expect(wrapper.text()).toBe("Abandoned")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('secondary')
+    expect(badge.props("variant")).toBe("secondary")
   })
 
-  it('handles unknown status with default variant', () => {
+  it("handles unknown status with default variant", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'unknown' },
+      props: { status: "unknown" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Unknown')
+    expect(wrapper.text()).toBe("Unknown")
     const badge = wrapper.findComponent(Badge)
-    expect(badge.props('variant')).toBe('default')
+    expect(badge.props("variant")).toBe("default")
   })
 
-  it('capitalizes status text correctly', () => {
+  it("capitalizes status text correctly", () => {
     const wrapper = mount(StatusBadge, {
-      props: { status: 'ACTIVE' },
+      props: { status: "ACTIVE" },
       global: {
         components: { Badge },
       },
     })
 
-    expect(wrapper.text()).toBe('Active')
+    expect(wrapper.text()).toBe("Active")
   })
 })

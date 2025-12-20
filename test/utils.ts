@@ -1,8 +1,8 @@
-import { mount, VueWrapper } from '@vue/test-utils'
-import { createPinia, setActivePinia, type Pinia } from 'pinia'
-import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
-import type { Component } from 'vue'
-import { createRouter, createWebHistory, type Router } from 'vue-router'
+import { mount, VueWrapper } from "@vue/test-utils"
+import { createPinia, setActivePinia, type Pinia } from "pinia"
+import { VueQueryPlugin, QueryClient } from "@tanstack/vue-query"
+import type { Component } from "vue"
+import { createRouter, createWebHistory, type Router } from "vue-router"
 
 interface MountOptions {
   props?: Record<string, unknown>
@@ -29,31 +29,31 @@ export function createTestQueryClient(): QueryClient {
   })
 }
 
-export function createTestRouter(initialRoute = '/'): Router {
+export function createTestRouter(initialRoute = "/"): Router {
   const router = createRouter({
     history: createWebHistory(),
     routes: [
-      { path: '/', name: 'dashboard', component: { template: '<div>Dashboard</div>' } },
-      { path: '/identities', name: 'identities', component: { template: '<div>Identities</div>' } },
+      { path: "/", name: "dashboard", component: { template: "<div>Dashboard</div>" } },
+      { path: "/identities", name: "identities", component: { template: "<div>Identities</div>" } },
       {
-        path: '/identities/new',
-        name: 'identity-create',
-        component: { template: '<div>Create Identity</div>' },
+        path: "/identities/new",
+        name: "identity-create",
+        component: { template: "<div>Create Identity</div>" },
       },
       {
-        path: '/identities/:id',
-        name: 'identity-detail',
-        component: { template: '<div>Identity Detail</div>' },
+        path: "/identities/:id",
+        name: "identity-detail",
+        component: { template: "<div>Identity Detail</div>" },
       },
-      { path: '/sessions', name: 'sessions', component: { template: '<div>Sessions</div>' } },
+      { path: "/sessions", name: "sessions", component: { template: "<div>Sessions</div>" } },
       {
-        path: '/sessions/:id',
-        name: 'session-detail',
-        component: { template: '<div>Session Detail</div>' },
+        path: "/sessions/:id",
+        name: "session-detail",
+        component: { template: "<div>Session Detail</div>" },
       },
-      { path: '/courier', name: 'courier', component: { template: '<div>Courier</div>' } },
-      { path: '/schemas', name: 'schemas', component: { template: '<div>Schemas</div>' } },
-      { path: '/settings', name: 'settings', component: { template: '<div>Settings</div>' } },
+      { path: "/courier", name: "courier", component: { template: "<div>Courier</div>" } },
+      { path: "/schemas", name: "schemas", component: { template: "<div>Schemas</div>" } },
+      { path: "/settings", name: "settings", component: { template: "<div>Settings</div>" } },
     ],
   })
   router.push(initialRoute)
@@ -116,7 +116,7 @@ export function waitFor(
       }
 
       if (Date.now() - startTime > timeout) {
-        reject(new Error('waitFor timeout'))
+        reject(new Error("waitFor timeout"))
         return
       }
 

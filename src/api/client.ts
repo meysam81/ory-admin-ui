@@ -10,6 +10,8 @@ export function createApiClient() {
   return ky.create({
     prefixUrl: settings.apiEndpoint,
     timeout: 30000,
+    credentials: "include",
+    redirect: "follow",
     hooks: {
       beforeRequest: [
         (request) => {

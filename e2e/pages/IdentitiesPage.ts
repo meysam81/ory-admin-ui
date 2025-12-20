@@ -1,5 +1,5 @@
-import type { Page, Locator } from '@playwright/test'
-import { BasePage } from './BasePage'
+import type { Page, Locator } from "@playwright/test"
+import { BasePage } from "./BasePage"
 
 export class IdentitiesPage extends BasePage {
   readonly identitiesTable: Locator
@@ -20,11 +20,11 @@ export class IdentitiesPage extends BasePage {
   }
 
   async gotoIdentities() {
-    await this.goto('/identities')
+    await this.goto("/identities")
   }
 
   getIdentityRows(): Locator {
-    return this.identitiesTable.locator('tbody tr')
+    return this.identitiesTable.locator("tbody tr")
   }
 
   async getIdentityCount(): Promise<number> {
@@ -47,7 +47,7 @@ export class IdentitiesPage extends BasePage {
   }
 
   async expectIdentityInTable(email: string) {
-    await this.identitiesTable.getByText(email).waitFor({ state: 'visible' })
+    await this.identitiesTable.getByText(email).waitFor({ state: "visible" })
   }
 
   async deleteIdentity(index: number) {

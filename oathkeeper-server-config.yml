@@ -1,8 +1,9 @@
 serve:
   proxy:
-    port: 4455 # run the proxy at port 4455
+    port: 4455
     cors:
       enabled: true
+      allow_credentials: true
       allowed_origins:
         - http://localhost:3000
       allowed_methods:
@@ -11,12 +12,10 @@ serve:
         - PUT
         - DELETE
         - PATCH
-  api:
-    port: 4456 # run the api at port 4456
 
 access_rules:
   repositories:
-    - file://./rules.yml
+    - file://./access-rules.yml
 
 errors:
   fallback:

@@ -1,24 +1,15 @@
-# kratos-server-config.yml
-# dsn: memory
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ory/kratos/refs/heads/master/embedx/config.schema.json
+
 dsn: sqlite://./kratos.db?_fk=true&journal_mode=WAL&mode=rwc
 
+log:
+  leak_sensitive_values: true
+
 serve:
+  admin:
+    base_url: http://localhost:4434
   public:
     base_url: http://localhost:4433
-    cors:
-      enabled: true
-      allow_credentials: true
-      allowed_origins:
-        - http://localhost:3000
-      allowed_methods:
-        - GET
-        - POST
-        - PUT
-        - DELETE
-        - PATCH
-      debug: true
-      allowed_headers:
-        - Content-Type
 
 courier:
   smtp:

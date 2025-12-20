@@ -1,17 +1,17 @@
 export const mockHealthAlive = {
-  status: 'ok',
+  status: "ok",
 }
 
 export const mockHealthReady = {
-  status: 'ok',
+  status: "ok",
 }
 
 export const mockHealthNotReady = {
   errors: {
-    database: 'connection refused',
+    database: "connection refused",
   },
 }
 
 export const mockVersion = {
-  version: 'v1.2.0',
+  version: "v1.2.0",
 }

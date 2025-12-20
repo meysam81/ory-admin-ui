@@ -1,4 +1,4 @@
-import type { Page, Locator } from '@playwright/test'
+import type { Page, Locator } from "@playwright/test"
 
 export class BasePage {
   readonly page: Page
@@ -21,19 +21,19 @@ export class BasePage {
   }
 
   async waitForLoad() {
-    await this.page.waitForLoadState('networkidle')
+    await this.page.waitForLoadState("networkidle")
   }
 
   async navigateTo(
-    name: 'dashboard' | 'identities' | 'sessions' | 'courier' | 'schemas' | 'settings'
+    name: "dashboard" | "identities" | "sessions" | "courier" | "schemas" | "settings"
   ) {
     const pathMap: Record<string, string> = {
-      dashboard: '/',
-      identities: '/identities',
-      sessions: '/sessions',
-      courier: '/courier',
-      schemas: '/schemas',
-      settings: '/settings',
+      dashboard: "/",
+      identities: "/identities",
+      sessions: "/sessions",
+      courier: "/courier",
+      schemas: "/schemas",
+      settings: "/settings",
     }
 
     const link = this.sidebar.locator(`a[href="${pathMap[name]}"]`)
@@ -46,6 +46,6 @@ export class BasePage {
   }
 
   async isDarkMode(): Promise<boolean> {
-    return await this.page.locator('html').evaluate((el) => !el.classList.contains('light'))
+    return await this.page.locator("html").evaluate((el) => !el.classList.contains("light"))
   }
 }

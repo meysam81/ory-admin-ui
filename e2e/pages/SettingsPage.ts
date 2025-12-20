@@ -1,6 +1,6 @@
-import type { Page, Locator } from '@playwright/test'
-import { expect } from '@playwright/test'
-import { BasePage } from './BasePage'
+import type { Page, Locator } from "@playwright/test"
+import { expect } from "@playwright/test"
+import { BasePage } from "./BasePage"
 
 export class SettingsPage extends BasePage {
   readonly apiEndpointInput: Locator
@@ -17,7 +17,7 @@ export class SettingsPage extends BasePage {
   }
 
   async gotoSettings() {
-    await this.goto('/settings')
+    await this.goto("/settings")
   }
 
   async setApiEndpoint(endpoint: string) {
@@ -34,7 +34,7 @@ export class SettingsPage extends BasePage {
     await this.page.waitForTimeout(500)
   }
 
-  async expectConnectionStatus(status: 'connected' | 'disconnected' | 'error') {
-    await expect(this.connectionStatus).toHaveAttribute('data-status', status)
+  async expectConnectionStatus(status: "connected" | "disconnected" | "error") {
+    await expect(this.connectionStatus).toHaveAttribute("data-status", status)
   }
 }

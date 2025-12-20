@@ -106,17 +106,17 @@ release:
 
     **Full Changelog**: https://github.com/meysam81/{{ .ProjectName }}/compare/{{ .PreviousTag }}...{{ .Tag }}
 
-# binary_signs:
-#   - args:
-#       - sign-blob
-#       - "--output-signature=${signature}"
-#       - "--output-certificate=${certificate}"
-#       - ${artifact}
-#       - "--yes"
-#     certificate: ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}.pem
-#     cmd: cosign
-#     output: true
-#     signature: ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}.sig
+binary_signs:
+  - args:
+      - sign-blob
+      - "--output-signature=${signature}"
+      - "--output-certificate=${certificate}"
+      - ${artifact}
+      - "--yes"
+    certificate: ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}.pem
+    cmd: cosign
+    output: true
+    signature: ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}.sig
 
 dockers_v2:
   - images:
@@ -163,15 +163,15 @@ docker_digest:
 
 report_sizes: true
 
-sboms:
-  - artifacts: archive
-    documents:
-      - ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}_sbom.spdx.json
-    id: archive
-  - artifacts: source
-    documents:
-      - ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}_src_sbom.spdx.json
-    id: source
+# sboms:
+#   - artifacts: archive
+#     documents:
+#       - ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}_sbom.spdx.json
+#     id: archive
+#   - artifacts: source
+#     documents:
+#       - ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}_src_sbom.spdx.json
+#     id: source
 
 milestones:
   - close: true

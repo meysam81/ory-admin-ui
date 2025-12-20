@@ -1,7 +1,7 @@
-import { http, HttpResponse, delay } from 'msw'
-import { mockHealthAlive, mockHealthReady, mockVersion } from '@test/fixtures/health'
+import { http, HttpResponse, delay } from "msw"
+import { mockHealthAlive, mockHealthReady, mockVersion } from "@test/fixtures/health"
 
-const BASE_URL = 'http://localhost:4434'
+const BASE_URL = "http://localhost:4434"
 
 export const healthHandlers = [
   http.get(`${BASE_URL}/health/alive`, async () => {
