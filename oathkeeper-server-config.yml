@@ -3,6 +3,7 @@ serve:
     port: 4455
     cors:
       enabled: true
+      debug: true
       allow_credentials: true
       allowed_origins:
         - http://localhost:3000
@@ -12,6 +13,11 @@ serve:
         - PUT
         - DELETE
         - PATCH
+      allowed_headers:
+        - accept
+        - authorization
+        - content-type
+        - origin
 
 access_rules:
   repositories:

@@ -7,9 +7,19 @@ log:
 
 serve:
   admin:
-    base_url: http://localhost:4434
+    base_url: http://localhost:14434
   public:
-    base_url: http://localhost:4433
+    port: 14433
+    base_url: http://localhost:14433
+    cors:
+      allow_credentials: true
+      allowed_origins:
+        - http://localhost:3000
+      debug: false
+      enabled: true
+      options_passthrough: false
+    request_log:
+      disable_for_health: false
 
 courier:
   smtp:

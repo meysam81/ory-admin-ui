@@ -15,7 +15,7 @@ export function createApiClient() {
     hooks: {
       beforeRequest: [
         (request) => {
-          log.debug(`[API] ${request.method} ${request.url}`)
+          log.debug(`[API] Request: ${request.method} ${request.url}`)
         },
       ],
       afterResponse: [
