@@ -1,84 +1,57 @@
-# Kratos Admin Dashboard 🚀
+# Kratos Admin
 
-[![GitHub repo size](https://img.shields.io/github/repo-size/meysam81/kratos-admin)](https://github.com/meysam81/kratos-admin)
-[![GitHub language count](https://img.shields.io/github/languages/count/meysam81/kratos-admin)](https://github.com/meysam81/kratos-admin)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/meysam81/kratos-admin)](https://github.com/meysam81/kratos-admin/commits/main/)
-[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/meysam81/kratos-admin)](https://github.com/meysam81/kratos-admin)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/meysam81/kratos-admin/main.svg)](https://results.pre-commit.ci/latest/github/meysam81/kratos-admin/main)
-[![Docker Image Size](https://img.shields.io/docker/image-size/meysam81/kratos-admin)](https://hub.docker.com/r/meysam81/kratos-admin)
+[![GitHub Stars](https://img.shields.io/github/stars/meysam81/kratos-admin)](https://github.com/meysam81/kratos-admin)
 [![Docker Pulls](https://img.shields.io/docker/pulls/meysam81/kratos-admin)](https://hub.docker.com/r/meysam81/kratos-admin)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docker Image Size](https://img.shields.io/docker/image-size/meysam81/kratos-admin)](https://hub.docker.com/r/meysam81/kratos-admin)
+[![GitHub last commit](https://img.shields.io/github/last-commit/meysam81/kratos-admin)](https://github.com/meysam81/kratos-admin/commits/main/)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/meysam81/kratos-admin/main.svg)](https://results.pre-commit.ci/latest/github/meysam81/kratos-admin/main)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 [![Powered by Ory](https://img.shields.io/badge/powered%20by-ory-blue)](https://www.ory.sh/)
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+Admin UI for [Ory Kratos](https://www.ory.sh/docs/kratos). Manage identities, sessions, and schemas.
 
-- [✨ Features](#-features)
-- [🚀 Quick Start](#-quick-start)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [🔧 Configuration](#-configuration)
-- [🏗️ Building for Production](#-building-for-production)
-- [🎯 Usage](#-usage)
-- [🤝 Contributing](#-contributing)
-- [📝 License](#-license)
-- [🔗 Links](#-links)
-- [🌟 Acknowledgments](#-acknowledgments)
-- [📊 Project Status](#-project-status)
-- [🔮 Roadmap](#-roadmap)
-- [💡 Need Help?](#-need-help)
+![Dashboard](docs/assets/dashboard.png)
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-A sleek, modern single-page application for managing identities and access control in Ory Kratos identity servers.
-
-## ✨ Features
-
-- 🎯 Intuitive identity management interface
-- 🔐 Create, read, update, and delete identities
-- 🌓 Dark mode support with system preference detection
-- 📱 Fully responsive design
-- ⚡ Lightning-fast performance with Vite
-- 🎨 Modern UI with Tailwind CSS
-- 🔒 Secure interaction with Kratos Admin APIs
-- 🌐 Cross-browser compatibility
-- 🚀 Zero dependencies (vanilla JavaScript)
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Bun v1
-- A running Ory Kratos server
-
-### Installation
+## Quick Start
 
 ```bash
-# Clone the repository
-git clone https://github.com/meysam81/kratos-admin.git
-
-# Navigate to the project directory
-cd kratos-admin
-
-# Install dependencies
-bun install
-
-# Start the development server
-bun run dev
+docker run -p 8080:8080 meysam81/kratos-admin
 ```
 
-## 🔧 Configuration
+Open http://localhost:8080, configure your Kratos endpoint in the Settings tab.
+
+### With Custom Endpoint
+
+```bash
+echo '{"apiEndpoint":"https://kratos.example.com"}' > config.json
+docker run -p 8080:8080 -v ./config.json:/public/config.json:ro meysam81/kratos-admin
+```
+
+**NOTE**: You must ensure the CORS is setup corrrectly, i.e., by putting the
+Kratos Admin URL behind a load-balancer/reverse-proxy.
+
+## Features
+
+- Identity CRUD with pagination
+- Session management and revocation
+- Courier message viewer
+- Identity schema browser
+- Dark/light theme with system preference detection
+- Runtime configuration (no rebuild needed)
+- Responsive design
+
+## Configuration
 
 The API endpoint can be configured in three ways (in order of priority):
 
 ### 1. User Override (Settings UI)
 
-Users can set a custom endpoint via the Settings page. This is saved to localStorage and takes highest priority.
+Users can set a custom endpoint via the Settings page. Saved to localStorage, takes highest priority.
 
-### 2. Runtime Configuration (Recommended for Deployment)
+### 2. Runtime Configuration (Recommended)
 
-Mount a `config.json` file at runtime to set the default API endpoint without rebuilding:
+Mount a `config.json` file at runtime:
 
 ```json
 {
@@ -97,14 +70,21 @@ docker run -p 8080:8080 \
 **Kubernetes:**
 
 ```yaml
-volumes:
-  - name: config
-    configMap:
-      name: kratos-admin-config
-volumeMounts:
-  - name: config
-    mountPath: /public/config.json
-    subPath: config.json
+spec:
+  containers:
+    - name: kratos-admin
+      image: meysam81/kratos-admin:latest
+      volumeMounts:
+        - name: config
+          mountPath: /public/config.json
+          subPath: config.json
+          readOnly: true
+  volumes:
+    - name: config
+      configMap:
+        name: kratos-admin-config
+        optional: false
+        defaultMode: 0444
 ```
 
 ### 3. Build-time Environment Variable
@@ -115,68 +95,24 @@ Set during build (baked into the bundle):
 VITE_DEFAULT_API_ENDPOINT=http://localhost:4434
 ```
 
-**Priority Chain:** User Override > Runtime Config > Build-time Env > Default (`http://localhost:4434`)
+**Priority:** User Override > Runtime Config > Build-time Env > Default (`http://localhost:4434`)
 
-## 🏗️ Building for Production
+## Development
 
 ```bash
-# Build the application
-bun run build
-
-# Preview the production build
-bun run preview
+bun install && bun start
 ```
 
-## 🎯 Usage
+## Vision
 
-1. Configure your Kratos server URL in the environment variables
-2. Start the application
-3. Use the interface to:
-   - View all identities
-   - Create new identities
-   - Modify existing identities
-   - Delete identities
-   - Manage identity traits
-   - View identity sessions
+Building a unified admin UI for the [Ory](https://www.ory.sh/) ecosystem. Currently supports Kratos.
 
-## 🤝 Contributing
+Hydra, Keto, and Oathkeeper support planned.
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+## Contributing
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+PRs welcome. Fork, branch, PR.
 
-## 📝 License
+## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
-
-## 🔗 Links
-
-- [Ory Kratos Documentation](https://www.ory.sh/docs/kratos)
-- [Tailwind CSS](https://tailwindcss.com)
-- [Vite](https://vitejs.dev)
-
-## 🌟 Acknowledgments
-
-- [Ory](https://www.ory.sh/) for creating Kratos
-- The open-source community for inspiration and support
-
-## 📊 Project Status
-
-This project is under active development. We welcome feedback, bug reports, and feature requests through GitHub issues.
-
-## 🔮 Roadmap
-
-- [ ] Implement user session management
-- [ ] Add authentication flow visualization
-
-## 💡 Need Help?
-
-If you have any questions or need help with setup, please open an issue in the GitHub repository.
-
----
-
-<p align="center">Made with ❤️ for the Ory community</p>
+[Apache-2.0](LICENSE)
