@@ -1,7 +1,7 @@
 *
 !public
 !src
-!bun.lockb
+!bun.lock*
 !index.html
 !LICENSE
 !package*.json
