@@ -20,7 +20,7 @@
   "description": "Production-grade admin UI for Ory Kratos identity server",
   "devDependencies": {
     "@types/node": "^22.19.7",
-    "@vitejs/plugin-vue": "^5.2.4",
+    "@vitejs/plugin-vue": "^6.0.4",
     "@vue/test-utils": "^2.4.6",
     "autoprefixer": "^10.4.23",
     "jsdom": "^25.0.1",

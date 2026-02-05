@@ -12,6 +12,18 @@ serve:
     port: 14433
     base_url: http://localhost:14433
     cors:
+      allowed_methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+        - OPTIONS
+      allowed_headers:
+        - accept
+        - authorization
+        - content-type
+        - origin
       allow_credentials: true
       allowed_origins:
         - http://localhost:3000
