@@ -8,5 +8,5 @@
 !postcss.config.js
 !tailwind.config.js
 !tsconfig*.json
-!vite.config.js
+!vite.config.ts
 !README.md
