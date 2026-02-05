@@ -120,7 +120,7 @@ async function testConnection() {
               id="api-endpoint"
               v-model="apiEndpoint"
               type="url"
-              placeholder="http://localhost:4434"
+              :placeholder="settingsStore.defaultEndpoint"
               :class="!isValidUrl && apiEndpoint ? 'border-destructive' : ''"
             />
             <Button variant="outline" @click="testConnection" :disabled="!isValidUrl || isTesting">
@@ -132,6 +132,11 @@ async function testConnection() {
           </p>
           <p class="text-xs text-text-muted">
             The URL of your Kratos Admin API. This is typically port 4434.
+          </p>
+          <p v-if="settingsStore.hasUserOverride" class="text-xs text-text-muted">
+            <span class="text-warning">Custom override active.</span>
+            Default:
+            <code class="rounded bg-surface-raised px-1">{{ settingsStore.defaultEndpoint }}</code>
           </p>
         </div>
 

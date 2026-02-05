@@ -70,12 +70,52 @@ bun run dev
 
 ## 🔧 Configuration
 
-The application can be configured through environment variables:
+The API endpoint can be configured in three ways (in order of priority):
+
+### 1. User Override (Settings UI)
+
+Users can set a custom endpoint via the Settings page. This is saved to localStorage and takes highest priority.
+
+### 2. Runtime Configuration (Recommended for Deployment)
+
+Mount a `config.json` file at runtime to set the default API endpoint without rebuilding:
+
+```json
+{
+  "apiEndpoint": "https://kratos-admin.example.com"
+}
+```
+
+**Docker:**
 
 ```bash
-VITE_KRATOS_ADMIN_URL=http://localhost:4434  # Kratos Admin API URL
-VITE_KRATOS_PUBLIC_URL=http://localhost:4433 # Kratos Public API URL
+docker run -p 8080:8080 \
+  -v ./config.json:/public/config.json:ro \
+  meysam81/kratos-admin
 ```
+
+**Kubernetes:**
+
+```yaml
+volumes:
+  - name: config
+    configMap:
+      name: kratos-admin-config
+volumeMounts:
+  - name: config
+    mountPath: /public/config.json
+    subPath: config.json
+```
+
+### 3. Build-time Environment Variable
+
+Set during build (baked into the bundle):
+
+```bash
+VITE_DEFAULT_API_ENDPOINT=http://localhost:4434
+```
+
+**Priority Chain:** User Override > Runtime Config > Build-time Env > Default (`http://localhost:4434`)
 
 ## 🏗️ Building for Production
 

@@ -150,3 +150,6 @@ ory-admin-ui
 tmp/
 .envrc
 .goreleaser-dist/
+
+# Runtime config (deployment-specific, use config.example.json as template)
+public/config.json
