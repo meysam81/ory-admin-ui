@@ -42,3 +42,42 @@ export function getApiClient() {
   }
   return apiClient
 }
+
+export function createPublicApiClient() {
+  const settings = useSettingsStore()
+
+  return ky.create({
+    prefixUrl: settings.publicApiEndpoint,
+    timeout: 30000,
+    credentials: "include",
+    redirect: "follow",
+    hooks: {
+      beforeRequest: [
+        (request) => {
+          log.debug(`[Public API] Request: ${request.method} ${request.url}`)
+        },
+      ],
+      afterResponse: [
+        (_request, _options, response) => {
+          log.debug(`[Public API] Response: ${response.status}`)
+          return response
+        },
+      ],
+      beforeError: [
+        (error) => {
+          log.error(`[Public API] Error:`, error.message)
+          return error
+        },
+      ],
+    },
+  })
+}
+
+let publicApiClient: ReturnType<typeof createPublicApiClient> | null = null
+
+export function getPublicApiClient() {
+  if (!publicApiClient) {
+    publicApiClient = createPublicApiClient()
+  }
+  return publicApiClient
+}

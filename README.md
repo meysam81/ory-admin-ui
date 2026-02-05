@@ -21,10 +21,15 @@ docker run -p 8080:8080 meysam81/kratos-admin
 
 Open http://localhost:8080, configure your Kratos endpoint in the Settings tab.
 
-### With Custom Endpoint
+### With Custom Endpoints
 
 ```bash
-echo '{"apiEndpoint":"https://kratos.example.com"}' > config.json
+cat > config.json <<EOF
+{
+  "apiEndpoint": "https://kratos-admin.example.com",
+  "publicApiEndpoint": "https://kratos-public.example.com"
+}
+EOF
 docker run -p 8080:8080 -v ./config.json:/public/config.json:ro meysam81/kratos-admin
 ```
 
@@ -43,7 +48,14 @@ Kratos Admin URL behind a load-balancer/reverse-proxy.
 
 ## Configuration
 
-The API endpoint can be configured in three ways (in order of priority):
+The API endpoints can be configured in three ways (in order of priority):
+
+**Two endpoints are available:**
+
+| Endpoint            | Default Port | Purpose                                 |
+| ------------------- | ------------ | --------------------------------------- |
+| `apiEndpoint`       | 4434         | Admin API - identity CRUD, session mgmt |
+| `publicApiEndpoint` | 4433         | Public API - identity schemas           |
 
 ### 1. User Override (Settings UI)
 
@@ -55,7 +67,8 @@ Mount a `config.json` file at runtime:
 
 ```json
 {
-  "apiEndpoint": "https://kratos-admin.example.com"
+  "apiEndpoint": "https://kratos-admin.example.com",
+  "publicApiEndpoint": "https://kratos-public.example.com"
 }
 ```
 
@@ -93,9 +106,13 @@ Set during build (baked into the bundle):
 
 ```bash
 VITE_DEFAULT_API_ENDPOINT=http://localhost:4434
+VITE_DEFAULT_PUBLIC_API_ENDPOINT=http://localhost:4433
 ```
 
-**Priority:** User Override > Runtime Config > Build-time Env > Default (`http://localhost:4434`)
+**Priority:** User Override > Runtime Config > Build-time Env > Default
+
+- Admin API default: `http://localhost:4434`
+- Public API default: `http://localhost:4433`
 
 ## Development
 

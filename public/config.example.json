@@ -1,3 +1,4 @@
 {
-  "apiEndpoint": "http://localhost:4434"
+  "apiEndpoint": "http://localhost:4434",
+  "publicApiEndpoint": "http://localhost:4433"
 }

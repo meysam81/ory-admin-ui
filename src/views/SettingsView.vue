@@ -34,15 +34,21 @@ const { data: version } = useVersion()
 
 // Local form state
 const apiEndpoint = ref(settingsStore.apiEndpoint)
+const publicApiEndpoint = ref(settingsStore.publicApiEndpoint)
 const theme = ref(themeStore.theme)
 
 // Track if settings have changed
 const hasChanges = computed(() => {
-  return apiEndpoint.value !== settingsStore.apiEndpoint || theme.value !== themeStore.theme
+  return (
+    apiEndpoint.value !== settingsStore.apiEndpoint ||
+    publicApiEndpoint.value !== settingsStore.publicApiEndpoint ||
+    theme.value !== themeStore.theme
+  )
 })
 
 function saveSettings() {
   settingsStore.setApiEndpoint(apiEndpoint.value)
+  settingsStore.setPublicApiEndpoint(publicApiEndpoint.value)
   themeStore.setTheme(theme.value as "light" | "dark" | "system")
   toast.success("Settings saved successfully")
   checkHealth()
@@ -52,6 +58,7 @@ function resetSettings() {
   settingsStore.resetSettings()
   themeStore.setTheme("dark")
   apiEndpoint.value = settingsStore.apiEndpoint
+  publicApiEndpoint.value = settingsStore.publicApiEndpoint
   theme.value = "dark"
   toast.info("Settings reset to defaults")
   checkHealth()
@@ -61,6 +68,16 @@ function resetSettings() {
 const isValidUrl = computed(() => {
   try {
     new URL(apiEndpoint.value)
+    return true
+  } catch {
+    return false
+  }
+})
+
+// Validate public API endpoint URL
+const isValidPublicUrl = computed(() => {
+  try {
+    new URL(publicApiEndpoint.value)
     return true
   } catch {
     return false
@@ -137,6 +154,31 @@ async function testConnection() {
             <span class="text-warning">Custom override active.</span>
             Default:
             <code class="rounded bg-surface-raised px-1">{{ settingsStore.defaultEndpoint }}</code>
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <Label for="public-api-endpoint">Kratos Public API Endpoint</Label>
+          <Input
+            id="public-api-endpoint"
+            v-model="publicApiEndpoint"
+            type="url"
+            :placeholder="settingsStore.defaultPublicEndpoint"
+            :class="!isValidPublicUrl && publicApiEndpoint ? 'border-destructive' : ''"
+          />
+          <p v-if="!isValidPublicUrl && publicApiEndpoint" class="text-xs text-destructive">
+            Please enter a valid URL
+          </p>
+          <p class="text-xs text-text-muted">
+            The URL of your Kratos Public API. This is typically port 4433. Used for fetching
+            identity schemas.
+          </p>
+          <p v-if="settingsStore.hasPublicUserOverride" class="text-xs text-text-muted">
+            <span class="text-warning">Custom override active.</span>
+            Default:
+            <code class="rounded bg-surface-raised px-1">{{
+              settingsStore.defaultPublicEndpoint
+            }}</code>
           </p>
         </div>
 

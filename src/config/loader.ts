@@ -7,6 +7,7 @@
 
 export interface RuntimeConfig {
   apiEndpoint?: string
+  publicApiEndpoint?: string
 }
 
 const CONFIG_CACHE_KEY = "runtime-config"
