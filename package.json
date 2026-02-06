@@ -52,7 +52,7 @@
   "name": "ory-admin-ui",
   "repository": {
     "type": "git",
-    "url": "https://github.com/meysam81/ory-admin-ui"
+    "url": "https://github.com/licenseware/ory-admin-ui"
   },
   "scripts": {
     "build": "vue-tsc --noEmit && vite build",

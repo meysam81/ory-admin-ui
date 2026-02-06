@@ -71,7 +71,7 @@ function getCurrentBreadcrumb() {
         <!-- GitHub link -->
         <Tooltip content="Star on GitHub" side="bottom">
           <a
-            href="https://github.com/meysam81/ory-admin-ui"
+            href="https://github.com/licenseware/ory-admin-ui"
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center gap-2 px-2 py-1 text-sm text-text-secondary transition-colors hover:text-text-primary"

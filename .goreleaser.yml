@@ -188,7 +188,7 @@ checksum:
 homebrew_casks:
   - commit_msg_template: Brew formula update for {{ .ProjectName }} version {{ .Tag }}
     description: Single-binary, zero-dependency DMARC parser with a modern web dashboard.
-    homepage: https://github.com/meysam81/ory-admin-ui
+    homepage: https://github.com/licenseware/ory-admin-ui
     license: Apache-2.0
     name: ory-admin-ui
     repository:
@@ -209,4 +209,4 @@ homebrew_casks:
           puts "   ory-admin-ui completion fish  # for fish"
           puts ""
           puts "📚 For more information and usage instructions, visit:"
-          puts "   https://github.com/meysam81/ory-admin-ui"
+          puts "   https://github.com/licenseware/ory-admin-ui"

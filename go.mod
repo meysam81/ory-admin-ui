@@ -1,4 +1,4 @@
-module github.com/meysam81/ory-admin-ui
+module github.com/licenseware/ory-admin-ui
 
 go 1.25.5
 

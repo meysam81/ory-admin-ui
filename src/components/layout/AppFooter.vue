@@ -15,7 +15,7 @@ const { data: versionData } = useVersion()
       </div>
       <div class="flex items-center gap-4">
         <a
-          href="https://github.com/meysam81/ory-admin-ui"
+          href="https://github.com/licenseware/ory-admin-ui"
           target="_blank"
           rel="noopener noreferrer"
           class="transition-colors hover:text-text-secondary"
