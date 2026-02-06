@@ -18,7 +18,7 @@ import Button from "@/components/ui/Button.vue"
 import Badge from "@/components/ui/Badge.vue"
 import Skeleton from "@/components/ui/Skeleton.vue"
 import AlertDialog from "@/components/ui/AlertDialog.vue"
-import { TabsRoot as Tabs, TabsList, TabsTrigger, TabsContent } from "radix-vue"
+import { Tabs } from "@/components/ui/tabs"
 import TimeAgo from "@/components/common/TimeAgo.vue"
 import JsonViewer from "@/components/common/JsonViewer.vue"
 import CopyButton from "@/components/common/CopyButton.vue"
@@ -218,21 +218,24 @@ function handleRevokeSession() {
       </Card>
 
       <!-- Tabs -->
-      <Tabs v-model="activeTab" class="gap-2">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="sessions">
-            Sessions
-            <Badge v-if="sessions?.length" variant="secondary" class="ml-2">
-              {{ sessions.length }}
-            </Badge>
-          </TabsTrigger>
-          <TabsTrigger value="credentials">Credentials</TabsTrigger>
-          <TabsTrigger value="raw">Raw JSON</TabsTrigger>
-        </TabsList>
+      <Tabs
+        v-model="activeTab"
+        :tabs="[
+          { value: 'overview', label: 'Overview' },
+          { value: 'sessions', label: 'Sessions' },
+          { value: 'credentials', label: 'Credentials' },
+          { value: 'raw', label: 'Raw JSON' },
+        ]"
+      >
+        <template #trigger-sessions>
+          Sessions
+          <Badge v-if="sessions?.length" variant="secondary" class="ml-2">
+            {{ sessions.length }}
+          </Badge>
+        </template>
 
         <!-- Overview tab -->
-        <TabsContent value="overview" class="mt-4">
+        <template #overview>
           <div class="grid gap-4 md:grid-cols-2">
             <!-- Traits -->
             <Card>
@@ -300,10 +303,10 @@ function handleRevokeSession() {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+        </template>
 
         <!-- Sessions tab -->
-        <TabsContent value="sessions" class="mt-4">
+        <template #sessions>
           <Card>
             <CardHeader>
               <CardTitle class="flex items-center gap-2 text-base">
@@ -356,10 +359,10 @@ function handleRevokeSession() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </template>
 
         <!-- Credentials tab -->
-        <TabsContent value="credentials" class="mt-4">
+        <template #credentials>
           <Card>
             <CardHeader>
               <CardTitle class="flex items-center gap-2 text-base">
@@ -399,12 +402,12 @@ function handleRevokeSession() {
               <p v-else class="text-sm text-text-muted">No credentials found</p>
             </CardContent>
           </Card>
-        </TabsContent>
+        </template>
 
         <!-- Raw JSON tab -->
-        <TabsContent value="raw" class="mt-4">
+        <template #raw>
           <JsonViewer :data="identity" :initial-expanded="true" max-height="600px" />
-        </TabsContent>
+        </template>
       </Tabs>
     </template>
 

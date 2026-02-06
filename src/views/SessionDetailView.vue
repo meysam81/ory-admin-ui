@@ -11,7 +11,7 @@ import Button from "@/components/ui/Button.vue"
 import Badge from "@/components/ui/Badge.vue"
 import Skeleton from "@/components/ui/Skeleton.vue"
 import AlertDialog from "@/components/ui/AlertDialog.vue"
-import { TabsRoot as Tabs, TabsList, TabsTrigger, TabsContent } from "radix-vue"
+import { Tabs } from "@/components/ui/tabs"
 import TimeAgo from "@/components/common/TimeAgo.vue"
 import JsonViewer from "@/components/common/JsonViewer.vue"
 import CopyButton from "@/components/common/CopyButton.vue"
@@ -121,16 +121,17 @@ function formatAuthMethod(method: any): string {
       </Card>
 
       <!-- Tabs -->
-      <Tabs v-model="activeTab">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="identity">Identity</TabsTrigger>
-          <TabsTrigger value="devices">Devices</TabsTrigger>
-          <TabsTrigger value="raw">Raw JSON</TabsTrigger>
-        </TabsList>
-
+      <Tabs
+        v-model="activeTab"
+        :tabs="[
+          { value: 'overview', label: 'Overview' },
+          { value: 'identity', label: 'Identity' },
+          { value: 'devices', label: 'Devices' },
+          { value: 'raw', label: 'Raw JSON' },
+        ]"
+      >
         <!-- Overview tab -->
-        <TabsContent value="overview" class="mt-4">
+        <template #overview>
           <div class="grid gap-4 md:grid-cols-2">
             <!-- Session Info -->
             <Card>
@@ -197,10 +198,10 @@ function formatAuthMethod(method: any): string {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+        </template>
 
         <!-- Identity tab -->
-        <TabsContent value="identity" class="mt-4">
+        <template #identity>
           <Card>
             <CardHeader>
               <CardTitle class="flex items-center gap-2 text-base">
@@ -248,10 +249,10 @@ function formatAuthMethod(method: any): string {
               <p v-else class="text-sm text-text-muted">No identity information available</p>
             </CardContent>
           </Card>
-        </TabsContent>
+        </template>
 
         <!-- Devices tab -->
-        <TabsContent value="devices" class="mt-4">
+        <template #devices>
           <Card>
             <CardHeader>
               <CardTitle class="flex items-center gap-2 text-base">
@@ -291,12 +292,12 @@ function formatAuthMethod(method: any): string {
               <p v-else class="text-sm text-text-muted">No device information available</p>
             </CardContent>
           </Card>
-        </TabsContent>
+        </template>
 
         <!-- Raw JSON tab -->
-        <TabsContent value="raw" class="mt-4">
+        <template #raw>
           <JsonViewer :data="session" :initial-expanded="true" max-height="600px" />
-        </TabsContent>
+        </template>
       </Tabs>
     </template>
 

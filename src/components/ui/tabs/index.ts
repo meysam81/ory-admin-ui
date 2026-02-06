@@ -1,4 +1,4 @@
 export { default as Tabs } from "../Tabs.vue"
-
-// Re-export Radix Vue tabs components
-export { TabsList, TabsTrigger, TabsContent } from "radix-vue"
+export { default as TabsList } from "../TabsList.vue"
+export { default as TabsTrigger } from "../TabsTrigger.vue"
+export { default as TabsContent } from "../TabsContent.vue"
