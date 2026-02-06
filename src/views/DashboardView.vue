@@ -40,6 +40,16 @@ const {
 const { isError: healthError } = useHealthAlive()
 const { data: version } = useVersion()
 
+const recentIdentities = computed(() => {
+  return identities.value?.data.slice(0, 10) || []
+})
+const recentSessions = computed(() => {
+  return sessions.value?.data.slice(0, 10) || []
+})
+const recentMessages = computed(() => {
+  return messages.value?.slice(0, 10) || []
+})
+
 const currentVersion = computed(() =>
   version.value?.version ? version.value.version.replace(/^v/, "") : null
 )
@@ -143,7 +153,7 @@ function getIdentityName(identity: any): string {
           />
           <div v-else-if="identities?.data?.length" class="space-y-2">
             <RouterLink
-              v-for="identity in identities.data"
+              v-for="identity in recentIdentities"
               :key="identity.id"
               :to="`/identities/${identity.id}`"
               class="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-surface-raised"
@@ -155,7 +165,7 @@ function getIdentityName(identity: any): string {
                   {{ getIdentityName(identity).charAt(0).toUpperCase() }}
                 </div>
                 <div class="min-w-0">
-                  <p class="truncate text-sm font-medium text-text-primary">
+                  <p class="mb-1 truncate text-sm font-medium text-text-primary">
                     {{ getIdentityName(identity) }}
                   </p>
                   <p class="truncate text-xs text-text-muted">
@@ -204,7 +214,7 @@ function getIdentityName(identity: any): string {
           />
           <div v-else-if="sessions?.data?.length" class="space-y-2">
             <RouterLink
-              v-for="session in sessions.data"
+              v-for="session in recentSessions"
               :key="session.id"
               :to="`/sessions/${session.id}`"
               class="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-surface-raised"
@@ -216,7 +226,7 @@ function getIdentityName(identity: any): string {
                   <Key class="h-4 w-4" />
                 </div>
                 <div class="min-w-0">
-                  <p class="truncate text-sm font-medium text-text-primary">
+                  <p class="mb-1 truncate text-sm font-medium text-text-primary">
                     {{ session.id.slice(0, 8) }}...
                   </p>
                   <p class="text-xs text-text-muted">
@@ -261,7 +271,7 @@ function getIdentityName(identity: any): string {
           />
           <div v-else-if="messages?.length" class="space-y-2">
             <div
-              v-for="message in messages"
+              v-for="message in recentMessages"
               :key="message.id"
               class="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-surface-raised"
             >
