@@ -22,12 +22,13 @@ const searchQuery = ref("")
 const revokeDialogOpen = ref(false)
 const sessionToRevoke = ref<Session | null>(null)
 
-const { data: sessions, isLoading, isError, refetch } = useSessions()
+const { data: sessions, isLoading, isError, error, refetch } = useSessions()
 
 const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession()
 
 const filteredSessions = computed(() => {
-  if (!sessions.value || !searchQuery.value) return sessions.value
+  if (!sessions.value) return []
+  if (!searchQuery.value) return sessions.value
   const query = searchQuery.value.toLowerCase()
   return sessions.value.filter((session) => {
     const identity = session.identity
@@ -97,6 +98,7 @@ function handleRevoke() {
         <!-- Error state -->
         <ErrorState
           v-else-if="isError"
+          :error="error"
           title="Failed to load sessions"
           description="Could not connect to the Kratos API"
           @retry="refetch"

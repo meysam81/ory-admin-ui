@@ -45,14 +45,15 @@ const schemaTreeRef = ref<InstanceType<typeof SchemaTree> | null>(null)
 const showRawJson = ref(false)
 const showKeyboardHelp = ref(false)
 
-const { data: schemas, isLoading, isError, refetch } = useSchemas()
+const { data: schemas, isLoading, isError, error, refetch } = useSchemas()
 
 const selectedSchemaJson = computed(() => selectedSchema.value?.schema as Record<string, unknown> | null)
 
 const navigation = useSchemaNavigation(selectedSchemaJson as any)
 
 const filteredSchemas = computed(() => {
-  if (!schemas.value || !listSearchQuery.value) return schemas.value
+  if (!schemas.value) return []
+  if (!listSearchQuery.value) return schemas.value
   const query = listSearchQuery.value.toLowerCase()
   return schemas.value.filter((schema) => {
     return schema.id.toLowerCase().includes(query)
@@ -195,6 +196,7 @@ const dialogSize = computed(() => (navigation.isFullscreen.value ? "full" : "5xl
 
     <ErrorState
       v-else-if="isError"
+      :error="error"
       title="Failed to load schemas"
       description="Could not connect to the Kratos API"
       @retry="refetch"

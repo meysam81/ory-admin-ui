@@ -8,13 +8,7 @@ import Input from "@/components/ui/Input.vue"
 import Skeleton from "@/components/ui/Skeleton.vue"
 import Badge from "@/components/ui/Badge.vue"
 import Dialog from "@/components/ui/Dialog.vue"
-import {
-  SelectRoot as Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "radix-vue"
+import Select from "@/components/ui/Select.vue"
 import TimeAgo from "@/components/common/TimeAgo.vue"
 import StatusBadge from "@/components/common/StatusBadge.vue"
 import EmptyState from "@/components/common/EmptyState.vue"
@@ -31,10 +25,19 @@ const statusFilter = ref<string>("")
 const selectedMessage = ref<Message | null>(null)
 const detailDialogOpen = ref(false)
 
-const { data: messages, isLoading, isError, refetch } = useCourierMessages()
+const { data: messages, isLoading, isError, error, refetch } = useCourierMessages()
+
+const statusOptions = [
+  { value: "", label: "All statuses" },
+  { value: "queued", label: "Queued" },
+  { value: "sent", label: "Sent" },
+  { value: "delivered", label: "Delivered" },
+  { value: "failed", label: "Failed" },
+  { value: "abandoned", label: "Abandoned" },
+]
 
 const filteredMessages = computed(() => {
-  if (!messages.value) return messages.value
+  if (!messages.value) return []
   let result = messages.value
 
   if (statusFilter.value) {
@@ -82,20 +85,15 @@ function viewMessage(message: Message) {
               class="pl-10"
             />
           </div>
-          <Select v-model="statusFilter">
-            <SelectTrigger class="w-full sm:w-48">
-              <Filter class="mr-2 h-4 w-4" />
-              <SelectValue placeholder="All statuses" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All statuses</SelectItem>
-              <SelectItem value="queued">Queued</SelectItem>
-              <SelectItem value="sent">Sent</SelectItem>
-              <SelectItem value="delivered">Delivered</SelectItem>
-              <SelectItem value="failed">Failed</SelectItem>
-              <SelectItem value="abandoned">Abandoned</SelectItem>
-            </SelectContent>
-          </Select>
+          <div class="flex w-full items-center gap-2 sm:w-48">
+            <Filter class="h-4 w-4 flex-shrink-0 text-text-muted" />
+            <Select
+              v-model="statusFilter"
+              :options="statusOptions"
+              placeholder="All statuses"
+              class="flex-1"
+            />
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -111,6 +109,7 @@ function viewMessage(message: Message) {
         <!-- Error state -->
         <ErrorState
           v-else-if="isError"
+          :error="error"
           title="Failed to load messages"
           description="Could not connect to the Kratos API"
           @retry="refetch"

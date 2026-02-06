@@ -13,24 +13,28 @@ import Skeleton from "@/components/ui/Skeleton.vue"
 import TimeAgo from "@/components/common/TimeAgo.vue"
 import StatusBadge from "@/components/common/StatusBadge.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
+import EmptyState from "@/components/common/EmptyState.vue"
 import { Users, Key, Mail, Activity, ArrowRight } from "lucide-vue-next"
 
 const {
   data: identities,
   isLoading: identitiesLoading,
   isError: identitiesError,
+  error: identitiesErrorObj,
   refetch: refetchIdentities,
 } = useIdentities()
 const {
   data: sessions,
   isLoading: sessionsLoading,
   isError: sessionsError,
+  error: sessionsErrorObj,
   refetch: refetchSessions,
 } = useSessions()
 const {
   data: messages,
   isLoading: messagesLoading,
   isError: messagesError,
+  error: messagesErrorObj,
   refetch: refetchMessages,
 } = useCourierMessages()
 const { isError: healthError } = useHealthAlive()
@@ -129,6 +133,7 @@ function getIdentityName(identity: any): string {
           </div>
           <ErrorState
             v-else-if="identitiesError"
+            :error="identitiesErrorObj"
             title="Failed to load identities"
             @retry="refetchIdentities"
           />
@@ -159,7 +164,15 @@ function getIdentityName(identity: any): string {
               </div>
             </RouterLink>
           </div>
-          <div v-else class="py-8 text-center text-sm text-text-muted">No identities found</div>
+          <EmptyState
+            v-else
+            title="No identities"
+            description="No identities have been created yet"
+          >
+            <template #icon>
+              <Users class="h-8 w-8 text-text-muted" />
+            </template>
+          </EmptyState>
         </CardContent>
       </Card>
 
@@ -181,6 +194,7 @@ function getIdentityName(identity: any): string {
           </div>
           <ErrorState
             v-else-if="sessionsError"
+            :error="sessionsErrorObj"
             title="Failed to load sessions"
             @retry="refetchSessions"
           />
@@ -211,7 +225,11 @@ function getIdentityName(identity: any): string {
               </div>
             </RouterLink>
           </div>
-          <div v-else class="py-8 text-center text-sm text-text-muted">No sessions found</div>
+          <EmptyState v-else title="No sessions" description="No active sessions at the moment">
+            <template #icon>
+              <Key class="h-8 w-8 text-text-muted" />
+            </template>
+          </EmptyState>
         </CardContent>
       </Card>
 
@@ -233,6 +251,7 @@ function getIdentityName(identity: any): string {
           </div>
           <ErrorState
             v-else-if="messagesError"
+            :error="messagesErrorObj"
             title="Failed to load messages"
             @retry="refetchMessages"
           />
@@ -265,7 +284,15 @@ function getIdentityName(identity: any): string {
               </div>
             </div>
           </div>
-          <div v-else class="py-8 text-center text-sm text-text-muted">No messages found</div>
+          <EmptyState
+            v-else
+            title="No messages"
+            description="No courier messages have been sent yet"
+          >
+            <template #icon>
+              <Mail class="h-8 w-8 text-text-muted" />
+            </template>
+          </EmptyState>
         </CardContent>
       </Card>
     </div>

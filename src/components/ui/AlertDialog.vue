@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onBeforeUnmount } from "vue"
 import {
   AlertDialogRoot,
   AlertDialogTrigger,
@@ -19,6 +20,7 @@ interface Props {
   confirmText?: string
   cancelText?: string
   variant?: "default" | "destructive"
+  loading?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
@@ -27,6 +29,13 @@ withDefaults(defineProps<Props>(), {
   confirmText: "Confirm",
   cancelText: "Cancel",
   variant: "default",
+  loading: false,
+})
+
+// Track mount state for safe portal cleanup
+const isMounted = ref(true)
+onBeforeUnmount(() => {
+  isMounted.value = false
 })
 
 const emit = defineEmits<{
@@ -37,7 +46,7 @@ const emit = defineEmits<{
 
 function handleConfirm() {
   emit("confirm")
-  emit("update:open", false)
+  // Don't auto-close when loading - let the parent control this
 }
 
 function handleCancel() {
@@ -51,7 +60,7 @@ function handleCancel() {
     <AlertDialogTrigger as-child>
       <slot name="trigger" />
     </AlertDialogTrigger>
-    <AlertDialogPortal>
+    <AlertDialogPortal v-if="isMounted">
       <AlertDialogOverlay
         class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-fade-in"
       />
@@ -73,9 +82,10 @@ function handleCancel() {
           <AlertDialogAction as-child>
             <Button
               :variant="variant === 'destructive' ? 'destructive' : 'default'"
+              :disabled="loading"
               @click="handleConfirm"
             >
-              {{ confirmText }}
+              {{ loading ? "Loading..." : confirmText }}
             </Button>
           </AlertDialogAction>
         </div>

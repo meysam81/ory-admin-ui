@@ -11,16 +11,10 @@ import CardContent from "@/components/ui/CardContent.vue"
 import Button from "@/components/ui/Button.vue"
 import Label from "@/components/ui/Label.vue"
 import Textarea from "@/components/ui/Textarea.vue"
-import {
-  SelectRoot as Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "radix-vue"
+import Select from "@/components/ui/Select.vue"
 import Skeleton from "@/components/ui/Skeleton.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
-import { ArrowLeft, Save, FileJson } from "lucide-vue-next"
+import { ArrowLeft, Save, FileJson, User } from "lucide-vue-next"
 
 const router = useRouter()
 
@@ -28,8 +22,14 @@ const {
   data: schemas,
   isLoading: schemasLoading,
   isError: schemasError,
+  error: schemasErrorObj,
   refetch: refetchSchemas,
 } = useSchemas()
+
+const schemaOptions = computed(() => {
+  if (!schemas.value) return []
+  return schemas.value.map((s) => ({ value: s.id, label: s.id }))
+})
 const { mutate: createIdentity, isPending: isCreating } = useCreateIdentity()
 
 const selectedSchemaId = ref("")
@@ -128,6 +128,7 @@ function generateTraitsTemplate() {
     <!-- Error state -->
     <ErrorState
       v-else-if="schemasError"
+      :error="schemasErrorObj"
       title="Failed to load schemas"
       description="Could not load identity schemas from the API"
       @retry="refetchSchemas"
@@ -149,16 +150,12 @@ function generateTraitsTemplate() {
         <CardContent>
           <div class="space-y-2">
             <Label for="schema">Schema</Label>
-            <Select v-model="selectedSchemaId" @update:model-value="generateTraitsTemplate">
-              <SelectTrigger id="schema">
-                <SelectValue placeholder="Select a schema" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem v-for="schema in schemas" :key="schema.id" :value="schema.id">
-                  {{ schema.id }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+            <Select
+              v-model="selectedSchemaId"
+              :options="schemaOptions"
+              placeholder="Select a schema"
+              @update:model-value="generateTraitsTemplate"
+            />
           </div>
         </CardContent>
       </Card>

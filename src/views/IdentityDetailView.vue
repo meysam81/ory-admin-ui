@@ -49,7 +49,7 @@ const revokeSessionDialogOpen = ref(false)
 const sessionToRevoke = ref<string | null>(null)
 const recoveryLink = ref<string | null>(null)
 
-const { data: identity, isLoading, isError, refetch } = useIdentity(identityId)
+const { data: identity, isLoading, isError, error, refetch } = useIdentity(identityId)
 const {
   data: sessions,
   isLoading: sessionsLoading,
@@ -132,6 +132,7 @@ function handleRevokeSession() {
     <!-- Error state -->
     <ErrorState
       v-else-if="isError"
+      :error="error"
       title="Failed to load identity"
       description="The identity could not be found or there was an error loading it."
       @retry="refetch"

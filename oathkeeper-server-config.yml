@@ -3,7 +3,7 @@ serve:
     port: 4455
     cors:
       enabled: true
-      debug: true
+      debug: false
       allow_credentials: true
       allowed_origins:
         - http://localhost:3000
@@ -18,6 +18,10 @@ serve:
         - authorization
         - content-type
         - origin
+
+log:
+  level: info
+  format: text
 
 access_rules:
   repositories:

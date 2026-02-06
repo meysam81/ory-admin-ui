@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onBeforeUnmount } from "vue"
 import { TooltipRoot, TooltipTrigger, TooltipPortal, TooltipContent, TooltipArrow } from "radix-vue"
 
 interface Props {
@@ -11,6 +12,12 @@ withDefaults(defineProps<Props>(), {
   side: "top",
   delay: 200,
 })
+
+// Track mount state for safe portal cleanup
+const isMounted = ref(true)
+onBeforeUnmount(() => {
+  isMounted.value = false
+})
 </script>
 
 <template>
@@ -18,7 +25,7 @@ withDefaults(defineProps<Props>(), {
     <TooltipTrigger as-child>
       <slot />
     </TooltipTrigger>
-    <TooltipPortal>
+    <TooltipPortal v-if="isMounted">
       <TooltipContent
         :side="side"
         :side-offset="4"

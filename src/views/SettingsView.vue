@@ -170,8 +170,7 @@ async function testConnection() {
             Please enter a valid URL
           </p>
           <p class="text-xs text-text-muted">
-            The URL of your Kratos Public API. This is typically port 4433. Used for fetching
-            identity schemas.
+            The URL of your Kratos Public API. This is typically port 4433.
           </p>
           <p v-if="settingsStore.hasPublicUserOverride" class="text-xs text-text-muted">
             <span class="text-warning">Custom override active.</span>

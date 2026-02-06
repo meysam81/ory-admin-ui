@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onBeforeUnmount } from "vue"
 import {
   SelectRoot,
   SelectTrigger,
@@ -31,6 +32,13 @@ withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   "update:modelValue": [value: string]
 }>()
+
+// Track mount state to safely unmount portal content
+const isMounted = ref(true)
+
+onBeforeUnmount(() => {
+  isMounted.value = false
+})
 </script>
 
 <template>
@@ -42,7 +50,7 @@ const emit = defineEmits<{
       <SelectValue :placeholder="placeholder" />
       <ChevronDown class="h-4 w-4 text-text-muted" />
     </SelectTrigger>
-    <SelectPortal>
+    <SelectPortal v-if="isMounted">
       <SelectContent
         class="relative z-50 min-w-[8rem] animate-fade-in overflow-hidden rounded-md border border-border bg-surface-raised shadow-lg"
         position="popper"

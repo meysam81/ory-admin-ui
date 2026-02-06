@@ -22,12 +22,13 @@ const searchQuery = ref("")
 const deleteDialogOpen = ref(false)
 const identityToDelete = ref<Identity | null>(null)
 
-const { data: identities, isLoading, isError, refetch } = useIdentities()
+const { data: identities, isLoading, isError, error, refetch } = useIdentities()
 
 const { mutate: deleteIdentity, isPending: isDeleting } = useDeleteIdentity()
 
 const filteredIdentities = computed(() => {
-  if (!identities.value || !searchQuery.value) return identities.value
+  if (!identities.value) return []
+  if (!searchQuery.value) return identities.value
   const query = searchQuery.value.toLowerCase()
   return identities.value.filter((identity) => {
     const traits = (identity.traits || {}) as Record<string, string>
@@ -102,6 +103,7 @@ function handleDelete() {
         <!-- Error state -->
         <ErrorState
           v-else-if="isError"
+          :error="error"
           title="Failed to load identities"
           description="Could not connect to the Kratos API"
           @retry="refetch"

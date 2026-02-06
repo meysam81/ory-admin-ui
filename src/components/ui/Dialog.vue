@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, ref, onBeforeUnmount, useSlots } from "vue"
 import {
   DialogRoot,
   DialogTrigger,
@@ -26,6 +26,8 @@ const props = withDefaults(defineProps<Props>(), {
   size: "default",
 })
 
+const slots = useSlots()
+
 const sizeClasses = {
   sm: "max-w-sm",
   default: "max-w-lg",
@@ -46,6 +48,17 @@ const contentClasses = computed(() =>
   )
 )
 
+// Check if title/description are provided via slots or props
+const hasTitle = computed(() => props.title || slots.title)
+const hasDescription = computed(() => props.description || slots.description)
+const hasFooter = computed(() => !!slots.footer)
+
+// Track mount state for safe portal cleanup
+const isMounted = ref(true)
+onBeforeUnmount(() => {
+  isMounted.value = false
+})
+
 const emit = defineEmits<{
   "update:open": [value: boolean]
 }>()
@@ -56,21 +69,26 @@ const emit = defineEmits<{
     <DialogTrigger as-child>
       <slot name="trigger" />
     </DialogTrigger>
-    <DialogPortal>
+    <DialogPortal v-if="isMounted">
       <DialogOverlay
         class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-fade-in"
       />
       <DialogContent :class="contentClasses">
-        <div class="flex flex-col space-y-2">
-          <DialogTitle v-if="title" class="text-lg font-medium text-text-primary">
-            {{ title }}
+        <div v-if="hasTitle || hasDescription" class="flex flex-col space-y-2">
+          <DialogTitle v-if="hasTitle" class="text-lg font-medium text-text-primary">
+            <slot name="title">{{ title }}</slot>
           </DialogTitle>
-          <DialogDescription v-if="description" class="text-sm text-text-muted">
-            {{ description }}
+          <DialogDescription v-if="hasDescription" class="text-sm text-text-muted">
+            <slot name="description">{{ description }}</slot>
           </DialogDescription>
         </div>
-        <div class="mt-4">
+        <div
+          :class="hasTitle || hasDescription ? 'mt-4 flex-1 overflow-auto' : 'flex-1 overflow-auto'"
+        >
           <slot />
+        </div>
+        <div v-if="hasFooter" class="mt-4 flex justify-end gap-2">
+          <slot name="footer" />
         </div>
         <DialogClose
           class="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-surface"

@@ -26,7 +26,7 @@ const sessionId = computed(() => route.params.id as string)
 const activeTab = ref("overview")
 const revokeDialogOpen = ref(false)
 
-const { data: session, isLoading, isError, refetch } = useSession(sessionId)
+const { data: session, isLoading, isError, error, refetch } = useSession(sessionId)
 const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession()
 
 function getSessionUser(): string {
@@ -66,6 +66,7 @@ function formatAuthMethod(method: any): string {
     <!-- Error state -->
     <ErrorState
       v-else-if="isError"
+      :error="error"
       title="Failed to load session"
       description="The session could not be found or there was an error loading it."
       @retry="refetch"
