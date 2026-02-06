@@ -335,6 +335,7 @@ function handleDelete() {
               v-model="searchQuery"
               placeholder="Search by email, username, or ID..."
               class="pl-10"
+              clearable
             />
           </div>
           <!-- Filters row -->

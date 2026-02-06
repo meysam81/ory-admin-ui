@@ -85,6 +85,7 @@ function viewMessage(message: Message) {
               v-model="searchQuery"
               placeholder="Search by recipient, subject, or template..."
               class="pl-10"
+              clearable
             />
           </div>
           <div class="flex w-full items-center gap-2 sm:w-48">

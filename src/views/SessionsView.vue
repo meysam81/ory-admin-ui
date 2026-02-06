@@ -161,6 +161,7 @@ function handleRevoke() {
               v-model="searchQuery"
               placeholder="Search by session ID, user email, or identity ID..."
               class="pl-10"
+              clearable
             />
           </div>
           <!-- Filters row -->
