@@ -26,6 +26,7 @@ import {
 } from "lucide-vue-next"
 import { toast } from "vue-sonner"
 
+const appVersion = __APP_VERSION__
 const settingsStore = useSettingsStore()
 const themeStore = useThemeStore()
 
@@ -281,7 +282,7 @@ async function testConnection() {
       <CardContent class="space-y-3">
         <div class="flex justify-between border-b border-border-subtle py-2">
           <span class="text-sm text-text-muted">Admin UI Version</span>
-          <span class="font-mono text-sm text-text-primary">1.0.0</span>
+          <span class="font-mono text-sm text-text-primary">{{ appVersion }}</span>
         </div>
         <div class="flex justify-between border-b border-border-subtle py-2">
           <span class="text-sm text-text-muted">Kratos Version</span>

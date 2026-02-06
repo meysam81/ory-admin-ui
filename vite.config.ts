@@ -3,10 +3,14 @@ import { resolve } from "path"
 import { defineConfig, loadEnv } from "vite"
 import compression from "vite-plugin-compression2"
 import { createHtmlPlugin } from "vite-plugin-html"
+import { version } from "./package.json"
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "")
   return {
+    define: {
+      __APP_VERSION__: JSON.stringify(version),
+    },
     plugins: [
       vue(),
       createHtmlPlugin({
