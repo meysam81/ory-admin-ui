@@ -4,16 +4,16 @@ import type { HealthStatus, Version } from "@/types/api"
 export const healthApi = {
   alive: async () => {
     const client = getApiClient()
-    return client.get("health/alive").json<HealthStatus>()
+    return await client.get("admin/health/alive").json<HealthStatus>()
   },
 
   ready: async () => {
     const client = getApiClient()
-    return client.get("health/ready").json<HealthStatus>()
+    return await client.get("admin/health/ready").json<HealthStatus>()
   },
 
   version: async () => {
     const client = getApiClient()
-    return client.get("admin/version").json<Version>()
+    return await client.get("admin/version").json<Version>()
   },
 }

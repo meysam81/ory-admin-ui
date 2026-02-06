@@ -71,11 +71,11 @@ const stats = computed(() => [
   },
   {
     name: "API Status",
-    value: healthError ? "Offline" : "Online",
+    value: healthError.value ? "Offline" : "Online",
     icon: Activity,
     href: "/settings",
-    color: healthError ? "text-destructive" : "text-success",
-    bgColor: healthError ? "bg-destructive/10" : "bg-success/10",
+    color: healthError.value ? "text-destructive" : "text-success",
+    bgColor: healthError.value ? "bg-destructive/10" : "bg-success/10",
   },
 ])
 

@@ -19,8 +19,8 @@ export function createApiClient() {
         },
       ],
       afterResponse: [
-        (_request, _options, response) => {
-          log.debug(`[API] Response: ${response.status}`)
+        (request, _options, response) => {
+          log.debug(`[API] Response: ${request.method} ${request.url} - ${response.status}`)
           return response
         },
       ],

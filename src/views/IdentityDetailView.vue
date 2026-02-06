@@ -166,7 +166,8 @@ function handleRevokeSession() {
                 <div class="mt-2 flex items-center gap-4 text-sm text-text-muted">
                   <span class="flex items-center gap-1">
                     <Clock class="h-3 w-3" />
-                    Created <TimeAgo :date="identity.created_at" />
+                    Created
+                    <TimeAgo :date="identity.created_at" />
                   </span>
                   <span class="flex items-center gap-1">
                     <FileJson class="h-3 w-3" />
@@ -217,7 +218,7 @@ function handleRevokeSession() {
       </Card>
 
       <!-- Tabs -->
-      <Tabs v-model="activeTab">
+      <Tabs v-model="activeTab" class="gap-2">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="sessions">
@@ -338,7 +339,10 @@ function handleRevokeSession() {
                       <StatusBadge :status="session.active ? 'active' : 'inactive'" />
                     </div>
                     <div class="mt-1 flex items-center gap-4 text-xs text-text-muted">
-                      <span>Authenticated <TimeAgo :date="session.authenticated_at" /></span>
+                      <span
+                        >Authenticated
+                        <TimeAgo :date="session.authenticated_at" />
+                      </span>
                       <span v-if="session.expires_at">
                         Expires {{ new Date(session.expires_at).toLocaleDateString() }}
                       </span>
