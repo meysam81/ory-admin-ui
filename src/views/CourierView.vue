@@ -18,7 +18,6 @@ import JsonViewer from "@/components/common/JsonViewer.vue"
 import { Search, Mail, Eye, Filter } from "lucide-vue-next"
 import type { Message } from "@/types/api"
 
-const page = ref(1)
 const pageSize = ref(20)
 const searchQuery = ref("")
 const statusFilter = ref<string>("")
@@ -183,9 +182,10 @@ function viewMessage(message: Message) {
         <!-- Pagination -->
         <div v-if="filteredMessages?.length" class="border-t border-border-subtle p-4">
           <Pagination
-            v-model:page="page"
+            :has-next="false"
+            :has-prev="false"
             :page-size="pageSize"
-            :has-more="messages?.length === pageSize"
+            :item-count="filteredMessages.length"
           />
         </div>
       </CardContent>

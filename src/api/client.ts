@@ -43,6 +43,10 @@ export function getApiClient() {
   return apiClient
 }
 
+export function resetApiClient() {
+  apiClient = null
+}
+
 export function createPublicApiClient() {
   const settings = useSettingsStore()
 
@@ -80,4 +84,8 @@ export function getPublicApiClient() {
     publicApiClient = createPublicApiClient()
   }
   return publicApiClient
+}
+
+export function resetPublicApiClient() {
+  publicApiClient = null
 }

@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 import { RouterLink } from "vue-router"
 import { useIdentities, useDeleteIdentity } from "@/composables/useIdentities"
+import { useSchemas } from "@/composables/useSchemas"
 import Card from "@/components/ui/Card.vue"
 import CardContent from "@/components/ui/CardContent.vue"
 import Button from "@/components/ui/Button.vue"
 import Input from "@/components/ui/Input.vue"
+import Select from "@/components/ui/Select.vue"
 import Skeleton from "@/components/ui/Skeleton.vue"
 import Badge from "@/components/ui/Badge.vue"
 import AlertDialog from "@/components/ui/AlertDialog.vue"
@@ -13,33 +15,133 @@ import TimeAgo from "@/components/common/TimeAgo.vue"
 import EmptyState from "@/components/common/EmptyState.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
 import Pagination from "@/components/common/Pagination.vue"
-import { Plus, Search, Users, Trash2, Eye } from "lucide-vue-next"
+import { Plus, Search, Users, Trash2, Eye, Filter, ArrowUpDown } from "lucide-vue-next"
 import type { Identity } from "@/types/api"
 
-const page = ref(1)
+// Pagination state
 const pageSize = ref(20)
+const pageToken = ref<string | undefined>()
+const prevTokens = ref<string[]>([])
+
+// Filter & sort state
 const searchQuery = ref("")
+const debouncedSearch = ref("")
+const stateFilter = ref("all")
+const schemaFilter = ref("all")
+const sortField = ref<"created_at" | "name">("created_at")
+const sortDir = ref<"asc" | "desc">("desc")
+
+// Debounce search → server-side credentials_identifier
+let searchTimeout: ReturnType<typeof setTimeout> | undefined
+watch(searchQuery, (val) => {
+  clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(() => {
+    debouncedSearch.value = val
+    resetPagination()
+  }, 300)
+})
+
+// Delete dialog state
 const deleteDialogOpen = ref(false)
 const identityToDelete = ref<Identity | null>(null)
 
-const { data: identities, isLoading, isError, error, refetch } = useIdentities()
+// API params — reactive
+const apiParams = computed(() => ({
+  page_size: pageSize.value,
+  page_token: pageToken.value,
+  credentials_identifier: debouncedSearch.value || undefined,
+}))
 
+const { data: result, isLoading, isError, error, refetch } = useIdentities(apiParams)
+const { data: schemas } = useSchemas()
 const { mutate: deleteIdentity, isPending: isDeleting } = useDeleteIdentity()
 
-const filteredIdentities = computed(() => {
-  if (!identities.value) return []
-  if (!searchQuery.value) return identities.value
-  const query = searchQuery.value.toLowerCase()
-  return identities.value.filter((identity) => {
-    const traits = (identity.traits || {}) as Record<string, string>
-    return (
-      identity.id.toLowerCase().includes(query) ||
-      (traits.email && traits.email.toLowerCase().includes(query)) ||
-      (traits.username && traits.username.toLowerCase().includes(query)) ||
-      (traits.name && traits.name.toLowerCase().includes(query))
-    )
-  })
+// Schema options for filter dropdown
+const schemaOptions = computed(() => {
+  const options = [{ value: "all", label: "All schemas" }]
+  if (schemas.value) {
+    for (const s of schemas.value) {
+      options.push({ value: s.id, label: s.id })
+    }
+  }
+  return options
 })
+
+const stateOptions = [
+  { value: "all", label: "All states" },
+  { value: "active", label: "Active" },
+  { value: "inactive", label: "Inactive" },
+]
+
+const sortOptions = [
+  { value: "created_at:desc", label: "Newest first" },
+  { value: "created_at:asc", label: "Oldest first" },
+  { value: "name:asc", label: "Name A-Z" },
+  { value: "name:desc", label: "Name Z-A" },
+]
+
+const sortValue = computed({
+  get: () => `${sortField.value}:${sortDir.value}`,
+  set: (val: string) => {
+    const [field, dir] = val.split(":") as ["created_at" | "name", "asc" | "desc"]
+    sortField.value = field
+    sortDir.value = dir
+  },
+})
+
+// Client-side pipeline: filter → sort on current page data
+const processedIdentities = computed(() => {
+  if (!result.value) return []
+  let items = [...result.value.data]
+
+  // Filter by state
+  if (stateFilter.value !== "all") {
+    items = items.filter((i) => i.state === stateFilter.value)
+  }
+
+  // Filter by schema
+  if (schemaFilter.value !== "all") {
+    items = items.filter((i) => i.schema_id === schemaFilter.value)
+  }
+
+  // Sort
+  items.sort((a, b) => {
+    let cmp = 0
+    if (sortField.value === "created_at") {
+      cmp = new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    } else {
+      cmp = getIdentityName(a).localeCompare(getIdentityName(b))
+    }
+    return sortDir.value === "asc" ? cmp : -cmp
+  })
+
+  return items
+})
+
+// Pagination helpers
+function resetPagination() {
+  pageToken.value = undefined
+  prevTokens.value = []
+}
+
+function goNext() {
+  if (!result.value?.pagination.nextToken) return
+  prevTokens.value = [...prevTokens.value, pageToken.value ?? ""]
+  pageToken.value = result.value.pagination.nextToken
+}
+
+function goPrev() {
+  if (!prevTokens.value.length) return
+  const prev = prevTokens.value[prevTokens.value.length - 1]
+  prevTokens.value = prevTokens.value.slice(0, -1)
+  pageToken.value = prev || undefined
+}
+
+const hasNext = computed(() => !!result.value?.pagination.nextToken)
+const hasPrev = computed(() => prevTokens.value.length > 0)
+
+// Reset pagination when filters change
+watch([stateFilter, schemaFilter], () => resetPagination())
 
 function getIdentityName(identity: Identity): string {
   const traits = (identity.traits || {}) as Record<string, string>
@@ -81,13 +183,46 @@ function handleDelete() {
     <!-- Search and filters -->
     <Card>
       <CardContent class="p-4">
-        <div class="relative">
-          <Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
-          <Input
-            v-model="searchQuery"
-            placeholder="Search by email, username, or ID..."
-            class="pl-10"
-          />
+        <div class="flex flex-col gap-4">
+          <!-- Search -->
+          <div class="relative">
+            <Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+            <Input
+              v-model="searchQuery"
+              placeholder="Search by email, username, or ID..."
+              class="pl-10"
+            />
+          </div>
+          <!-- Filters row -->
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div class="flex items-center gap-2 sm:w-44">
+              <Filter class="h-4 w-4 flex-shrink-0 text-text-muted" />
+              <Select
+                v-model="stateFilter"
+                :options="stateOptions"
+                placeholder="All states"
+                class="flex-1"
+              />
+            </div>
+            <div class="flex items-center gap-2 sm:w-44">
+              <Filter class="h-4 w-4 flex-shrink-0 text-text-muted" />
+              <Select
+                v-model="schemaFilter"
+                :options="schemaOptions"
+                placeholder="All schemas"
+                class="flex-1"
+              />
+            </div>
+            <div class="flex items-center gap-2 sm:ml-auto sm:w-44">
+              <ArrowUpDown class="h-4 w-4 flex-shrink-0 text-text-muted" />
+              <Select
+                v-model="sortValue"
+                :options="sortOptions"
+                placeholder="Sort by"
+                class="flex-1"
+              />
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -112,18 +247,18 @@ function handleDelete() {
 
         <!-- Empty state -->
         <EmptyState
-          v-else-if="!filteredIdentities?.length"
+          v-else-if="!processedIdentities?.length"
           title="No identities found"
           :description="
-            searchQuery
-              ? 'Try adjusting your search query'
+            searchQuery || stateFilter !== 'all' || schemaFilter !== 'all'
+              ? 'Try adjusting your search or filters'
               : 'Create your first identity to get started'
           "
         >
           <template #icon>
             <Users class="h-8 w-8 text-text-muted" />
           </template>
-          <template v-if="!searchQuery" #action>
+          <template v-if="!searchQuery && stateFilter === 'all' && schemaFilter === 'all'" #action>
             <RouterLink to="/identities/new">
               <Button>
                 <Plus class="mr-2 h-4 w-4" />
@@ -136,7 +271,7 @@ function handleDelete() {
         <!-- Identity list -->
         <div v-else class="divide-y divide-border-subtle">
           <div
-            v-for="identity in filteredIdentities"
+            v-for="identity in processedIdentities"
             :key="identity.id"
             class="group flex items-center justify-between p-4 transition-colors hover:bg-surface-raised"
           >
@@ -192,11 +327,14 @@ function handleDelete() {
         </div>
 
         <!-- Pagination -->
-        <div v-if="filteredIdentities?.length" class="border-t border-border-subtle p-4">
+        <div v-if="processedIdentities?.length" class="border-t border-border-subtle p-4">
           <Pagination
-            v-model:page="page"
+            :has-next="hasNext"
+            :has-prev="hasPrev"
             :page-size="pageSize"
-            :has-more="identities?.length === pageSize"
+            :item-count="processedIdentities.length"
+            @next="goNext"
+            @prev="goPrev"
           />
         </div>
       </CardContent>

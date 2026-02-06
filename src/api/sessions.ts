@@ -1,8 +1,11 @@
 import { getApiClient } from "./client"
-import type { Session, PaginationParams } from "@/types/api"
+import { parseLinkHeader } from "./pagination"
+import type { Session, PaginationParams, PaginatedResponse } from "@/types/api"
 
 export const sessionsApi = {
-  list: async (params?: PaginationParams & { active?: boolean; expand?: string[] }) => {
+  list: async (
+    params?: PaginationParams & { active?: boolean; expand?: string[] }
+  ): Promise<PaginatedResponse<Session>> => {
     const client = getApiClient()
     const searchParams = new URLSearchParams()
     if (params?.page_size) searchParams.set("page_size", String(params.page_size))
@@ -11,11 +14,12 @@ export const sessionsApi = {
     if (params?.expand?.length) {
       params.expand.forEach((e) => searchParams.append("expand", e))
     }
-    return client
-      .get("admin/sessions", {
-        searchParams: searchParams.toString() ? searchParams : undefined,
-      })
-      .json<Session[]>()
+    const response = await client.get("admin/sessions", {
+      searchParams: searchParams.toString() ? searchParams : undefined,
+    })
+    const data = await response.json<Session[]>()
+    const pagination = parseLinkHeader(response.headers.get("link"))
+    return { data, pagination }
   },
 
   get: async (id: string, expand?: string[]) => {

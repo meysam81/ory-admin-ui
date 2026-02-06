@@ -150,3 +150,13 @@ export interface PaginationParams {
   page_size?: number
   page_token?: string
 }
+
+export interface PaginationMeta {
+  nextToken?: string
+  prevToken?: string
+}
+
+export interface PaginatedResponse<T> {
+  data: T[]
+  pagination: PaginationMeta
+}

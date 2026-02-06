@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 import { RouterLink } from "vue-router"
 import { useSessions, useRevokeSession } from "@/composables/useSessions"
 import Card from "@/components/ui/Card.vue"
 import CardContent from "@/components/ui/CardContent.vue"
 import Button from "@/components/ui/Button.vue"
 import Input from "@/components/ui/Input.vue"
+import Select from "@/components/ui/Select.vue"
 import Skeleton from "@/components/ui/Skeleton.vue"
 import AlertDialog from "@/components/ui/AlertDialog.vue"
 import TimeAgo from "@/components/common/TimeAgo.vue"
@@ -13,33 +14,109 @@ import StatusBadge from "@/components/common/StatusBadge.vue"
 import EmptyState from "@/components/common/EmptyState.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
 import Pagination from "@/components/common/Pagination.vue"
-import { Search, Key, Eye, AlertTriangle, User } from "lucide-vue-next"
+import { Search, Key, Eye, AlertTriangle, User, Filter, ArrowUpDown } from "lucide-vue-next"
 import type { Session } from "@/types/api"
 
-const page = ref(1)
+// Pagination state
 const pageSize = ref(20)
+const pageToken = ref<string | undefined>()
+const prevTokens = ref<string[]>([])
+
+// Filter & sort state
 const searchQuery = ref("")
+const activeFilter = ref("active")
+const sortField = ref<"authenticated_at" | "expires_at">("authenticated_at")
+const sortDir = ref<"asc" | "desc">("desc")
+
+// Revoke dialog state
 const revokeDialogOpen = ref(false)
 const sessionToRevoke = ref<Session | null>(null)
 
-const { data: sessions, isLoading, isError, error, refetch } = useSessions()
+// API params — reactive, maps activeFilter to the `active` boolean param
+const apiParams = computed(() => ({
+  page_size: pageSize.value,
+  page_token: pageToken.value,
+  active: activeFilter.value === "all" ? undefined : activeFilter.value === "active",
+}))
 
+const { data: result, isLoading, isError, error, refetch } = useSessions(apiParams)
 const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession()
 
-const filteredSessions = computed(() => {
-  if (!sessions.value) return []
-  if (!searchQuery.value) return sessions.value
-  const query = searchQuery.value.toLowerCase()
-  return sessions.value.filter((session) => {
-    const identity = session.identity
-    const traits = (identity?.traits || {}) as Record<string, string>
-    return (
-      session.id.toLowerCase().includes(query) ||
-      identity?.id?.toLowerCase().includes(query) ||
-      (traits.email && traits.email.toLowerCase().includes(query))
-    )
-  })
+const activeOptions = [
+  { value: "all", label: "All sessions" },
+  { value: "active", label: "Active" },
+  { value: "inactive", label: "Inactive" },
+]
+
+const sortOptions = [
+  { value: "authenticated_at:desc", label: "Newest auth" },
+  { value: "authenticated_at:asc", label: "Oldest auth" },
+  { value: "expires_at:asc", label: "Expires soonest" },
+  { value: "expires_at:desc", label: "Expires latest" },
+]
+
+const sortValue = computed({
+  get: () => `${sortField.value}:${sortDir.value}`,
+  set: (val: string) => {
+    const [field, dir] = val.split(":") as ["authenticated_at" | "expires_at", "asc" | "desc"]
+    sortField.value = field
+    sortDir.value = dir
+  },
 })
+
+// Client-side pipeline: search → sort on current page data
+const processedSessions = computed(() => {
+  if (!result.value) return []
+  let items = [...result.value.data]
+
+  // Client-side text search
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    items = items.filter((session) => {
+      const identity = session.identity
+      const traits = (identity?.traits || {}) as Record<string, string>
+      return (
+        session.id.toLowerCase().includes(query) ||
+        identity?.id?.toLowerCase().includes(query) ||
+        (traits.email && traits.email.toLowerCase().includes(query))
+      )
+    })
+  }
+
+  // Sort
+  items.sort((a, b) => {
+    const aVal = new Date(a[sortField.value] || 0).getTime()
+    const bVal = new Date(b[sortField.value] || 0).getTime()
+    return sortDir.value === "asc" ? aVal - bVal : bVal - aVal
+  })
+
+  return items
+})
+
+// Pagination helpers
+function resetPagination() {
+  pageToken.value = undefined
+  prevTokens.value = []
+}
+
+function goNext() {
+  if (!result.value?.pagination.nextToken) return
+  prevTokens.value = [...prevTokens.value, pageToken.value ?? ""]
+  pageToken.value = result.value.pagination.nextToken
+}
+
+function goPrev() {
+  if (!prevTokens.value.length) return
+  const prev = prevTokens.value[prevTokens.value.length - 1]
+  prevTokens.value = prevTokens.value.slice(0, -1)
+  pageToken.value = prev || undefined
+}
+
+const hasNext = computed(() => !!result.value?.pagination.nextToken)
+const hasPrev = computed(() => prevTokens.value.length > 0)
+
+// Reset pagination when filter changes
+watch(activeFilter, () => resetPagination())
 
 function getSessionUser(session: Session): string {
   const identity = session.identity
@@ -73,16 +150,40 @@ function handleRevoke() {
       <p class="mt-1 text-sm text-text-muted">View and manage active user sessions</p>
     </div>
 
-    <!-- Search -->
+    <!-- Search and filters -->
     <Card>
       <CardContent class="p-4">
-        <div class="relative">
-          <Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
-          <Input
-            v-model="searchQuery"
-            placeholder="Search by session ID, user email, or identity ID..."
-            class="pl-10"
-          />
+        <div class="flex flex-col gap-4">
+          <!-- Search -->
+          <div class="relative">
+            <Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+            <Input
+              v-model="searchQuery"
+              placeholder="Search by session ID, user email, or identity ID..."
+              class="pl-10"
+            />
+          </div>
+          <!-- Filters row -->
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div class="flex items-center gap-2 sm:w-44">
+              <Filter class="h-4 w-4 flex-shrink-0 text-text-muted" />
+              <Select
+                v-model="activeFilter"
+                :options="activeOptions"
+                placeholder="All sessions"
+                class="flex-1"
+              />
+            </div>
+            <div class="flex items-center gap-2 sm:ml-auto sm:w-48">
+              <ArrowUpDown class="h-4 w-4 flex-shrink-0 text-text-muted" />
+              <Select
+                v-model="sortValue"
+                :options="sortOptions"
+                placeholder="Sort by"
+                class="flex-1"
+              />
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -107,10 +208,12 @@ function handleRevoke() {
 
         <!-- Empty state -->
         <EmptyState
-          v-else-if="!filteredSessions?.length"
+          v-else-if="!processedSessions?.length"
           title="No sessions found"
           :description="
-            searchQuery ? 'Try adjusting your search query' : 'There are no active sessions'
+            searchQuery || activeFilter !== 'all'
+              ? 'Try adjusting your search or filters'
+              : 'There are no sessions'
           "
         >
           <template #icon>
@@ -121,7 +224,7 @@ function handleRevoke() {
         <!-- Session list -->
         <div v-else class="divide-y divide-border-subtle">
           <div
-            v-for="session in filteredSessions"
+            v-for="session in processedSessions"
             :key="session.id"
             class="flex items-center justify-between p-4 transition-colors hover:bg-surface-raised"
           >
@@ -184,11 +287,14 @@ function handleRevoke() {
         </div>
 
         <!-- Pagination -->
-        <div v-if="filteredSessions?.length" class="border-t border-border-subtle p-4">
+        <div v-if="processedSessions?.length" class="border-t border-border-subtle p-4">
           <Pagination
-            v-model:page="page"
+            :has-next="hasNext"
+            :has-prev="hasPrev"
             :page-size="pageSize"
-            :has-more="sessions?.length === pageSize"
+            :item-count="processedSessions.length"
+            @next="goNext"
+            @prev="goPrev"
           />
         </div>
       </CardContent>

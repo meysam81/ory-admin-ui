@@ -1,6 +1,8 @@
 import { defineStore } from "pinia"
 import { ref, computed } from "vue"
+import { useQueryClient } from "@tanstack/vue-query"
 import { getRuntimeConfig } from "@/config/loader"
+import { resetApiClient, resetPublicApiClient } from "@/api/client"
 
 const HARDCODED_FALLBACK = "http://localhost:4434"
 const BUILD_TIME_DEFAULT = import.meta.env.VITE_DEFAULT_API_ENDPOINT || HARDCODED_FALLBACK
@@ -40,26 +42,43 @@ export const useSettingsStore = defineStore("settings", () => {
   const publicUserOverride = localStorage.getItem("publicApiEndpoint")
   const publicApiEndpoint = ref(publicUserOverride || getDefaultPublicEndpoint())
 
+  function invalidateAllQueries() {
+    try {
+      const queryClient = useQueryClient()
+      queryClient.invalidateQueries()
+    } catch {
+      // QueryClient may not be available during initial setup
+    }
+  }
+
   function setApiEndpoint(endpoint: string) {
     const normalized = endpoint.replace(/\/+$/, "")
     apiEndpoint.value = normalized
     localStorage.setItem("apiEndpoint", normalized)
+    resetApiClient()
+    invalidateAllQueries()
   }
 
   function resetApiEndpoint() {
     apiEndpoint.value = getDefaultEndpoint()
     localStorage.removeItem("apiEndpoint")
+    resetApiClient()
+    invalidateAllQueries()
   }
 
   function setPublicApiEndpoint(endpoint: string) {
     const normalized = endpoint.replace(/\/+$/, "")
     publicApiEndpoint.value = normalized
     localStorage.setItem("publicApiEndpoint", normalized)
+    resetPublicApiClient()
+    invalidateAllQueries()
   }
 
   function resetPublicApiEndpoint() {
     publicApiEndpoint.value = getDefaultPublicEndpoint()
     localStorage.removeItem("publicApiEndpoint")
+    resetPublicApiClient()
+    invalidateAllQueries()
   }
 
   const isConfigured = computed(() => apiEndpoint.value.length > 0)

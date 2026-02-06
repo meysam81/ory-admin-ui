@@ -1,4 +1,5 @@
 import { getApiClient } from "./client"
+import { parseLinkHeader } from "./pagination"
 import type {
   Identity,
   CreateIdentityBody,
@@ -6,17 +7,27 @@ import type {
   RecoveryLinkResponse,
   RecoveryCodeResponse,
   PaginationParams,
+  PaginatedResponse,
   Session,
 } from "@/types/api"
 
 export const identitiesApi = {
-  list: async (params?: PaginationParams & { credentials_identifier?: string }) => {
+  list: async (
+    params?: PaginationParams & { credentials_identifier?: string }
+  ): Promise<PaginatedResponse<Identity>> => {
     const client = getApiClient()
-    return client
-      .get("admin/identities", {
-        searchParams: params as Record<string, string | number>,
-      })
-      .json<Identity[]>()
+    const searchParams = new URLSearchParams()
+    if (params?.page_size) searchParams.set("page_size", String(params.page_size))
+    if (params?.page_token) searchParams.set("page_token", params.page_token)
+    if (params?.credentials_identifier)
+      searchParams.set("credentials_identifier", params.credentials_identifier)
+
+    const response = await client.get("admin/identities", {
+      searchParams: searchParams.toString() ? searchParams : undefined,
+    })
+    const data = await response.json<Identity[]>()
+    const pagination = parseLinkHeader(response.headers.get("link"))
+    return { data, pagination }
   },
 
   get: async (id: string, includeCredentials?: string[]) => {

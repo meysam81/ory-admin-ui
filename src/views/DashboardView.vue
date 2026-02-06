@@ -40,10 +40,14 @@ const {
 const { isError: healthError } = useHealthAlive()
 const { data: version } = useVersion()
 
+const currentVersion = computed(() =>
+  version.value?.version ? version.value.version.replace(/^v/, "") : null
+)
+
 const stats = computed(() => [
   {
     name: "Identities",
-    value: identities.value?.length ?? 0,
+    value: identities.value?.data?.length ?? 0,
     icon: Users,
     href: "/identities",
     color: "text-accent",
@@ -51,7 +55,7 @@ const stats = computed(() => [
   },
   {
     name: "Active Sessions",
-    value: sessions.value?.length ?? 0,
+    value: sessions.value?.data?.length ?? 0,
     icon: Key,
     href: "/sessions",
     color: "text-success",
@@ -88,7 +92,7 @@ function getIdentityName(identity: any): string {
       <h1 class="text-2xl font-semibold text-text-primary">Dashboard</h1>
       <p class="mt-1 text-sm text-text-muted">
         Overview of your Ory Kratos instance
-        <span v-if="version?.version" class="text-text-secondary"> (v{{ version.version }}) </span>
+        <span v-if="currentVersion" class="text-text-secondary"> (v{{ currentVersion }}) </span>
       </p>
     </div>
 
@@ -137,9 +141,9 @@ function getIdentityName(identity: any): string {
             title="Failed to load identities"
             @retry="refetchIdentities"
           />
-          <div v-else-if="identities?.length" class="space-y-2">
+          <div v-else-if="identities?.data?.length" class="space-y-2">
             <RouterLink
-              v-for="identity in identities"
+              v-for="identity in identities.data"
               :key="identity.id"
               :to="`/identities/${identity.id}`"
               class="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-surface-raised"
@@ -198,9 +202,9 @@ function getIdentityName(identity: any): string {
             title="Failed to load sessions"
             @retry="refetchSessions"
           />
-          <div v-else-if="sessions?.length" class="space-y-2">
+          <div v-else-if="sessions?.data?.length" class="space-y-2">
             <RouterLink
-              v-for="session in sessions"
+              v-for="session in sessions.data"
               :key="session.id"
               :to="`/sessions/${session.id}`"
               class="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-surface-raised"
