@@ -1,11 +1,11 @@
 # Kratos Admin
 
-[![GitHub Stars](https://img.shields.io/github/stars/meysam81/kratos-admin)](https://github.com/meysam81/kratos-admin)
-[![Docker Pulls](https://img.shields.io/docker/pulls/meysam81/kratos-admin)](https://hub.docker.com/r/meysam81/kratos-admin)
-[![Docker Image Size](https://img.shields.io/docker/image-size/meysam81/kratos-admin)](https://hub.docker.com/r/meysam81/kratos-admin)
-[![GitHub last commit](https://img.shields.io/github/last-commit/meysam81/kratos-admin)](https://github.com/meysam81/kratos-admin/commits/main/)
+[![GitHub Repo stars](https://img.shields.io/github/stars/licenseware/ory-admin-ui?style=flat)](https://github.com/licenseware/ory-admin-ui)
+[![Docker Pulls](https://img.shields.io/docker/pulls/licenseware/ory-admin-ui)](https://hub.docker.com/r/licenseware/ory-admin-ui)
+[![GitHub Release](https://img.shields.io/github/v/release/licenseware/ory-admin-ui)](https://github.com/licenseware/ory-admin-ui/releases)
+[![Docker Image Size](https://img.shields.io/docker/image-size/licenseware/ory-admin-ui)](https://hub.docker.com/r/licenseware/ory-admin-ui)
+[![GitHub last commit](https://img.shields.io/github/last-commit/licenseware/ory-admin-ui)](https://github.com/licenseware/ory-admin-ui/commits/main/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/meysam81/kratos-admin/main.svg)](https://results.pre-commit.ci/latest/github/meysam81/kratos-admin/main)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 [![Powered by Ory](https://img.shields.io/badge/powered%20by-ory-blue)](https://www.ory.sh/)
 
@@ -16,7 +16,7 @@ Admin UI for [Ory Kratos](https://www.ory.sh/docs/kratos). Manage identities, se
 ## Quick Start
 
 ```bash
-docker run -p 8080:8080 meysam81/kratos-admin
+docker run -p 8080:8080 licenseware/ory-admin-ui
 ```
 
 Open http://localhost:8080, configure your Kratos endpoint in the Settings tab.
@@ -30,7 +30,7 @@ cat > config.json <<EOF
   "publicApiEndpoint": "https://kratos-public.example.com"
 }
 EOF
-docker run -p 8080:8080 -v ./config.json:/public/config.json:ro meysam81/kratos-admin
+docker run -p 8080:8080 -v ./config.json:/public/config.json:ro licenseware/ory-admin-ui
 ```
 
 **NOTE**: You must ensure the CORS is setup corrrectly, i.e., by putting the
@@ -77,7 +77,7 @@ Mount a `config.json` file at runtime:
 ```bash
 docker run -p 8080:8080 \
   -v ./config.json:/public/config.json:ro \
-  meysam81/kratos-admin
+  licenseware/ory-admin-ui
 ```
 
 **Kubernetes:**
@@ -86,7 +86,7 @@ docker run -p 8080:8080 \
 spec:
   containers:
     - name: kratos-admin
-      image: meysam81/kratos-admin:latest
+      image: licenseware/ory-admin-ui:latest
       volumeMounts:
         - name: config
           mountPath: /public/config.json
