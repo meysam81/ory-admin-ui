@@ -18,16 +18,20 @@ import JsonViewer from "@/components/common/JsonViewer.vue"
 import { Search, Mail, Eye, Filter } from "lucide-vue-next"
 import type { Message } from "@/types/api"
 
+const STATUS_ALL = "all" as const
+type MessageStatus = "queued" | "sent" | "processing" | "abandoned"
+type StatusFilterValue = typeof STATUS_ALL | MessageStatus
+
 const pageSize = ref(20)
 const searchQuery = ref("")
-const statusFilter = ref<string>("all")
+const statusFilter = ref<StatusFilterValue>(STATUS_ALL)
 const selectedMessage = ref<Message | null>(null)
 const detailDialogOpen = ref(false)
 
 const { data: messages, isLoading, isError, error, refetch } = useCourierMessages()
 
 const statusOptions = [
-  { value: "all", label: "All statuses" },
+  { value: STATUS_ALL, label: "All statuses" },
   { value: "queued", label: "Queued" },
   { value: "sent", label: "Sent" },
   { value: "processing", label: "Processing" },
@@ -38,7 +42,7 @@ const filteredMessages = computed(() => {
   if (!messages.value) return []
   let result = messages.value
 
-  if (statusFilter.value !== "all") {
+  if (statusFilter.value !== STATUS_ALL) {
     result = result.filter((m) => m.status === statusFilter.value)
   }
 
