@@ -20,18 +20,17 @@ import type { Message } from "@/types/api"
 
 const pageSize = ref(20)
 const searchQuery = ref("")
-const statusFilter = ref<string>("")
+const statusFilter = ref<string>("all")
 const selectedMessage = ref<Message | null>(null)
 const detailDialogOpen = ref(false)
 
 const { data: messages, isLoading, isError, error, refetch } = useCourierMessages()
 
 const statusOptions = [
-  { value: "", label: "All statuses" },
+  { value: "all", label: "All statuses" },
   { value: "queued", label: "Queued" },
   { value: "sent", label: "Sent" },
-  { value: "delivered", label: "Delivered" },
-  { value: "failed", label: "Failed" },
+  { value: "processing", label: "Processing" },
   { value: "abandoned", label: "Abandoned" },
 ]
 
@@ -39,7 +38,7 @@ const filteredMessages = computed(() => {
   if (!messages.value) return []
   let result = messages.value
 
-  if (statusFilter.value) {
+  if (statusFilter.value !== "all") {
     result = result.filter((m) => m.status === statusFilter.value)
   }
 

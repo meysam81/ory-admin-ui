@@ -8,11 +8,12 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-accent text-zinc-950 hover:bg-accent-hover active:scale-[0.98] shadow-sm",
+        default:
+          "bg-accent text-accent-foreground hover:bg-accent-hover active:scale-[0.98] shadow-sm",
         destructive:
-          "bg-destructive text-white hover:bg-destructive/90 active:scale-[0.98] shadow-sm",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:scale-[0.98] shadow-sm",
         outline:
-          "border border-border bg-transparent hover:bg-surface-raised hover:border-zinc-500",
+          "border border-border bg-transparent hover:bg-surface-raised hover:border-text-muted",
         secondary: "bg-surface-raised text-text-primary hover:bg-surface-overlay",
         ghost: "hover:bg-surface-raised hover:text-text-primary",
         link: "text-accent underline-offset-4 hover:underline",

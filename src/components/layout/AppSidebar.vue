@@ -49,7 +49,9 @@ const sidebarWidth = computed(() => (uiStore.sidebarCollapsed ? "w-16" : "w-64")
       <!-- Logo -->
       <div class="flex h-14 items-center border-b border-border-subtle px-4">
         <RouterLink to="/" class="flex items-center gap-2">
-          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-zinc-950">
+          <div
+            class="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+          >
             <span class="text-lg font-bold">O</span>
           </div>
           <span

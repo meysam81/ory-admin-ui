@@ -8,7 +8,7 @@ themeStore.initTheme()
 </script>
 
 <template>
-  <div :class="{ light: !themeStore.isDark }">
+  <div>
     <RouterView />
     <Toaster
       position="bottom-right"

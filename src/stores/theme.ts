@@ -26,6 +26,11 @@ export const useThemeStore = defineStore("theme", () => {
     } else {
       document.documentElement.classList.add("light")
     }
+
+    const meta = document.querySelector('meta[name="theme-color"]')
+    if (meta) {
+      meta.setAttribute("content", isDark.value ? "#09090b" : "#fafaf9")
+    }
   }
 
   function setTheme(newTheme: ThemeMode) {

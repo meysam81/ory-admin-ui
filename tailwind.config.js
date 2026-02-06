@@ -6,28 +6,37 @@ export default {
     extend: {
       colors: {
         surface: {
-          DEFAULT: "#09090b",
-          raised: "#18181b",
-          overlay: "#27272a",
+          DEFAULT: "hsl(var(--surface) / <alpha-value>)",
+          raised: "hsl(var(--surface-raised) / <alpha-value>)",
+          overlay: "hsl(var(--surface-overlay) / <alpha-value>)",
         },
         border: {
-          subtle: "#27272a",
-          DEFAULT: "#3f3f46",
-          focus: "#06b6d4",
+          subtle: "hsl(var(--border-subtle) / <alpha-value>)",
+          DEFAULT: "hsl(var(--border-default) / <alpha-value>)",
+          focus: "hsl(var(--border-focus) / <alpha-value>)",
         },
         accent: {
-          DEFAULT: "#06b6d4",
-          hover: "#22d3ee",
-          muted: "#164e63",
+          DEFAULT: "hsl(var(--accent) / <alpha-value>)",
+          hover: "hsl(var(--accent-hover) / <alpha-value>)",
+          muted: "hsl(var(--accent-muted) / <alpha-value>)",
+          foreground: "hsl(var(--accent-foreground) / <alpha-value>)",
         },
-        success: "#10b981",
-        warning: "#f59e0b",
-        destructive: "#f43f5e",
+        success: "hsl(var(--success) / <alpha-value>)",
+        warning: "hsl(var(--warning) / <alpha-value>)",
+        destructive: {
+          DEFAULT: "hsl(var(--destructive) / <alpha-value>)",
+          foreground: "hsl(var(--destructive-foreground) / <alpha-value>)",
+        },
         text: {
-          primary: "#fafafa",
-          secondary: "#a1a1aa",
-          muted: "#71717a",
+          primary: "hsl(var(--text-primary) / <alpha-value>)",
+          secondary: "hsl(var(--text-secondary) / <alpha-value>)",
+          muted: "hsl(var(--text-muted) / <alpha-value>)",
         },
+        syntax: {
+          boolean: "hsl(var(--syntax-boolean) / <alpha-value>)",
+          array: "hsl(var(--syntax-array) / <alpha-value>)",
+        },
+        ring: "hsl(var(--ring) / <alpha-value>)",
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],

@@ -57,7 +57,7 @@ function syntaxHighlight(json: string): string {
             cls = "text-success" // string
           }
         } else if (/true|false/.test(match)) {
-          cls = "text-purple-400" // boolean
+          cls = "text-syntax-boolean" // boolean
         } else if (/null/.test(match)) {
           cls = "text-text-muted" // null
         }

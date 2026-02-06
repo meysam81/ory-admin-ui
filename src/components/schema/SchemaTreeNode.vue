@@ -112,11 +112,11 @@ const typeColor = computed(() => {
     case "integer":
       return "text-warning"
     case "boolean":
-      return "text-purple-400"
+      return "text-syntax-boolean"
     case "object":
       return "text-accent"
     case "array":
-      return "text-pink-400"
+      return "text-syntax-array"
     default:
       return "text-text-muted"
   }
