@@ -1,0 +1,9 @@
+# syntax=docker/dockerfile:1
+FROM gcr.io/distroless/static-debian12:nonroot
+
+COPY $TARGETPLATFORM/ory-admin-ui /app/ory-admin-ui
+
+ENV PORT=8080
+EXPOSE ${PORT}
+
+ENTRYPOINT ["/app/ory-admin-ui"]

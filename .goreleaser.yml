@@ -62,77 +62,25 @@ archives:
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
 
-changelog:
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
-      - "^ci:"
-      - "^chore:"
-      - merge conflict
-      - Merge pull request
-      - Merge remote-tracking branch
-      - Merge branch
-  groups:
-    - order: 0
-      regexp: ^.*?feat(\([[:word:]]+\))??!?:.+$
-      title: Features
-    - order: 1
-      regexp: ^.*?fix(\([[:word:]]+\))??!?:.+$
-      title: Bug fixes
-    - order: 2
-      regexp: ^.*?perf(\([[:word:]]+\))??!?:.+$
-      title: Performance improvements
-    - order: 999
-      title: Others
-  sort: asc
-  use: github
-
 dist: .goreleaser-dist
-
-release:
-  draft: false
-  prerelease: auto
-  header: |
-    ## What's Changed
-
-    This release includes the following changes:
-  footer: |
-    ## Docker Images
-
-    ```bash
-    docker pull ghcr.io/meysam81/{{ .ProjectName }}:{{ .Version }}
-    ```
-
-    **Full Changelog**: https://github.com/meysam81/{{ .ProjectName }}/compare/{{ .PreviousTag }}...{{ .Tag }}
-
-binary_signs:
-  - args:
-      - sign-blob
-      - "--output-signature=${signature}"
-      - "--output-certificate=${certificate}"
-      - ${artifact}
-      - "--yes"
-    certificate: ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}.pem
-    cmd: cosign
-    output: true
-    signature: ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}.sig
 
 dockers_v2:
   - images:
-      - meysam81/{{ .ProjectName }}
-      - ghcr.io/meysam81/{{ .ProjectName }}
+      - licenseware/{{ .ProjectName }}
+      - ghcr.io/licenseware/{{ .ProjectName }}
+    dockerfile: Dockerfile.goreleaser
     tags:
-      - "v{{ .Version }}"
-      - "v{{ .Major }}"
-      - "v{{ .Major }}.{{ .Minor }}"
-      - "v{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
+      - "{{ if not .IsSnapshot }}v{{ .Version }}{{ end }}"
+      - "{{ if not .IsSnapshot }}v{{ .Major }}{{ end }}"
+      - "{{ if not .IsSnapshot }}v{{ .Major }}.{{ .Minor }}{{ end }}"
+      - "{{ if not .IsSnapshot }}v{{ .Major }}.{{ .Minor }}.{{ .Patch }}{{ end }}"
+      - "{{ .FullCommit }}"
       - "{{ if .IsNightly }}latest{{ end }}"
     extra_files:
       - ./
     labels:
       "org.opencontainers.image.created": "{{.Date}}"
-      "org.opencontainers.image.description": "🛡️ A lightweight, self-hosted DMARC report parser with a beautiful Vue.js dashboard. Single-binary deployment with IMAP integration, SQLite storage, and RFC 7489 compliance. Built with Go and Vue 3 - no external dependencies required."
+      "org.opencontainers.image.description": "Ory Admin UI - The admin user interface for Ory services"
       "org.opencontainers.image.name": "{{.ProjectName}}"
       "org.opencontainers.image.revision": "{{.FullCommit}}"
       "org.opencontainers.image.source": "{{.GitURL}}"
@@ -140,13 +88,7 @@ dockers_v2:
     platforms:
       - linux/amd64
       - linux/arm64
-    disable: "{{ .IsSnapshot }}"
     sbom: "{{ not .Env.DISABLE_SBOM }}"
-    build_args:
-      VERSION: "{{.Version}}"
-      COMMIT: "{{.FullCommit}}"
-      DATE: "{{.Date}}"
-      BUILT_BY: goreleaser
 
 docker_signs:
   - id: default
@@ -163,16 +105,6 @@ docker_digest:
 
 report_sizes: true
 
-# sboms:
-#   - artifacts: archive
-#     documents:
-#       - ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}_sbom.spdx.json
-#     id: archive
-#   - artifacts: source
-#     documents:
-#       - ${artifact}_{{- tolower .Os }}_{{- if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}_src_sbom.spdx.json
-#     id: source
-
 milestones:
   - close: true
     fail_on_error: false
@@ -187,13 +119,13 @@ checksum:
 
 homebrew_casks:
   - commit_msg_template: Brew formula update for {{ .ProjectName }} version {{ .Tag }}
-    description: Single-binary, zero-dependency DMARC parser with a modern web dashboard.
+    description: The admin user interface for Ory services
     homepage: https://github.com/licenseware/ory-admin-ui
     license: Apache-2.0
     name: ory-admin-ui
     repository:
       name: homebrew-tap
-      owner: meysam81
+      owner: licenseware
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     hooks:
       post:

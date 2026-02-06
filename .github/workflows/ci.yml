@@ -64,30 +64,38 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v9
 
-  build-pr:
-    if: github.event_name == 'pull_request'
+  build-dev:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
       id-token: write
     steps:
-      - name: Build docker
-        uses: meysam81/build-docker@main
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Install syft
+        uses: anchore/sbom-action/download-syft@v0
+      - name: Setup Cosign CLI
+        uses: sigstore/cosign-installer@v3
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
         with:
-          build-args: |
-            VERSION=pr-${{ github.event.pull_request.number }}-${{ github.sha }}
-            COMMIT=${{ github.sha }}
-            DATE=${{ github.event.head_commit.timestamp }}
-            BUILT_BY=github-actions
-          cosign: true
-          image-name: ghcr.io/${{ github.repository }}
-          image-extra-tags: |
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:pr-${{ github.event.pull_request.number }}
-          kubescape: true
+          bun-version: latest
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean --snapshot
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
-  build-dev:
+  build-docker:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
