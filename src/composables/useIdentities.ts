@@ -1,17 +1,63 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query"
-import { computed, type Ref } from "vue"
+import { computed, ref, type Ref } from "vue"
 import { identitiesApi } from "@/api/identities"
-import type { CreateIdentityBody, UpdateIdentityBody, PaginationParams } from "@/types/api"
+import type { CreateIdentityBody, UpdateIdentityBody, IdentitySearchParams } from "@/types/api"
 import { toast } from "vue-sonner"
 
-export function useIdentities(
-  params?: Ref<PaginationParams & { credentials_identifier?: string }>
-) {
+export function useIdentities(params?: Ref<IdentitySearchParams>) {
   return useQuery({
     queryKey: ["identities", params],
     queryFn: () => identitiesApi.list(params?.value),
     staleTime: 30_000,
   })
+}
+
+export function useFuzzyIdentitySearch(query: Ref<string>, pageSize: Ref<number>) {
+  const enabled = ref(false)
+
+  const result = useQuery({
+    queryKey: ["identities-fuzzy", query, pageSize],
+    queryFn: () =>
+      identitiesApi.list({
+        preview_credentials_identifier_similar: query.value,
+        page_size: pageSize.value,
+      }),
+    enabled: computed(() => enabled.value && !!query.value),
+    staleTime: 30_000,
+  })
+
+  function trigger() {
+    enabled.value = true
+  }
+  function reset() {
+    enabled.value = false
+  }
+
+  return { ...result, enabled, trigger, reset }
+}
+
+export function useIdentityByIdSearch(id: Ref<string>, pageSize: Ref<number>) {
+  const enabled = ref(false)
+
+  const result = useQuery({
+    queryKey: ["identities-by-id", id, pageSize],
+    queryFn: () =>
+      identitiesApi.list({
+        ids: [id.value],
+        page_size: pageSize.value,
+      }),
+    enabled: computed(() => enabled.value && !!id.value),
+    staleTime: 30_000,
+  })
+
+  function trigger() {
+    enabled.value = true
+  }
+  function reset() {
+    enabled.value = false
+  }
+
+  return { ...result, enabled, trigger, reset }
 }
 
 export function useIdentity(id: Ref<string>, includeCredentials?: string[]) {

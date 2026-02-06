@@ -7,20 +7,29 @@ import type {
   RecoveryLinkResponse,
   RecoveryCodeResponse,
   PaginationParams,
+  IdentitySearchParams,
   PaginatedResponse,
   Session,
 } from "@/types/api"
 
 export const identitiesApi = {
-  list: async (
-    params?: PaginationParams & { credentials_identifier?: string }
-  ): Promise<PaginatedResponse<Identity>> => {
+  list: async (params?: IdentitySearchParams): Promise<PaginatedResponse<Identity>> => {
     const client = getApiClient()
     const searchParams = new URLSearchParams()
     if (params?.page_size) searchParams.set("page_size", String(params.page_size))
     if (params?.page_token) searchParams.set("page_token", params.page_token)
     if (params?.credentials_identifier)
       searchParams.set("credentials_identifier", params.credentials_identifier)
+    if (params?.preview_credentials_identifier_similar)
+      searchParams.set(
+        "preview_credentials_identifier_similar",
+        params.preview_credentials_identifier_similar
+      )
+    if (params?.ids) {
+      for (const id of params.ids) {
+        searchParams.append("ids", id)
+      }
+    }
 
     const response = await client.get("admin/identities", {
       searchParams: searchParams.toString() ? searchParams : undefined,

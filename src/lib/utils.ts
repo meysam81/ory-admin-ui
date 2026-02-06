@@ -35,3 +35,23 @@ export function truncateId(id: string, length = 8): string {
 export function copyToClipboard(text: string): Promise<void> {
   return navigator.clipboard.writeText(text)
 }
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+export function isUuid(value: string): boolean {
+  return UUID_RE.test(value.trim())
+}
+
+export function matchesIdentitySearch(
+  identity: { id: string; traits: Record<string, unknown> },
+  query: string
+): boolean {
+  const q = query.toLowerCase()
+  if (identity.id.toLowerCase().includes(q)) return true
+  const traits = identity.traits ?? {}
+  for (const key of ["email", "username", "name"] as const) {
+    const val = traits[key]
+    if (typeof val === "string" && val.toLowerCase().includes(q)) return true
+  }
+  return false
+}

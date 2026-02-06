@@ -151,6 +151,12 @@ export interface PaginationParams {
   page_token?: string
 }
 
+export interface IdentitySearchParams extends PaginationParams {
+  credentials_identifier?: string
+  preview_credentials_identifier_similar?: string
+  ids?: string[]
+}
+
 export interface PaginationMeta {
   nextToken?: string
   prevToken?: string
