@@ -26,8 +26,8 @@ Open http://localhost:8080, configure your Kratos endpoint in the Settings tab.
 ```bash
 cat > config.json <<EOF
 {
-  "apiEndpoint": "https://kratos-admin.example.com",
-  "publicApiEndpoint": "https://kratos-public.example.com"
+  "kratosAdminBaseURL": "https://kratos-admin.example.com",
+  "kratosPublicBaseURL": "https://kratos-public.example.com"
 }
 EOF
 docker run -p 8080:8080 -v ./config.json:/public/config.json:ro licenseware/ory-admin-ui
@@ -52,10 +52,10 @@ The API endpoints can be configured in three ways (in order of priority):
 
 **Two endpoints are available:**
 
-| Endpoint            | Default Port | Purpose                                 |
-| ------------------- | ------------ | --------------------------------------- |
-| `apiEndpoint`       | 4434         | Admin API - identity CRUD, session mgmt |
-| `publicApiEndpoint` | 4433         | Public API - identity schemas           |
+| Endpoint              | Default Port | Purpose                                 |
+| --------------------- | ------------ | --------------------------------------- |
+| `kratosAdminBaseURL`  | 4434         | Admin API - identity CRUD, session mgmt |
+| `kratosPublicBaseURL` | 4433         | Public API - identity schemas           |
 
 ### 1. User Override (Settings UI)
 
@@ -67,8 +67,8 @@ Mount a `config.json` file at runtime:
 
 ```json
 {
-  "apiEndpoint": "https://kratos-admin.example.com",
-  "publicApiEndpoint": "https://kratos-public.example.com"
+  "kratosAdminBaseURL": "https://kratos-admin.example.com",
+  "kratosPublicBaseURL": "https://kratos-public.example.com"
 }
 ```
 

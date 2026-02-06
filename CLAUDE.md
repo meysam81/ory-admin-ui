@@ -229,7 +229,7 @@ HTTP requests use `ky` with centralized configuration:
 export function createApiClient() {
   const settings = useSettingsStore()
   return ky.create({
-    prefixUrl: settings.apiEndpoint,
+    prefixUrl: settings.kratosAdminBaseURL,
     timeout: 30000,
     hooks: {
       /* logging hooks */

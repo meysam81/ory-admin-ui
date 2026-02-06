@@ -34,22 +34,22 @@ const { isError: healthError, refetch: checkHealth } = useHealthAlive()
 const { data: version } = useVersion()
 
 // Local form state
-const apiEndpoint = ref(settingsStore.apiEndpoint)
-const publicApiEndpoint = ref(settingsStore.publicApiEndpoint)
+const kratosAdminBaseURL = ref(settingsStore.kratosAdminBaseURL)
+const kratosPublicBaseURL = ref(settingsStore.kratosPublicBaseURL)
 const theme = ref(themeStore.theme)
 
 // Track if settings have changed
 const hasChanges = computed(() => {
   return (
-    apiEndpoint.value !== settingsStore.apiEndpoint ||
-    publicApiEndpoint.value !== settingsStore.publicApiEndpoint ||
+    kratosAdminBaseURL.value !== settingsStore.kratosAdminBaseURL ||
+    kratosPublicBaseURL.value !== settingsStore.kratosPublicBaseURL ||
     theme.value !== themeStore.theme
   )
 })
 
 function saveSettings() {
-  settingsStore.setApiEndpoint(apiEndpoint.value)
-  settingsStore.setPublicApiEndpoint(publicApiEndpoint.value)
+  settingsStore.setKratosAdminBaseURL(kratosAdminBaseURL.value)
+  settingsStore.setKratosPublicBaseURL(kratosPublicBaseURL.value)
   themeStore.setTheme(theme.value as "light" | "dark" | "system")
   toast.success("Settings saved successfully")
   checkHealth()
@@ -58,8 +58,8 @@ function saveSettings() {
 function resetSettings() {
   settingsStore.resetSettings()
   themeStore.setTheme("dark")
-  apiEndpoint.value = settingsStore.apiEndpoint
-  publicApiEndpoint.value = settingsStore.publicApiEndpoint
+  kratosAdminBaseURL.value = settingsStore.kratosAdminBaseURL
+  kratosPublicBaseURL.value = settingsStore.kratosPublicBaseURL
   theme.value = "dark"
   toast.info("Settings reset to defaults")
   checkHealth()
@@ -68,7 +68,7 @@ function resetSettings() {
 // Validate API endpoint URL
 const isValidUrl = computed(() => {
   try {
-    new URL(apiEndpoint.value)
+    new URL(kratosAdminBaseURL.value)
     return true
   } catch {
     return false
@@ -78,7 +78,7 @@ const isValidUrl = computed(() => {
 // Validate public API endpoint URL
 const isValidPublicUrl = computed(() => {
   try {
-    new URL(publicApiEndpoint.value)
+    new URL(kratosPublicBaseURL.value)
     return true
   } catch {
     return false
@@ -94,7 +94,7 @@ async function testConnection() {
   }
 
   isTesting.value = true
-  settingsStore.setApiEndpoint(apiEndpoint.value)
+  settingsStore.setKratosAdminBaseURL(kratosAdminBaseURL.value)
 
   await new Promise((resolve) => setTimeout(resolve, 500))
   await checkHealth()
@@ -136,16 +136,16 @@ async function testConnection() {
           <div class="flex gap-2">
             <Input
               id="api-endpoint"
-              v-model="apiEndpoint"
+              v-model="kratosAdminBaseURL"
               type="url"
               :placeholder="settingsStore.defaultEndpoint"
-              :class="!isValidUrl && apiEndpoint ? 'border-destructive' : ''"
+              :class="!isValidUrl && kratosAdminBaseURL ? 'border-destructive' : ''"
             />
             <Button variant="outline" @click="testConnection" :disabled="!isValidUrl || isTesting">
               {{ isTesting ? "Testing..." : "Test" }}
             </Button>
           </div>
-          <p v-if="!isValidUrl && apiEndpoint" class="text-xs text-destructive">
+          <p v-if="!isValidUrl && kratosAdminBaseURL" class="text-xs text-destructive">
             Please enter a valid URL
           </p>
           <p class="text-xs text-text-muted">
@@ -162,12 +162,12 @@ async function testConnection() {
           <Label for="public-api-endpoint">Kratos Public API Endpoint</Label>
           <Input
             id="public-api-endpoint"
-            v-model="publicApiEndpoint"
+            v-model="kratosPublicBaseURL"
             type="url"
             :placeholder="settingsStore.defaultPublicEndpoint"
-            :class="!isValidPublicUrl && publicApiEndpoint ? 'border-destructive' : ''"
+            :class="!isValidPublicUrl && kratosPublicBaseURL ? 'border-destructive' : ''"
           />
-          <p v-if="!isValidPublicUrl && publicApiEndpoint" class="text-xs text-destructive">
+          <p v-if="!isValidPublicUrl && kratosPublicBaseURL" class="text-xs text-destructive">
             Please enter a valid URL
           </p>
           <p class="text-xs text-text-muted">

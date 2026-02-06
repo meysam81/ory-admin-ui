@@ -8,7 +8,7 @@ export function createApiClient() {
   const settings = useSettingsStore()
 
   return ky.create({
-    prefixUrl: settings.apiEndpoint,
+    prefixUrl: settings.kratosAdminBaseURL,
     timeout: 30000,
     credentials: "include",
     redirect: "follow",
@@ -51,7 +51,7 @@ export function createPublicApiClient() {
   const settings = useSettingsStore()
 
   return ky.create({
-    prefixUrl: settings.publicApiEndpoint,
+    prefixUrl: settings.kratosPublicBaseURL,
     timeout: 30000,
     credentials: "include",
     redirect: "follow",

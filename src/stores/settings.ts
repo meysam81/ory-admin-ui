@@ -19,7 +19,7 @@ const PUBLIC_BUILD_TIME_DEFAULT =
  */
 function getDefaultEndpoint(): string {
   const runtimeConfig = getRuntimeConfig()
-  return runtimeConfig?.apiEndpoint || BUILD_TIME_DEFAULT
+  return runtimeConfig?.kratosAdminBaseURL || BUILD_TIME_DEFAULT
 }
 
 /**
@@ -30,17 +30,17 @@ function getDefaultEndpoint(): string {
  */
 function getDefaultPublicEndpoint(): string {
   const runtimeConfig = getRuntimeConfig()
-  return runtimeConfig?.publicApiEndpoint || PUBLIC_BUILD_TIME_DEFAULT
+  return runtimeConfig?.kratosPublicBaseURL || PUBLIC_BUILD_TIME_DEFAULT
 }
 
 export const useSettingsStore = defineStore("settings", () => {
   // Priority: localStorage (user override) > default endpoint
-  const userOverride = localStorage.getItem("apiEndpoint")
-  const apiEndpoint = ref(userOverride || getDefaultEndpoint())
+  const userOverride = localStorage.getItem("kratosAdminBaseURL")
+  const kratosAdminBaseURL = ref(userOverride || getDefaultEndpoint())
 
   // Priority: localStorage (user override) > default public endpoint
-  const publicUserOverride = localStorage.getItem("publicApiEndpoint")
-  const publicApiEndpoint = ref(publicUserOverride || getDefaultPublicEndpoint())
+  const publicUserOverride = localStorage.getItem("kratosPublicBaseURL")
+  const kratosPublicBaseURL = ref(publicUserOverride || getDefaultPublicEndpoint())
 
   function invalidateAllQueries() {
     try {
@@ -51,50 +51,50 @@ export const useSettingsStore = defineStore("settings", () => {
     }
   }
 
-  function setApiEndpoint(endpoint: string) {
+  function setKratosAdminBaseURL(endpoint: string) {
     const normalized = endpoint.replace(/\/+$/, "")
-    apiEndpoint.value = normalized
-    localStorage.setItem("apiEndpoint", normalized)
+    kratosAdminBaseURL.value = normalized
+    localStorage.setItem("kratosAdminBaseURL", normalized)
     resetApiClient()
     invalidateAllQueries()
   }
 
-  function resetApiEndpoint() {
-    apiEndpoint.value = getDefaultEndpoint()
-    localStorage.removeItem("apiEndpoint")
+  function resetKratosAdminBaseURL() {
+    kratosAdminBaseURL.value = getDefaultEndpoint()
+    localStorage.removeItem("kratosAdminBaseURL")
     resetApiClient()
     invalidateAllQueries()
   }
 
-  function setPublicApiEndpoint(endpoint: string) {
+  function setKratosPublicBaseURL(endpoint: string) {
     const normalized = endpoint.replace(/\/+$/, "")
-    publicApiEndpoint.value = normalized
-    localStorage.setItem("publicApiEndpoint", normalized)
+    kratosPublicBaseURL.value = normalized
+    localStorage.setItem("kratosPublicBaseURL", normalized)
     resetPublicApiClient()
     invalidateAllQueries()
   }
 
-  function resetPublicApiEndpoint() {
-    publicApiEndpoint.value = getDefaultPublicEndpoint()
-    localStorage.removeItem("publicApiEndpoint")
+  function resetKratosPublicBaseURL() {
+    kratosPublicBaseURL.value = getDefaultPublicEndpoint()
+    localStorage.removeItem("kratosPublicBaseURL")
     resetPublicApiClient()
     invalidateAllQueries()
   }
 
-  const isConfigured = computed(() => apiEndpoint.value.length > 0)
+  const isConfigured = computed(() => kratosAdminBaseURL.value.length > 0)
 
   /**
    * Check if user has a custom override (different from default)
    */
   const hasUserOverride = computed(() => {
-    return localStorage.getItem("apiEndpoint") !== null
+    return localStorage.getItem("kratosAdminBaseURL") !== null
   })
 
   /**
    * Check if user has a custom public endpoint override
    */
   const hasPublicUserOverride = computed(() => {
-    return localStorage.getItem("publicApiEndpoint") !== null
+    return localStorage.getItem("kratosPublicBaseURL") !== null
   })
 
   /**
@@ -108,17 +108,17 @@ export const useSettingsStore = defineStore("settings", () => {
   const defaultPublicEndpoint = computed(() => getDefaultPublicEndpoint())
 
   function resetSettings() {
-    resetApiEndpoint()
-    resetPublicApiEndpoint()
+    resetKratosAdminBaseURL()
+    resetKratosPublicBaseURL()
   }
 
   return {
-    apiEndpoint,
-    setApiEndpoint,
-    resetApiEndpoint,
-    publicApiEndpoint,
-    setPublicApiEndpoint,
-    resetPublicApiEndpoint,
+    kratosAdminBaseURL,
+    setKratosAdminBaseURL,
+    resetKratosAdminBaseURL,
+    kratosPublicBaseURL,
+    setKratosPublicBaseURL,
+    resetKratosPublicBaseURL,
     resetSettings,
     isConfigured,
     hasUserOverride,
