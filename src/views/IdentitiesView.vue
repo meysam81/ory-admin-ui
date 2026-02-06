@@ -285,7 +285,7 @@ function handleDelete() {
                 {{ getIdentityName(identity).charAt(0).toUpperCase() }}
               </div>
               <div class="min-w-0">
-                <div class="flex items-center gap-2">
+                <div class="mb-1 flex items-center gap-2">
                   <p class="truncate text-sm font-medium text-text-primary">
                     {{ getIdentityName(identity) }}
                   </p>
