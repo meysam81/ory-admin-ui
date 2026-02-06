@@ -32,7 +32,6 @@ import {
   SearchX,
   Sparkles,
   Hash,
-  Info,
 } from "lucide-vue-next"
 import { matchesIdentitySearch, isUuid } from "@/lib/utils"
 import type { Identity, PaginatedResponse } from "@/types/api"
@@ -232,22 +231,6 @@ const displayIdentities = computed(() => {
   })
 
   return items
-})
-
-// Info banner message for non-standard tiers
-const searchInfoMessage = computed(() => {
-  switch (searchTier.value) {
-    case "client-fallback":
-      return "Showing matches from current page"
-    case "fuzzy-results":
-      return "Showing fuzzy search results (experimental)"
-    case "fuzzy-empty":
-      return "No fuzzy matches found"
-    case "id-results":
-      return "Showing result for exact ID lookup"
-    default:
-      return ""
-  }
 })
 
 // Whether tier-3 loading is in progress
