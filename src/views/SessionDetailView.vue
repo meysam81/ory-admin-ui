@@ -19,7 +19,8 @@ import StatusBadge from "@/components/common/StatusBadge.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
 import type { AuthenticationMethod } from "@/types/api"
 import ReloadButton from "@/components/common/ReloadButton.vue"
-import { ArrowLeft, AlertTriangle, Key, User, Clock, Monitor, Globe, Shield } from "lucide-vue-next"
+import BackButton from "@/components/common/BackButton.vue"
+import { AlertTriangle, Key, User, Clock, Monitor, Globe, Shield } from "lucide-vue-next"
 
 const route = useRoute()
 const router = useRouter()
@@ -57,10 +58,7 @@ function formatAuthMethod(method: AuthenticationMethod): string {
 <template>
   <div class="space-y-6">
     <!-- Back button -->
-    <Button variant="ghost" @click="router.push('/sessions')" class="-ml-2">
-      <ArrowLeft class="mr-2 h-4 w-4" />
-      Back to Sessions
-    </Button>
+    <BackButton fallback="/sessions" label="Back to Sessions" />
 
     <!-- Loading state -->
     <div v-if="isLoading" class="space-y-6">

@@ -15,9 +15,12 @@ import Select from "@/components/ui/Select.vue"
 import Skeleton from "@/components/ui/Skeleton.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
 import ReloadButton from "@/components/common/ReloadButton.vue"
-import { ArrowLeft, Save, FileJson, User } from "lucide-vue-next"
+import BackButton from "@/components/common/BackButton.vue"
+import { useBackNavigation } from "@/composables/useBackNavigation"
+import { Save, FileJson, User } from "lucide-vue-next"
 
 const router = useRouter()
+const { goBack } = useBackNavigation("/identities", "Back to Identities")
 
 const {
   data: schemas,
@@ -110,10 +113,7 @@ function generateTraitsTemplate() {
 <template>
   <div class="max-w-2xl space-y-6">
     <!-- Back button -->
-    <Button variant="ghost" @click="router.push('/identities')" class="-ml-2">
-      <ArrowLeft class="mr-2 h-4 w-4" />
-      Back to Identities
-    </Button>
+    <BackButton fallback="/identities" label="Back to Identities" />
 
     <!-- Header -->
     <div>
@@ -222,9 +222,7 @@ function generateTraitsTemplate() {
 
       <!-- Submit -->
       <div class="flex justify-end gap-4">
-        <Button type="button" variant="outline" @click="router.push('/identities')">
-          Cancel
-        </Button>
+        <Button type="button" variant="outline" @click="goBack"> Cancel </Button>
         <Button type="submit" :disabled="!selectedSchemaId || isCreating">
           <Save class="mr-2 h-4 w-4" />
           {{ isCreating ? "Creating..." : "Create Identity" }}

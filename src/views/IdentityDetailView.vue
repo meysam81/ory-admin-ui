@@ -26,8 +26,8 @@ import ErrorState from "@/components/common/ErrorState.vue"
 import EmptyState from "@/components/common/EmptyState.vue"
 import StatusBadge from "@/components/common/StatusBadge.vue"
 import ReloadButton from "@/components/common/ReloadButton.vue"
+import BackButton from "@/components/common/BackButton.vue"
 import {
-  ArrowLeft,
   Trash2,
   Key,
   Shield,
@@ -124,10 +124,7 @@ function handleRevokeSession() {
 <template>
   <div class="space-y-6">
     <!-- Back button -->
-    <Button variant="ghost" @click="router.push('/identities')" class="-ml-2">
-      <ArrowLeft class="mr-2 h-4 w-4" />
-      Back to Identities
-    </Button>
+    <BackButton fallback="/identities" label="Back to Identities" />
 
     <!-- Loading state -->
     <div v-if="isLoading" class="space-y-6">
