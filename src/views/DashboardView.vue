@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import ReloadButton from "@/components/common/ReloadButton.vue"
 import { RouterLink } from "vue-router"
 import { useIdentities } from "@/composables/useIdentities"
 import { useSessions } from "@/composables/useSessions"
 import { useCourierMessages } from "@/composables/useCourier"
 import { useHealthAlive } from "@/composables/useHealth"
+import { useMediaQuery } from "@/composables/useMediaQuery"
 import Card from "@/components/ui/Card.vue"
 import CardHeader from "@/components/ui/CardHeader.vue"
 import CardTitle from "@/components/ui/CardTitle.vue"
@@ -17,6 +18,10 @@ import ErrorState from "@/components/common/ErrorState.vue"
 import EmptyState from "@/components/common/EmptyState.vue"
 import { Users, Key, Mail, Activity, ArrowRight } from "lucide-vue-next"
 
+const dashboardParams = ref({ page_size: 10 })
+const isDesktop = useMediaQuery("(min-width: 640px)")
+const recentCount = computed(() => (isDesktop.value ? 10 : 5))
+
 const {
   data: identities,
   isLoading: identitiesLoading,
@@ -24,7 +29,7 @@ const {
   isError: identitiesError,
   error: identitiesErrorObj,
   refetch: refetchIdentities,
-} = useIdentities()
+} = useIdentities(dashboardParams)
 const {
   data: sessions,
   isLoading: sessionsLoading,
@@ -32,7 +37,7 @@ const {
   isError: sessionsError,
   error: sessionsErrorObj,
   refetch: refetchSessions,
-} = useSessions()
+} = useSessions(dashboardParams)
 const {
   data: messages,
   isLoading: messagesLoading,
@@ -40,7 +45,7 @@ const {
   isError: messagesError,
   error: messagesErrorObj,
   refetch: refetchMessages,
-} = useCourierMessages()
+} = useCourierMessages(dashboardParams)
 const { isError: healthError } = useHealthAlive()
 
 const isAnyFetching = computed(
@@ -53,13 +58,13 @@ function reloadAll() {
   refetchMessages()
 }
 const recentIdentities = computed(() => {
-  return identities.value?.data.slice(0, 10) || []
+  return identities.value?.data.slice(0, recentCount.value) || []
 })
 const recentSessions = computed(() => {
-  return sessions.value?.data.slice(0, 10) || []
+  return sessions.value?.data.slice(0, recentCount.value) || []
 })
 const recentMessages = computed(() => {
-  return messages.value?.slice(0, 10) || []
+  return messages.value?.slice(0, recentCount.value) || []
 })
 
 const stats = computed(() => [
