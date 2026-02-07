@@ -282,13 +282,27 @@ async function testConnection() {
       <CardContent class="space-y-3">
         <div class="flex justify-between border-b border-border-subtle py-2">
           <span class="text-sm text-text-muted">Admin UI Version</span>
-          <span class="font-mono text-sm text-text-primary">{{ appVersion }}</span>
+          <a
+            :href="`https://github.com/licenseware/ory-admin-ui/releases/tag/v${appVersion}`"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-mono text-sm text-accent hover:text-accent-hover"
+          >
+            {{ appVersion }}
+          </a>
         </div>
         <div class="flex justify-between border-b border-border-subtle py-2">
           <span class="text-sm text-text-muted">Kratos Version</span>
-          <span class="font-mono text-sm text-text-primary">
-            {{ version?.version || "Unknown" }}
-          </span>
+          <a
+            v-if="version?.version"
+            :href="`https://github.com/ory/kratos/releases/tag/${version.version}`"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-mono text-sm text-accent hover:text-accent-hover"
+          >
+            {{ version.version }}
+          </a>
+          <span v-else class="font-mono text-sm text-text-primary">Unknown</span>
         </div>
         <div class="flex justify-between py-2">
           <span class="text-sm text-text-muted">Documentation</span>

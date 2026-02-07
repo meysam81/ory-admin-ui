@@ -9,9 +9,24 @@ const { data: versionData } = useVersion()
   <footer class="border-t border-border-subtle px-6 py-4 text-sm text-text-muted">
     <div class="mx-auto flex max-w-screen-2xl items-center justify-between">
       <div class="flex items-center gap-2">
-        <span>Ory Admin UI v{{ appVersion }}</span>
+        <a
+          :href="`https://github.com/licenseware/ory-admin-ui/releases/tag/v${appVersion}`"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="transition-colors hover:text-text-secondary"
+        >
+          Ory Admin UI v{{ appVersion }}
+        </a>
         <span v-if="versionData?.version" class="text-text-muted">
-          &middot; Kratos {{ versionData.version }}
+          &middot;
+          <a
+            :href="`https://github.com/ory/kratos/releases/tag/${versionData.version}`"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="transition-colors hover:text-text-secondary"
+          >
+            Kratos {{ versionData.version }}
+          </a>
         </span>
       </div>
       <div class="flex items-center gap-4">
