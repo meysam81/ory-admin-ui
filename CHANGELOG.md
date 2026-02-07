@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/licenseware/ory-admin-ui/compare/v0.1.0...v0.1.1) (2026-02-07)
+
+
+### Features
+
+* **CI:** add unit and integration tests at ~40% coverage ([fe2a872](https://github.com/licenseware/ory-admin-ui/commit/fe2a872e54faaaa54c82f6a909a1f5268c12761d))
+
 ## 0.1.0 (2026-02-07)
 
 ### Features
