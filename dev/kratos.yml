@@ -1,24 +1,26 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ory/kratos/refs/heads/master/embedx/config.schema.json
 
-dsn: sqlite://./kratos.db?_fk=true&journal_mode=WAL&mode=rwc
+dsn: postgres://kratos:kratos@postgres:5432/kratos?sslmode=disable
 
 log:
   leak_sensitive_values: true
 
 serve:
   admin:
+    host: 0.0.0.0
     base_url: http://localhost:4434
   public:
+    host: 0.0.0.0
     port: 4433
     base_url: http://localhost:4433
     cors:
       allowed_methods:
+        - DELETE
         - GET
+        - OPTIONS
+        - PATCH
         - POST
         - PUT
-        - DELETE
-        - PATCH
-        - OPTIONS
       allowed_headers:
         - accept
         - authorization
@@ -43,11 +45,11 @@ identity:
       url: https://github.com/ory/kratos/raw/refs/tags/v1.3.1/contrib/quickstart/kratos/email-password/identity.schema.json
 
 selfservice:
-  default_browser_return_url: http://localhost:8080
+  default_browser_return_url: http://localhost:3000
   flows:
     recovery:
       enabled: true
-      ui_url: http://localhost:8080/recovery
+      ui_url: http://localhost:3000/recovery
   methods:
     password:
       enabled: true

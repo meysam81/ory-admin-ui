@@ -1,5 +1,6 @@
 serve:
   proxy:
+    host: 0.0.0.0
     port: 4455
     cors:
       enabled: true
@@ -25,7 +26,7 @@ log:
 
 access_rules:
   repositories:
-    - file://./access-rules.yml
+    - file:///etc/oathkeeper/access-rules.yml
 
 errors:
   fallback:

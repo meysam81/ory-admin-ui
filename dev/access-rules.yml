@@ -1,7 +1,7 @@
 - id: kratos-admin
   upstream:
     preserveHost: true
-    url: http://localhost:4434
+    url: http://kratos:4434
   match:
     url: http://localhost:<1?>4455</?.*>
     methods:

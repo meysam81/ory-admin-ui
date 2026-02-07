@@ -10,6 +10,15 @@ build:
 mkdocs:
   mkdocs serve
 
+up *args:
+  docker compose up -d {{args}}
+
+down *args:
+  docker compose down {{args}}
+
+logs *args:
+  docker compose logs {{args}}
+
 # Seed Kratos with sample data for local dev.
 # NOT idempotent — Kratos rejects duplicate credential identifiers (409).
 # Override: just seed admin_url=http://host:port public_url=http://host:port
