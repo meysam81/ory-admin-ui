@@ -1,5 +1,12 @@
 import { getApiClient } from "./client"
 import { parseLinkHeader } from "./pagination"
+import { safeParseArrayWithLog, safeParseWithLog } from "@/lib/validation"
+import {
+  identitySchema,
+  sessionSchema,
+  recoveryLinkResponseSchema,
+  recoveryCodeResponseSchema,
+} from "@/types/api.schemas"
 import type {
   Identity,
   CreateIdentityBody,
@@ -34,37 +41,42 @@ export const identitiesApi = {
     const response = await client.get("admin/identities", {
       searchParams: searchParams.toString() ? searchParams : undefined,
     })
-    const data = await response.json<Identity[]>()
+    const raw = await response.json<Identity[]>()
+    const data = safeParseArrayWithLog(identitySchema, raw, "identitiesApi.list")
     const pagination = parseLinkHeader(response.headers.get("link"))
     return { data, pagination }
   },
 
-  get: async (id: string, includeCredentials?: string[]) => {
+  get: async (id: string, includeCredentials?: string[]): Promise<Identity> => {
     const client = getApiClient()
     const searchParams = new URLSearchParams()
     if (includeCredentials?.length) {
       includeCredentials.forEach((c) => searchParams.append("include_credential", c))
     }
-    return client
+    const raw = await client
       .get(`admin/identities/${id}`, {
         searchParams: searchParams.toString() ? searchParams : undefined,
       })
       .json<Identity>()
+    return safeParseWithLog(identitySchema, raw, "identitiesApi.get")
   },
 
-  create: async (body: CreateIdentityBody) => {
+  create: async (body: CreateIdentityBody): Promise<Identity> => {
     const client = getApiClient()
-    return client.post("admin/identities", { json: body }).json<Identity>()
+    const raw = await client.post("admin/identities", { json: body }).json<Identity>()
+    return safeParseWithLog(identitySchema, raw, "identitiesApi.create")
   },
 
-  update: async (id: string, body: UpdateIdentityBody) => {
+  update: async (id: string, body: UpdateIdentityBody): Promise<Identity> => {
     const client = getApiClient()
-    return client.put(`admin/identities/${id}`, { json: body }).json<Identity>()
+    const raw = await client.put(`admin/identities/${id}`, { json: body }).json<Identity>()
+    return safeParseWithLog(identitySchema, raw, "identitiesApi.update")
   },
 
-  patch: async (id: string, body: Partial<UpdateIdentityBody>) => {
+  patch: async (id: string, body: Partial<UpdateIdentityBody>): Promise<Identity> => {
     const client = getApiClient()
-    return client.patch(`admin/identities/${id}`, { json: body }).json<Identity>()
+    const raw = await client.patch(`admin/identities/${id}`, { json: body }).json<Identity>()
+    return safeParseWithLog(identitySchema, raw, "identitiesApi.patch")
   },
 
   delete: async (id: string) => {
@@ -77,13 +89,22 @@ export const identitiesApi = {
     return client.delete(`admin/identities/${id}/credentials/${type}`)
   },
 
-  getSessions: async (id: string, params?: PaginationParams & { active?: boolean }) => {
+  getSessions: async (
+    id: string,
+    params?: PaginationParams & { active?: boolean }
+  ): Promise<Session[]> => {
     const client = getApiClient()
-    return client
+    const searchParams = new URLSearchParams()
+    if (params?.page_size) searchParams.set("page_size", String(params.page_size))
+    if (params?.page_token) searchParams.set("page_token", params.page_token)
+    if (params?.active !== undefined) searchParams.set("active", String(params.active))
+
+    const raw = await client
       .get(`admin/identities/${id}/sessions`, {
-        searchParams: params as Record<string, string | number | boolean>,
+        searchParams: searchParams.toString() ? searchParams : undefined,
       })
       .json<Session[]>()
+    return safeParseArrayWithLog(sessionSchema, raw, "identitiesApi.getSessions")
   },
 
   deleteSessions: async (id: string) => {
@@ -91,9 +112,12 @@ export const identitiesApi = {
     return client.delete(`admin/identities/${id}/sessions`)
   },
 
-  createRecoveryLink: async (identityId: string, expiresIn?: string) => {
+  createRecoveryLink: async (
+    identityId: string,
+    expiresIn?: string
+  ): Promise<RecoveryLinkResponse> => {
     const client = getApiClient()
-    return client
+    const raw = await client
       .post("admin/recovery/link", {
         json: {
           identity_id: identityId,
@@ -101,11 +125,15 @@ export const identitiesApi = {
         },
       })
       .json<RecoveryLinkResponse>()
+    return safeParseWithLog(recoveryLinkResponseSchema, raw, "identitiesApi.createRecoveryLink")
   },
 
-  createRecoveryCode: async (identityId: string, expiresIn?: string) => {
+  createRecoveryCode: async (
+    identityId: string,
+    expiresIn?: string
+  ): Promise<RecoveryCodeResponse> => {
     const client = getApiClient()
-    return client
+    const raw = await client
       .post("admin/recovery/code", {
         json: {
           identity_id: identityId,
@@ -113,5 +141,6 @@ export const identitiesApi = {
         },
       })
       .json<RecoveryCodeResponse>()
+    return safeParseWithLog(recoveryCodeResponseSchema, raw, "identitiesApi.createRecoveryCode")
   },
 }

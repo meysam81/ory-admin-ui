@@ -1,5 +1,7 @@
 import { getApiClient } from "./client"
 import { parseLinkHeader } from "./pagination"
+import { safeParseArrayWithLog, safeParseWithLog } from "@/lib/validation"
+import { sessionSchema } from "@/types/api.schemas"
 import type { Session, PaginationParams, PaginatedResponse } from "@/types/api"
 
 export const sessionsApi = {
@@ -17,22 +19,24 @@ export const sessionsApi = {
     const response = await client.get("admin/sessions", {
       searchParams: searchParams.toString() ? searchParams : undefined,
     })
-    const data = await response.json<Session[]>()
+    const raw = await response.json<Session[]>()
+    const data = safeParseArrayWithLog(sessionSchema, raw, "sessionsApi.list")
     const pagination = parseLinkHeader(response.headers.get("link"))
     return { data, pagination }
   },
 
-  get: async (id: string, expand?: string[]) => {
+  get: async (id: string, expand?: string[]): Promise<Session> => {
     const client = getApiClient()
     const searchParams = new URLSearchParams()
     if (expand?.length) {
       expand.forEach((e) => searchParams.append("expand", e))
     }
-    return client
+    const raw = await client
       .get(`admin/sessions/${id}`, {
         searchParams: searchParams.toString() ? searchParams : undefined,
       })
       .json<Session>()
+    return safeParseWithLog(sessionSchema, raw, "sessionsApi.get")
   },
 
   disable: async (id: string) => {
@@ -40,8 +44,9 @@ export const sessionsApi = {
     return client.delete(`admin/sessions/${id}`)
   },
 
-  extend: async (id: string) => {
+  extend: async (id: string): Promise<Session> => {
     const client = getApiClient()
-    return client.patch(`admin/sessions/${id}/extend`).json<Session>()
+    const raw = await client.patch(`admin/sessions/${id}/extend`).json<Session>()
+    return safeParseWithLog(sessionSchema, raw, "sessionsApi.extend")
   },
 }

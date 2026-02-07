@@ -50,6 +50,7 @@ export default defineConfig(({ mode }) => {
             vue: ["vue", "vue-router", "pinia"],
             query: ["@tanstack/vue-query"],
             ui: ["radix-vue", "lucide-vue-next"],
+            validation: ["zod"],
           },
         },
       },

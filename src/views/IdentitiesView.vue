@@ -271,8 +271,13 @@ const showPagination = computed(
 watch([stateFilter, schemaFilter], () => resetPagination())
 
 function getIdentityName(identity: Identity): string {
-  const traits = (identity.traits || {}) as Record<string, string>
-  return traits.email || traits.username || traits.name || `ID: ${identity.id.slice(0, 8)}`
+  const traits = identity.traits || {}
+  return (
+    String(traits.email || "") ||
+    String(traits.username || "") ||
+    String(traits.name || "") ||
+    `ID: ${identity.id.slice(0, 8)}`
+  )
 }
 
 function confirmDelete(identity: Identity) {

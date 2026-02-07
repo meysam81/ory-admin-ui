@@ -5,18 +5,16 @@
  * This allows deployment-time configuration without rebuilding.
  */
 
-export interface RuntimeConfig {
+import { safeParseWithLog } from "@/lib/validation"
+import { runtimeConfigSchema, cachedConfigSchema } from "@/types/api.schemas"
+
+export type RuntimeConfig = {
   kratosAdminBaseURL?: string
   kratosPublicBaseURL?: string
 }
 
 const CONFIG_CACHE_KEY = "runtime-config"
 const CONFIG_CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
-
-interface CachedConfig {
-  config: RuntimeConfig
-  timestamp: number
-}
 
 let runtimeConfig: RuntimeConfig | null = null
 
@@ -35,7 +33,8 @@ function getCachedConfig(): RuntimeConfig | null {
     const cached = sessionStorage.getItem(CONFIG_CACHE_KEY)
     if (!cached) return null
 
-    const { config, timestamp }: CachedConfig = JSON.parse(cached)
+    const parsed = safeParseWithLog(cachedConfigSchema, JSON.parse(cached), "config.cached")
+    const { config, timestamp } = parsed
     const isExpired = Date.now() - timestamp > CONFIG_CACHE_TTL_MS
 
     if (isExpired) {
@@ -55,7 +54,7 @@ function getCachedConfig(): RuntimeConfig | null {
  */
 function setCachedConfig(config: RuntimeConfig): void {
   try {
-    const cached: CachedConfig = {
+    const cached = {
       config,
       timestamp: Date.now(),
     }
@@ -96,7 +95,8 @@ export async function loadRuntimeConfig(): Promise<RuntimeConfig> {
       return {}
     }
 
-    const config: RuntimeConfig = await response.json()
+    const raw = await response.json()
+    const config = safeParseWithLog(runtimeConfigSchema, raw, "config.load")
     setCachedConfig(config)
     runtimeConfig = config
 

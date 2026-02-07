@@ -1,8 +1,17 @@
 import { defineStore } from "pinia"
 import { ref, computed } from "vue"
+import { z } from "zod"
 import { useQueryClient } from "@tanstack/vue-query"
 import { getRuntimeConfig } from "@/config/loader"
 import { resetApiClient, resetPublicApiClient } from "@/api/client"
+
+const urlSchema = z.url()
+
+function getValidatedUrl(key: string): string | null {
+  const raw = localStorage.getItem(key)
+  if (!raw) return null
+  return urlSchema.safeParse(raw).success ? raw : null
+}
 
 const HARDCODED_FALLBACK = "http://localhost:4434"
 const BUILD_TIME_DEFAULT = import.meta.env.VITE_DEFAULT_API_ENDPOINT || HARDCODED_FALLBACK
@@ -34,13 +43,13 @@ function getDefaultPublicEndpoint(): string {
 }
 
 export const useSettingsStore = defineStore("settings", () => {
-  // Priority: localStorage (user override) > default endpoint
-  const userOverride = localStorage.getItem("kratosAdminBaseURL")
-  const kratosAdminBaseURL = ref(userOverride || getDefaultEndpoint())
+  // Priority: localStorage (user override, validated) > default endpoint
+  const kratosAdminBaseURL = ref(getValidatedUrl("kratosAdminBaseURL") || getDefaultEndpoint())
 
-  // Priority: localStorage (user override) > default public endpoint
-  const publicUserOverride = localStorage.getItem("kratosPublicBaseURL")
-  const kratosPublicBaseURL = ref(publicUserOverride || getDefaultPublicEndpoint())
+  // Priority: localStorage (user override, validated) > default public endpoint
+  const kratosPublicBaseURL = ref(
+    getValidatedUrl("kratosPublicBaseURL") || getDefaultPublicEndpoint()
+  )
 
   function invalidateAllQueries() {
     try {

@@ -1,10 +1,16 @@
 import { defineStore } from "pinia"
 import { ref, computed, watch } from "vue"
+import { themeModeSchema } from "@/types/api.schemas"
 
 type ThemeMode = "light" | "dark" | "system"
 
+function getStoredTheme(): ThemeMode {
+  const result = themeModeSchema.safeParse(localStorage.getItem("theme"))
+  return result.success ? result.data : "dark"
+}
+
 export const useThemeStore = defineStore("theme", () => {
-  const theme = ref<ThemeMode>((localStorage.getItem("theme") as ThemeMode) || "dark")
+  const theme = ref<ThemeMode>(getStoredTheme())
   const isDark = computed(() => {
     if (theme.value === "system") {
       return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -13,10 +19,7 @@ export const useThemeStore = defineStore("theme", () => {
   })
 
   function initTheme() {
-    const stored = localStorage.getItem("theme") as ThemeMode | null
-    if (stored) {
-      theme.value = stored
-    }
+    theme.value = getStoredTheme()
     applyTheme()
   }
 

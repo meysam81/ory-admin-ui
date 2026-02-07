@@ -17,11 +17,12 @@ import JsonViewer from "@/components/common/JsonViewer.vue"
 import CopyButton from "@/components/common/CopyButton.vue"
 import StatusBadge from "@/components/common/StatusBadge.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
+import type { AuthenticationMethod } from "@/types/api"
 import { ArrowLeft, AlertTriangle, Key, User, Clock, Monitor, Globe, Shield } from "lucide-vue-next"
 
 const route = useRoute()
 const router = useRouter()
-const sessionId = computed(() => route.params.id as string)
+const sessionId = computed(() => String(route.params.id))
 
 const activeTab = ref("overview")
 const revokeDialogOpen = ref(false)
@@ -31,8 +32,12 @@ const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession()
 
 function getSessionUser(): string {
   if (!session.value?.identity) return "Unknown"
-  const traits = (session.value.identity.traits || {}) as Record<string, string>
-  return traits.email || traits.username || session.value.identity.id.slice(0, 8)
+  const traits = session.value.identity.traits || {}
+  return (
+    String(traits.email || "") ||
+    String(traits.username || "") ||
+    session.value.identity.id.slice(0, 8)
+  )
 }
 
 function handleRevoke() {
@@ -43,8 +48,7 @@ function handleRevoke() {
   })
 }
 
-function formatAuthMethod(method: any): string {
-  if (typeof method === "string") return method
+function formatAuthMethod(method: AuthenticationMethod): string {
   return method.method || "unknown"
 }
 </script>

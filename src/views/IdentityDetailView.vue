@@ -40,7 +40,7 @@ import {
 
 const route = useRoute()
 const router = useRouter()
-const identityId = computed(() => route.params.id as string)
+const identityId = computed(() => String(route.params.id))
 
 const activeTab = ref("overview")
 const deleteDialogOpen = ref(false)
@@ -64,8 +64,13 @@ const isBlocked = computed(() => identity.value?.state === "inactive")
 
 function getIdentityName(): string {
   if (!identity.value) return ""
-  const traits = (identity.value.traits || {}) as Record<string, string>
-  return traits.email || traits.username || traits.name || identity.value.id.slice(0, 8)
+  const traits = identity.value.traits || {}
+  return (
+    String(traits.email || "") ||
+    String(traits.username || "") ||
+    String(traits.name || "") ||
+    identity.value.id.slice(0, 8)
+  )
 }
 
 function handleDelete() {
