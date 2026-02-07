@@ -25,7 +25,8 @@
     "target": "ESNext",
     "types": [
       "node",
-      "vite/client"
+      "vite/client",
+      "vitest/globals"
     ],
     "useDefineForClassFields": true
   },
