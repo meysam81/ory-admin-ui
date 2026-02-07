@@ -9,7 +9,10 @@ interface Props {
 const props = defineProps<Props>()
 
 const classes = computed(() =>
-  cn("rounded-lg border border-border-subtle bg-surface-raised shadow-sm", props.class)
+  cn(
+    "overflow-hidden rounded-lg border border-border-subtle bg-surface-raised shadow-sm",
+    props.class
+  )
 )
 </script>
 

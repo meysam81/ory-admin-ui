@@ -3,6 +3,7 @@ import { ref } from "vue"
 
 export const useUIStore = defineStore("ui", () => {
   const sidebarCollapsed = ref(localStorage.getItem("sidebarCollapsed") === "true")
+  const sidebarOpen = ref(false)
   const commandPaletteOpen = ref(false)
 
   function toggleSidebar() {
@@ -13,6 +14,18 @@ export const useUIStore = defineStore("ui", () => {
   function setSidebarCollapsed(collapsed: boolean) {
     sidebarCollapsed.value = collapsed
     localStorage.setItem("sidebarCollapsed", String(collapsed))
+  }
+
+  function openSidebar() {
+    sidebarOpen.value = true
+  }
+
+  function closeSidebar() {
+    sidebarOpen.value = false
+  }
+
+  function toggleMobileSidebar() {
+    sidebarOpen.value = !sidebarOpen.value
   }
 
   function openCommandPalette() {
@@ -29,9 +42,13 @@ export const useUIStore = defineStore("ui", () => {
 
   return {
     sidebarCollapsed,
+    sidebarOpen,
     commandPaletteOpen,
     toggleSidebar,
     setSidebarCollapsed,
+    openSidebar,
+    closeSidebar,
+    toggleMobileSidebar,
     openCommandPalette,
     closeCommandPalette,
     toggleCommandPalette,

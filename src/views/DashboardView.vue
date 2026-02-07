@@ -6,7 +6,7 @@ import { useIdentities } from "@/composables/useIdentities"
 import { useSessions } from "@/composables/useSessions"
 import { useCourierMessages } from "@/composables/useCourier"
 import { useHealthAlive } from "@/composables/useHealth"
-import { useMediaQuery } from "@/composables/useMediaQuery"
+import { useBreakpoints } from "@/composables/useBreakpoints"
 import Card from "@/components/ui/Card.vue"
 import CardHeader from "@/components/ui/CardHeader.vue"
 import CardTitle from "@/components/ui/CardTitle.vue"
@@ -19,7 +19,7 @@ import EmptyState from "@/components/common/EmptyState.vue"
 import { Users, Key, Mail, Activity, ArrowRight } from "lucide-vue-next"
 
 const dashboardParams = ref({ page_size: 10 })
-const isDesktop = useMediaQuery("(min-width: 640px)")
+const { sm: isDesktop } = useBreakpoints()
 const recentCount = computed(() => (isDesktop.value ? 10 : 5))
 
 const {

@@ -29,20 +29,20 @@ const props = withDefaults(defineProps<Props>(), {
 const slots = useSlots()
 
 const sizeClasses = {
-  sm: "max-w-sm",
-  default: "max-w-lg",
-  lg: "max-w-xl",
-  xl: "max-w-2xl",
-  "2xl": "max-w-3xl",
-  "3xl": "max-w-4xl",
-  "4xl": "max-w-5xl",
-  "5xl": "max-w-6xl",
+  sm: "max-w-[calc(100vw-2rem)] sm:max-w-sm",
+  default: "max-w-[calc(100vw-2rem)] sm:max-w-lg",
+  lg: "max-w-[calc(100vw-2rem)] sm:max-w-xl",
+  xl: "max-w-[calc(100vw-2rem)] sm:max-w-2xl",
+  "2xl": "max-w-[calc(100vw-2rem)] sm:max-w-3xl",
+  "3xl": "max-w-[calc(100vw-2rem)] sm:max-w-4xl",
+  "4xl": "max-w-[calc(100vw-2rem)] sm:max-w-5xl",
+  "5xl": "max-w-[calc(100vw-2rem)] sm:max-w-6xl",
   full: "max-w-[95vw] h-[90vh]",
 }
 
 const contentClasses = computed(() =>
   cn(
-    "fixed left-1/2 top-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border bg-surface-raised p-6 shadow-2xl data-[state=open]:animate-scale-in flex flex-col",
+    "fixed left-1/2 top-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border bg-surface-raised p-4 shadow-2xl data-[state=open]:animate-scale-in flex flex-col max-h-[90vh] sm:p-6",
     sizeClasses[props.size],
     props.class
   )

@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router"
 import { useThemeStore } from "@/stores/theme"
+import { useUIStore } from "@/stores/ui"
 import { useHealthAlive } from "@/composables/useHealth"
-import { Sun, Moon, Github, Settings, Circle } from "lucide-vue-next"
+import { useBreakpoints } from "@/composables/useBreakpoints"
+import { Sun, Moon, Github, Settings, Circle, Menu } from "lucide-vue-next"
 import Button from "@/components/ui/Button.vue"
 import Tooltip from "@/components/ui/Tooltip.vue"
 import { TooltipProvider } from "radix-vue"
 
 const route = useRoute()
 const themeStore = useThemeStore()
+const uiStore = useUIStore()
+const { isMobile } = useBreakpoints()
 const { isError: healthError } = useHealthAlive()
 
 const breadcrumbs = [
@@ -32,10 +36,13 @@ function getCurrentBreadcrumb() {
 <template>
   <TooltipProvider>
     <header
-      class="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border-subtle bg-surface/80 px-6 backdrop-blur-sm"
+      class="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border-subtle bg-surface/80 px-3 backdrop-blur-sm md:px-6"
     >
-      <!-- Breadcrumb -->
+      <!-- Left side: hamburger + breadcrumb -->
       <div class="flex items-center gap-2">
+        <Button v-if="isMobile" variant="ghost" size="icon" @click="uiStore.toggleMobileSidebar">
+          <Menu class="h-5 w-5" />
+        </Button>
         <nav class="text-sm">
           <span class="text-text-secondary">Ory Admin</span>
           <span class="mx-2 text-text-muted">/</span>

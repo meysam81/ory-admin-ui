@@ -6,8 +6,10 @@ const { data: versionData } = useVersion()
 </script>
 
 <template>
-  <footer class="border-t border-border-subtle px-6 py-4 text-sm text-text-muted">
-    <div class="mx-auto flex max-w-screen-2xl items-center justify-between">
+  <footer class="border-t border-border-subtle px-3 py-3 text-sm text-text-muted md:px-6 md:py-4">
+    <div
+      class="mx-auto flex max-w-screen-2xl flex-col items-center gap-2 text-center sm:flex-row sm:justify-between sm:text-left"
+    >
       <div class="flex items-center gap-2">
         <a
           :href="`https://github.com/licenseware/ory-admin-ui/releases/tag/v${appVersion}`"

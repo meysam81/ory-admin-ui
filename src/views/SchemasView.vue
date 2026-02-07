@@ -225,12 +225,12 @@ const dialogSize = computed(() => (navigation.isFullscreen.value ? "full" : "5xl
       >
         <CardHeader class="pb-2">
           <div class="flex items-start justify-between">
-            <div class="flex items-center gap-2">
-              <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10 text-accent">
+            <div class="flex items-center gap-2 min-w-0">
+              <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10 text-accent flex-shrink-0">
                 <FileJson class="h-5 w-5" />
               </div>
-              <div>
-                <CardTitle class="text-base">{{ schema.id }}</CardTitle>
+              <div class="min-w-0">
+                <CardTitle class="text-base truncate">{{ schema.id }}</CardTitle>
               </div>
             </div>
             <Button variant="ghost" size="icon" @click.stop="viewSchema(schema)">
@@ -246,13 +246,13 @@ const dialogSize = computed(() => (navigation.isFullscreen.value ? "full" : "5xl
               <div
                 v-for="trait in getSchemaTraits(schema).slice(0, 5)"
                 :key="trait"
-                class="flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-overlay border border-border-subtle text-xs"
+                class="flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-overlay border border-border-subtle text-xs max-w-[8rem]"
               >
                 <component
                   :is="getTypeIcon(getTraitType(schema, trait))"
                   :class="cn('h-3 w-3', getTypeColor(getTraitType(schema, trait)))"
                 />
-                <span class="text-text-primary">{{ trait }}</span>
+                <span class="truncate text-text-primary">{{ trait }}</span>
                 <span
                   v-if="getRequiredTraits(schema).includes(trait)"
                   class="text-destructive font-bold"
@@ -270,9 +270,9 @@ const dialogSize = computed(() => (navigation.isFullscreen.value ? "full" : "5xl
 
           <!-- Schema URL if available -->
           <div v-if="schema.schema?.$id" class="mt-3 pt-3 border-t border-border-subtle">
-            <p class="text-xs text-text-muted truncate flex items-center gap-1">
+            <p class="text-xs text-text-muted flex items-center gap-1 min-w-0">
               <ExternalLink class="h-3 w-3 flex-shrink-0" />
-              {{ schema.schema.$id }}
+              <span class="truncate">{{ schema.schema.$id }}</span>
             </p>
           </div>
         </CardContent>
@@ -305,7 +305,7 @@ const dialogSize = computed(() => (navigation.isFullscreen.value ? "full" : "5xl
         <!-- Toolbar -->
         <div class="flex items-center gap-2 pb-3 border-b border-border-subtle flex-shrink-0">
           <!-- Search -->
-          <div class="relative flex-1 max-w-xs">
+          <div class="relative flex-1 max-w-full sm:max-w-xs">
             <Search class="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
             <Input
               ref="searchInputRef"
@@ -377,12 +377,12 @@ const dialogSize = computed(() => (navigation.isFullscreen.value ? "full" : "5xl
         </div>
 
         <!-- Main content: Split view -->
-        <div class="flex-1 mt-3 flex gap-4 min-h-0 overflow-hidden">
+        <div class="flex-1 mt-3 flex flex-col gap-4 min-h-0 overflow-hidden md:flex-row">
           <!-- Left panel: Schema tree -->
           <div
             :class="cn(
               'flex flex-col border border-border-subtle rounded-lg overflow-hidden bg-surface',
-              navigation.selectedPath.value ? 'w-2/5' : 'w-full'
+              navigation.selectedPath.value ? 'h-48 md:h-auto md:w-2/5' : 'w-full'
             )"
           >
             <div class="flex-1 overflow-y-auto p-2">
@@ -400,7 +400,7 @@ const dialogSize = computed(() => (navigation.isFullscreen.value ? "full" : "5xl
           <!-- Right panel: Property inspector -->
           <div
             v-if="navigation.selectedPath.value"
-            class="w-3/5 border border-border-subtle rounded-lg overflow-hidden bg-surface"
+            class="flex-1 border border-border-subtle rounded-lg overflow-hidden bg-surface md:w-3/5"
           >
             <PropertyInspector
               :schema="selectedPropertySchema"

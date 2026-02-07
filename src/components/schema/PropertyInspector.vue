@@ -219,7 +219,7 @@ const oryExtensions = computed(() => {
           </h3>
           <Badge v-if="required" variant="warning" class="text-[10px]">required</Badge>
         </div>
-        <nav class="flex items-center gap-1 text-xs text-text-muted">
+        <nav class="flex flex-wrap items-center gap-1 text-xs text-text-muted">
           <template v-for="(part, i) in pathParts" :key="i">
             <span v-if="i > 0" class="text-text-muted/50">/</span>
             <span :class="i === pathParts.length - 1 ? 'text-text-secondary' : ''">{{ part }}</span>
@@ -239,9 +239,9 @@ const oryExtensions = computed(() => {
               <span class="text-sm text-text-muted">Type</span>
               <Badge :class="typeColor" variant="outline">{{ getType(schema) }}</Badge>
             </div>
-            <div v-if="schema.title" class="flex items-center justify-between">
+            <div v-if="schema.title" class="flex min-w-0 items-center justify-between gap-2">
               <span class="text-sm text-text-muted">Title</span>
-              <span class="text-sm text-text-primary">{{ schema.title }}</span>
+              <span class="ml-2 truncate text-sm text-text-primary">{{ schema.title }}</span>
             </div>
             <div v-if="schema.description" class="border-t border-border-subtle pt-2">
               <p class="text-sm text-text-secondary">{{ schema.description }}</p>
@@ -263,7 +263,7 @@ const oryExtensions = computed(() => {
               >
                 <span class="text-sm text-text-muted">{{ constraint.label }}</span>
                 <code
-                  class="rounded bg-surface-overlay px-2 py-0.5 font-mono text-xs text-text-primary"
+                  class="max-w-[50%] truncate rounded bg-surface-overlay px-2 py-0.5 font-mono text-xs text-text-primary"
                 >
                   {{ constraint.value }}
                 </code>
@@ -307,7 +307,7 @@ const oryExtensions = computed(() => {
             >
               <div class="flex items-start gap-3">
                 <component :is="ext.icon" class="mt-0.5 h-5 w-5 flex-shrink-0" />
-                <div>
+                <div class="min-w-0">
                   <p class="text-sm font-medium text-text-primary">{{ ext.title }}</p>
                   <p class="mt-0.5 text-xs text-text-secondary">{{ ext.description }}</p>
                 </div>

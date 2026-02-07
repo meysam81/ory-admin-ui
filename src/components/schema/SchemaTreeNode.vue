@@ -173,7 +173,7 @@ function handleKeydown(e: KeyboardEvent) {
     <div
       :class="
         cn(
-          'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 transition-colors',
+          'flex cursor-pointer items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 transition-colors',
           'hover:bg-surface-overlay',
           isSelected && 'border-l-2 border-accent bg-accent/10',
           isFocused && 'ring-1 ring-inset ring-accent'
@@ -219,7 +219,7 @@ function handleKeydown(e: KeyboardEvent) {
       />
 
       <!-- Constraint pills -->
-      <div class="ml-auto flex items-center gap-1">
+      <div class="ml-auto hidden items-center gap-1 sm:flex">
         <Badge
           v-for="constraint in constraints.slice(0, 3)"
           :key="constraint.label"
