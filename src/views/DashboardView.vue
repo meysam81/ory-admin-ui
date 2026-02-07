@@ -100,10 +100,7 @@ function getIdentityName(identity: any): string {
     <!-- Page header -->
     <div>
       <h1 class="text-2xl font-semibold text-text-primary">Dashboard</h1>
-      <p class="mt-1 text-sm text-text-muted">
-        Overview of your Ory Kratos instance
-        <span v-if="currentVersion" class="text-text-secondary"> (v{{ currentVersion }}) </span>
-      </p>
+      <p class="mt-1 text-sm text-text-muted">Overview of your Ory Kratos instance</p>
     </div>
 
     <!-- Stats grid -->
