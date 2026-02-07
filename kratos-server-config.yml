@@ -7,10 +7,10 @@ log:
 
 serve:
   admin:
-    base_url: http://localhost:14434
+    base_url: http://localhost:4434
   public:
-    port: 14433
-    base_url: http://localhost:14433
+    port: 4433
+    base_url: http://localhost:4433
     cors:
       allowed_methods:
         - GET
@@ -44,3 +44,13 @@ identity:
 
 selfservice:
   default_browser_return_url: http://localhost:8080
+  flows:
+    recovery:
+      enabled: true
+      ui_url: http://localhost:8080/recovery
+  methods:
+    password:
+      enabled: true
+    code:
+      enabled: true
+      mfa_enabled: false
