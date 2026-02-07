@@ -2,8 +2,10 @@
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/licenseware/ory-admin-ui?style=flat)](https://github.com/licenseware/ory-admin-ui)
 [![Docker Pulls](https://img.shields.io/docker/pulls/licenseware/ory-admin-ui)](https://hub.docker.com/r/licenseware/ory-admin-ui)
-[![GitHub Release](https://img.shields.io/github/v/release/licenseware/ory-admin-ui)](https://github.com/licenseware/ory-admin-ui/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/licenseware/ory-admin-ui?label=Latest+Release)](https://github.com/licenseware/ory-admin-ui/releases)
+[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/licenseware/ory-admin-ui/total?label=GitHub+Release+Downloads)](https://github.com/licenseware/ory-admin-ui/releases)
 [![Docker Image Size](https://img.shields.io/docker/image-size/licenseware/ory-admin-ui)](https://hub.docker.com/r/licenseware/ory-admin-ui)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/licenseware/ory-admin-ui)](https://github.com/licenseware/ory-admin-ui/commits/main/)
 [![GitHub last commit](https://img.shields.io/github/last-commit/licenseware/ory-admin-ui)](https://github.com/licenseware/ory-admin-ui/commits/main/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
