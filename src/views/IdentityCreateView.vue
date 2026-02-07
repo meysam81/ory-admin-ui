@@ -14,6 +14,7 @@ import Textarea from "@/components/ui/Textarea.vue"
 import Select from "@/components/ui/Select.vue"
 import Skeleton from "@/components/ui/Skeleton.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
+import ReloadButton from "@/components/common/ReloadButton.vue"
 import { ArrowLeft, Save, FileJson, User } from "lucide-vue-next"
 
 const router = useRouter()
@@ -21,6 +22,7 @@ const router = useRouter()
 const {
   data: schemas,
   isLoading: schemasLoading,
+  isFetching: schemasFetching,
   isError: schemasError,
   error: schemasErrorObj,
   refetch: refetchSchemas,
@@ -139,10 +141,13 @@ function generateTraitsTemplate() {
       <!-- Schema selection -->
       <Card>
         <CardHeader>
-          <CardTitle class="flex items-center gap-2 text-base">
-            <FileJson class="h-4 w-4" />
-            Identity Schema
-          </CardTitle>
+          <div class="flex items-center justify-between">
+            <CardTitle class="flex items-center gap-2 text-base">
+              <FileJson class="h-4 w-4" />
+              Identity Schema
+            </CardTitle>
+            <ReloadButton :is-fetching="schemasFetching" size="icon" @reload="refetchSchemas" />
+          </div>
           <CardDescription
             >Select the schema that defines the structure of this identity</CardDescription
           >

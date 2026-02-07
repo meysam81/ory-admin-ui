@@ -14,6 +14,7 @@ import StatusBadge from "@/components/common/StatusBadge.vue"
 import EmptyState from "@/components/common/EmptyState.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
 import Pagination from "@/components/common/Pagination.vue"
+import ReloadButton from "@/components/common/ReloadButton.vue"
 import { Search, Key, Eye, AlertTriangle, User, Filter, ArrowUpDown } from "lucide-vue-next"
 import type { Session } from "@/types/api"
 
@@ -39,7 +40,7 @@ const apiParams = computed(() => ({
   active: activeFilter.value === "all" ? undefined : activeFilter.value === "active",
 }))
 
-const { data: result, isLoading, isError, error, refetch } = useSessions(apiParams)
+const { data: result, isLoading, isFetching, isError, error, refetch } = useSessions(apiParams)
 const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession()
 
 const activeOptions = [
@@ -145,9 +146,12 @@ function handleRevoke() {
 <template>
   <div class="space-y-6">
     <!-- Page header -->
-    <div>
-      <h1 class="text-2xl font-semibold text-text-primary">Sessions</h1>
-      <p class="mt-1 text-sm text-text-muted">View and manage active user sessions</p>
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-text-primary">Sessions</h1>
+        <p class="mt-1 text-sm text-text-muted">View and manage active user sessions</p>
+      </div>
+      <ReloadButton :is-fetching="isFetching" @reload="refetch" />
     </div>
 
     <!-- Search and filters -->

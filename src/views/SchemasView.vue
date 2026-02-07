@@ -17,6 +17,7 @@ import JsonViewer from "@/components/common/JsonViewer.vue"
 import CopyButton from "@/components/common/CopyButton.vue"
 import SchemaTree from "@/components/schema/SchemaTree.vue"
 import PropertyInspector from "@/components/schema/PropertyInspector.vue"
+import ReloadButton from "@/components/common/ReloadButton.vue"
 import {
   Search,
   FileJson,
@@ -45,7 +46,7 @@ const schemaTreeRef = ref<InstanceType<typeof SchemaTree> | null>(null)
 const showRawJson = ref(false)
 const showKeyboardHelp = ref(false)
 
-const { data: schemas, isLoading, isError, error, refetch } = useSchemas()
+const { data: schemas, isLoading, isFetching, isError, error, refetch } = useSchemas()
 
 const selectedSchemaJson = computed(() => selectedSchema.value?.schema as Record<string, unknown> | null)
 
@@ -170,9 +171,12 @@ const dialogSize = computed(() => (navigation.isFullscreen.value ? "full" : "5xl
 <template>
   <div class="space-y-6">
     <!-- Page header -->
-    <div>
-      <h1 class="text-2xl font-semibold text-text-primary">Identity Schemas</h1>
-      <p class="text-sm text-text-muted mt-1">View the identity schemas configured in your Kratos instance</p>
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-text-primary">Identity Schemas</h1>
+        <p class="text-sm text-text-muted mt-1">View the identity schemas configured in your Kratos instance</p>
+      </div>
+      <ReloadButton :is-fetching="isFetching" @reload="refetch" />
     </div>
 
     <!-- Search -->

@@ -15,6 +15,7 @@ import EmptyState from "@/components/common/EmptyState.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
 import Pagination from "@/components/common/Pagination.vue"
 import JsonViewer from "@/components/common/JsonViewer.vue"
+import ReloadButton from "@/components/common/ReloadButton.vue"
 import { Search, Mail, Eye, Filter } from "lucide-vue-next"
 import type { Message } from "@/types/api"
 
@@ -28,7 +29,7 @@ const statusFilter = ref<StatusFilterValue>(STATUS_ALL)
 const selectedMessage = ref<Message | null>(null)
 const detailDialogOpen = ref(false)
 
-const { data: messages, isLoading, isError, error, refetch } = useCourierMessages()
+const { data: messages, isLoading, isFetching, isError, error, refetch } = useCourierMessages()
 
 const statusOptions = [
   { value: STATUS_ALL, label: "All statuses" },
@@ -70,9 +71,12 @@ function viewMessage(message: Message) {
 <template>
   <div class="space-y-6">
     <!-- Page header -->
-    <div>
-      <h1 class="text-2xl font-semibold text-text-primary">Courier Messages</h1>
-      <p class="mt-1 text-sm text-text-muted">View email and SMS messages sent by Kratos</p>
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-text-primary">Courier Messages</h1>
+        <p class="mt-1 text-sm text-text-muted">View email and SMS messages sent by Kratos</p>
+      </div>
+      <ReloadButton :is-fetching="isFetching" @reload="refetch" />
     </div>
 
     <!-- Search and filters -->

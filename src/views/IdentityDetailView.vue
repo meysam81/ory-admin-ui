@@ -25,6 +25,7 @@ import CopyButton from "@/components/common/CopyButton.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
 import EmptyState from "@/components/common/EmptyState.vue"
 import StatusBadge from "@/components/common/StatusBadge.vue"
+import ReloadButton from "@/components/common/ReloadButton.vue"
 import {
   ArrowLeft,
   Trash2,
@@ -49,7 +50,7 @@ const revokeSessionDialogOpen = ref(false)
 const sessionToRevoke = ref<string | null>(null)
 const recoveryLink = ref<string | null>(null)
 
-const { data: identity, isLoading, isError, error, refetch } = useIdentity(identityId)
+const { data: identity, isLoading, isFetching, isError, error, refetch } = useIdentity(identityId)
 const {
   data: sessions,
   isLoading: sessionsLoading,
@@ -183,6 +184,7 @@ function handleRevokeSession() {
             </div>
 
             <div class="flex flex-wrap gap-2">
+              <ReloadButton :is-fetching="isFetching" @reload="refetch" />
               <Button
                 variant="outline"
                 @click="handleCreateRecoveryLink"

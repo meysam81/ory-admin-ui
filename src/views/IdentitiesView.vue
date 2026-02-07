@@ -21,6 +21,7 @@ import TimeAgo from "@/components/common/TimeAgo.vue"
 import EmptyState from "@/components/common/EmptyState.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
 import Pagination from "@/components/common/Pagination.vue"
+import ReloadButton from "@/components/common/ReloadButton.vue"
 import {
   Plus,
   Search,
@@ -79,7 +80,7 @@ const apiParams = computed(() => ({
   credentials_identifier: debouncedSearch.value || undefined,
 }))
 
-const { data: result, isLoading, isError, error, refetch } = useIdentities(apiParams)
+const { data: result, isLoading, isFetching, isError, error, refetch } = useIdentities(apiParams)
 const { data: schemas } = useSchemas()
 const { mutate: deleteIdentity, isPending: isDeleting } = useDeleteIdentity()
 
@@ -304,12 +305,15 @@ function handleDelete() {
         <h1 class="text-2xl font-semibold text-text-primary">Identities</h1>
         <p class="mt-1 text-sm text-text-muted">Manage user identities in your Kratos instance</p>
       </div>
-      <RouterLink to="/identities/new">
-        <Button>
-          <Plus class="mr-2 h-4 w-4" />
-          Create Identity
-        </Button>
-      </RouterLink>
+      <div class="flex items-center gap-2">
+        <ReloadButton :is-fetching="isFetching" @reload="refetch" />
+        <RouterLink to="/identities/new">
+          <Button>
+            <Plus class="mr-2 h-4 w-4" />
+            Create Identity
+          </Button>
+        </RouterLink>
+      </div>
     </div>
 
     <!-- Search and filters -->

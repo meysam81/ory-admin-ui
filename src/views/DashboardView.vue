@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue"
+import ReloadButton from "@/components/common/ReloadButton.vue"
 import { RouterLink } from "vue-router"
 import { useIdentities } from "@/composables/useIdentities"
 import { useSessions } from "@/composables/useSessions"
 import { useCourierMessages } from "@/composables/useCourier"
-import { useHealthAlive, useVersion } from "@/composables/useHealth"
+import { useHealthAlive } from "@/composables/useHealth"
 import Card from "@/components/ui/Card.vue"
 import CardHeader from "@/components/ui/CardHeader.vue"
 import CardTitle from "@/components/ui/CardTitle.vue"
@@ -19,6 +20,7 @@ import { Users, Key, Mail, Activity, ArrowRight } from "lucide-vue-next"
 const {
   data: identities,
   isLoading: identitiesLoading,
+  isFetching: identitiesFetching,
   isError: identitiesError,
   error: identitiesErrorObj,
   refetch: refetchIdentities,
@@ -26,6 +28,7 @@ const {
 const {
   data: sessions,
   isLoading: sessionsLoading,
+  isFetching: sessionsFetching,
   isError: sessionsError,
   error: sessionsErrorObj,
   refetch: refetchSessions,
@@ -33,13 +36,22 @@ const {
 const {
   data: messages,
   isLoading: messagesLoading,
+  isFetching: messagesFetching,
   isError: messagesError,
   error: messagesErrorObj,
   refetch: refetchMessages,
 } = useCourierMessages()
 const { isError: healthError } = useHealthAlive()
-const { data: version } = useVersion()
 
+const isAnyFetching = computed(
+  () => identitiesFetching.value || sessionsFetching.value || messagesFetching.value
+)
+
+function reloadAll() {
+  refetchIdentities()
+  refetchSessions()
+  refetchMessages()
+}
 const recentIdentities = computed(() => {
   return identities.value?.data.slice(0, 10) || []
 })
@@ -49,10 +61,6 @@ const recentSessions = computed(() => {
 const recentMessages = computed(() => {
   return messages.value?.slice(0, 10) || []
 })
-
-const currentVersion = computed(() =>
-  version.value?.version ? version.value.version.replace(/^v/, "") : null
-)
 
 const stats = computed(() => [
   {
@@ -98,9 +106,12 @@ function getIdentityName(identity: any): string {
 <template>
   <div class="space-y-6">
     <!-- Page header -->
-    <div>
-      <h1 class="text-2xl font-semibold text-text-primary">Dashboard</h1>
-      <p class="mt-1 text-sm text-text-muted">Overview of your Ory Kratos instance</p>
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-text-primary">Dashboard</h1>
+        <p class="mt-1 text-sm text-text-muted">Overview of your Ory Kratos instance</p>
+      </div>
+      <ReloadButton :is-fetching="isAnyFetching" @reload="reloadAll" />
     </div>
 
     <!-- Stats grid -->

@@ -18,6 +18,7 @@ import CopyButton from "@/components/common/CopyButton.vue"
 import StatusBadge from "@/components/common/StatusBadge.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
 import type { AuthenticationMethod } from "@/types/api"
+import ReloadButton from "@/components/common/ReloadButton.vue"
 import { ArrowLeft, AlertTriangle, Key, User, Clock, Monitor, Globe, Shield } from "lucide-vue-next"
 
 const route = useRoute()
@@ -27,7 +28,7 @@ const sessionId = computed(() => String(route.params.id))
 const activeTab = ref("overview")
 const revokeDialogOpen = ref(false)
 
-const { data: session, isLoading, isError, error, refetch } = useSession(sessionId)
+const { data: session, isLoading, isFetching, isError, error, refetch } = useSession(sessionId)
 const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession()
 
 function getSessionUser(): string {
@@ -115,6 +116,7 @@ function formatAuthMethod(method: AuthenticationMethod): string {
             </div>
 
             <div class="flex gap-2">
+              <ReloadButton :is-fetching="isFetching" @reload="refetch" />
               <Button variant="destructive" @click="revokeDialogOpen = true">
                 <AlertTriangle class="mr-2 h-4 w-4" />
                 Revoke Session
