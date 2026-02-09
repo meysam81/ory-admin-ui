@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/licenseware/ory-admin-ui/compare/v0.1.1...v0.2.0) (2026-02-09)
+
+
+### Features
+
+* add multi-profile support ([c95dde3](https://github.com/licenseware/ory-admin-ui/commit/c95dde3f1ed26540b9fd3bc3fc891f655c4a9cbe))
+
 ## [0.1.1](https://github.com/licenseware/ory-admin-ui/compare/v0.1.0...v0.1.1) (2026-02-09)
 
 
