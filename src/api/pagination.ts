@@ -1,6 +1,20 @@
 import type { PaginationMeta } from "@/types/api"
 
 /**
+ * Parse all pagination-related headers from Ory Kratos list responses.
+ * Extracts `link` header (cursor tokens) and `x-total-count` (total items).
+ */
+export function parsePaginationHeaders(headers: Headers): PaginationMeta {
+  const meta = parseLinkHeader(headers.get("link"))
+  const totalCountRaw = headers.get("x-total-count")
+  if (totalCountRaw !== null) {
+    const parsed = Number(totalCountRaw)
+    if (Number.isFinite(parsed)) meta.totalCount = parsed
+  }
+  return meta
+}
+
+/**
  * Parse RFC 5988 Link header from Ory Kratos responses.
  * Extracts page_token cursors for cursor-based pagination.
  *

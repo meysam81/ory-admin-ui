@@ -40,8 +40,8 @@ const statusOptions = [
 ]
 
 const filteredMessages = computed(() => {
-  if (!messages.value) return []
-  let result = messages.value
+  if (!messages.value?.data) return []
+  let result = messages.value.data
 
   if (statusFilter.value !== STATUS_ALL) {
     result = result.filter((m) => m.status === statusFilter.value)

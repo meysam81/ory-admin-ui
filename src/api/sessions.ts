@@ -1,5 +1,5 @@
 import { getApiClient } from "./client"
-import { parseLinkHeader } from "./pagination"
+import { parsePaginationHeaders } from "./pagination"
 import { safeParseArrayWithLog, safeParseWithLog } from "@/lib/validation"
 import { sessionSchema } from "@/types/api.schemas"
 import type { Session, PaginationParams, PaginatedResponse } from "@/types/api"
@@ -21,7 +21,7 @@ export const sessionsApi = {
     })
     const raw = await response.json<Session[]>()
     const data = safeParseArrayWithLog(sessionSchema, raw, "sessionsApi.list")
-    const pagination = parseLinkHeader(response.headers.get("link"))
+    const pagination = parsePaginationHeaders(response.headers)
     return { data, pagination }
   },
 

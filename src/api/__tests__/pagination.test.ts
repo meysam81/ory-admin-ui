@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { parseLinkHeader } from "../pagination"
+import { parseLinkHeader, parsePaginationHeaders } from "../pagination"
 
 describe("parseLinkHeader", () => {
   it("returns empty object for null header", () => {
@@ -56,5 +56,41 @@ describe("parseLinkHeader", () => {
   it("decodes URL-encoded tokens from relative URLs", () => {
     const header = '</identities?page_token=abc%3D123>; rel="next"'
     expect(parseLinkHeader(header)).toEqual({ nextToken: "abc=123" })
+  })
+})
+
+describe("parsePaginationHeaders", () => {
+  function makeHeaders(entries: Record<string, string>): Headers {
+    return new Headers(entries)
+  }
+
+  it("returns empty object when no relevant headers", () => {
+    expect(parsePaginationHeaders(makeHeaders({}))).toEqual({})
+  })
+
+  it("extracts x-total-count as totalCount", () => {
+    const headers = makeHeaders({ "x-total-count": "42" })
+    expect(parsePaginationHeaders(headers)).toEqual({ totalCount: 42 })
+  })
+
+  it("extracts both link and x-total-count", () => {
+    const headers = makeHeaders({
+      link: '<http://kratos:4434/admin/identities?page_token=nextTok>; rel="next"',
+      "x-total-count": "150",
+    })
+    expect(parsePaginationHeaders(headers)).toEqual({
+      nextToken: "nextTok",
+      totalCount: 150,
+    })
+  })
+
+  it("ignores non-numeric x-total-count", () => {
+    const headers = makeHeaders({ "x-total-count": "invalid" })
+    expect(parsePaginationHeaders(headers)).toEqual({})
+  })
+
+  it("handles x-total-count of 0", () => {
+    const headers = makeHeaders({ "x-total-count": "0" })
+    expect(parsePaginationHeaders(headers)).toEqual({ totalCount: 0 })
   })
 })

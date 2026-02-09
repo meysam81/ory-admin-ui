@@ -1,5 +1,5 @@
 import { getApiClient } from "./client"
-import { parseLinkHeader } from "./pagination"
+import { parsePaginationHeaders } from "./pagination"
 import { safeParseArrayWithLog, safeParseWithLog } from "@/lib/validation"
 import {
   identitySchema,
@@ -43,7 +43,7 @@ export const identitiesApi = {
     })
     const raw = await response.json<Identity[]>()
     const data = safeParseArrayWithLog(identitySchema, raw, "identitiesApi.list")
-    const pagination = parseLinkHeader(response.headers.get("link"))
+    const pagination = parsePaginationHeaders(response.headers)
     return { data, pagination }
   },
 

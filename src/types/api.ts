@@ -76,6 +76,7 @@ export interface IdentitySearchParams extends PaginationParams {
 export interface PaginationMeta {
   nextToken?: string
   prevToken?: string
+  totalCount?: number
 }
 
 export interface PaginatedResponse<T> {

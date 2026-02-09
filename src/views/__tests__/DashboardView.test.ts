@@ -53,7 +53,7 @@ describe("DashboardView", () => {
   beforeEach(() => {
     vi.mocked(identitiesApi.list).mockResolvedValue(paginatedResponse(identities))
     vi.mocked(sessionsApi.list).mockResolvedValue(paginatedResponse(sessions))
-    vi.mocked(courierApi.listMessages).mockResolvedValue(messages)
+    vi.mocked(courierApi.listMessages).mockResolvedValue(paginatedResponse(messages))
     vi.mocked(healthApi.alive).mockResolvedValue({ status: "ok" })
   })
 

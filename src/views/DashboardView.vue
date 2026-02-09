@@ -64,13 +64,13 @@ const recentSessions = computed(() => {
   return sessions.value?.data.slice(0, recentCount.value) || []
 })
 const recentMessages = computed(() => {
-  return messages.value?.slice(0, recentCount.value) || []
+  return messages.value?.data?.slice(0, recentCount.value) || []
 })
 
 const stats = computed(() => [
   {
     name: "Identities",
-    value: identities.value?.data?.length ?? 0,
+    value: identities.value?.pagination?.totalCount ?? identities.value?.data?.length ?? 0,
     icon: Users,
     href: "/identities",
     color: "text-accent",
@@ -78,7 +78,7 @@ const stats = computed(() => [
   },
   {
     name: "Active Sessions",
-    value: sessions.value?.data?.length ?? 0,
+    value: sessions.value?.pagination?.totalCount ?? sessions.value?.data?.length ?? 0,
     icon: Key,
     href: "/sessions",
     color: "text-success",
@@ -86,7 +86,7 @@ const stats = computed(() => [
   },
   {
     name: "Messages",
-    value: messages.value?.length ?? 0,
+    value: messages.value?.pagination?.totalCount ?? messages.value?.data?.length ?? 0,
     icon: Mail,
     href: "/courier",
     color: "text-warning",
@@ -282,7 +282,7 @@ function getIdentityName(identity: any): string {
             title="Failed to load messages"
             @retry="refetchMessages"
           />
-          <div v-else-if="messages?.length" class="space-y-2">
+          <div v-else-if="messages?.data?.length" class="space-y-2">
             <div
               v-for="message in recentMessages"
               :key="message.id"
