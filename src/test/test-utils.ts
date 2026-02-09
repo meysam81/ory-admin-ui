@@ -1,8 +1,9 @@
 import { mount, type ComponentMountingOptions, type VueWrapper } from "@vue/test-utils"
-import { createPinia, type Pinia } from "pinia"
+import { createPinia, setActivePinia, type Pinia } from "pinia"
 import { QueryClient, VueQueryPlugin } from "@tanstack/vue-query"
 import { createRouter, createMemoryHistory, type Router } from "vue-router"
 import type { Component } from "vue"
+import { useProfileStore } from "@/stores/profile"
 
 const stubRoutes = [
   { path: "/", name: "dashboard", component: { template: "<div>Dashboard</div>" } },
@@ -53,6 +54,11 @@ export function renderComponent(
     history: createMemoryHistory(),
     routes: stubRoutes,
   })
+
+  // Initialize profile store (replaces auto-resolving settings store)
+  setActivePinia(pinia)
+  const profileStore = useProfileStore()
+  profileStore.initialize()
 
   if (initialRoute) {
     router.push(initialRoute)

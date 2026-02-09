@@ -18,7 +18,7 @@ vi.mock("@/api/client", () => ({
 }))
 
 vi.mock("@/config/loader", () => ({
-  getRuntimeConfig: vi.fn(() => null),
+  getRuntimeProfiles: vi.fn(() => null),
 }))
 
 import { sessionsApi } from "@/api/sessions"

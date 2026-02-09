@@ -9,8 +9,7 @@ declare module "*.vue" {
 }
 
 interface ImportMetaEnv {
-  readonly VITE_DEFAULT_API_ENDPOINT: string
-  readonly VITE_DEFAULT_PUBLIC_API_ENDPOINT: string
+  readonly VITE_DEFAULT_PROFILES: string
 }
 
 interface ImportMeta {

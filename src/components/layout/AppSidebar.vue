@@ -20,12 +20,20 @@ const route = useRoute()
 const uiStore = useUIStore()
 const { isMobile, isTablet } = useBreakpoints()
 
-const navigation = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Identities", href: "/identities", icon: Users },
-  { name: "Sessions", href: "/sessions", icon: Key },
-  { name: "Courier", href: "/courier", icon: Mail },
-  { name: "Schemas", href: "/schemas", icon: FileJson },
+const sections = [
+  {
+    label: null,
+    items: [{ name: "Dashboard", href: "/", icon: LayoutDashboard }],
+  },
+  {
+    label: "Identity",
+    items: [
+      { name: "Identities", href: "/identities", icon: Users },
+      { name: "Sessions", href: "/sessions", icon: Key },
+      { name: "Courier", href: "/courier", icon: Mail },
+      { name: "Schemas", href: "/schemas", icon: FileJson },
+    ],
+  },
 ]
 
 const bottomNavigation = [{ name: "Settings", href: "/settings", icon: Settings }]
@@ -87,39 +95,47 @@ function onNavClick() {
       </div>
 
       <!-- Navigation -->
-      <nav class="flex-1 space-y-1 overflow-y-auto p-2">
-        <template v-for="item in navigation" :key="item.name">
-          <Tooltip v-if="isCollapsed" :content="item.name" side="right">
+      <nav class="flex-1 overflow-y-auto p-2">
+        <div v-for="section in sections" :key="section.label ?? 'default'" class="space-y-1">
+          <p
+            v-if="!isCollapsed && section.label"
+            class="px-3 pb-1 pt-4 text-[10px] font-semibold uppercase tracking-wider text-text-muted"
+          >
+            {{ section.label }}
+          </p>
+          <template v-for="item in section.items" :key="item.name">
+            <Tooltip v-if="isCollapsed" :content="item.name" side="right">
+              <RouterLink
+                :to="item.href"
+                :class="[
+                  isActive(item.href)
+                    ? 'border-accent/30 bg-accent/10 text-accent'
+                    : 'border-transparent text-text-secondary hover:bg-surface-raised hover:text-text-primary',
+                  'group flex items-center gap-3 rounded-lg border px-3 py-2 text-sm font-medium transition-colors',
+                  isCollapsed ? 'justify-center' : '',
+                ]"
+                @click="onNavClick"
+              >
+                <component :is="item.icon" class="h-5 w-5 flex-shrink-0" />
+                <span v-if="!isCollapsed">{{ item.name }}</span>
+              </RouterLink>
+            </Tooltip>
             <RouterLink
+              v-else
               :to="item.href"
               :class="[
                 isActive(item.href)
                   ? 'border-accent/30 bg-accent/10 text-accent'
                   : 'border-transparent text-text-secondary hover:bg-surface-raised hover:text-text-primary',
                 'group flex items-center gap-3 rounded-lg border px-3 py-2 text-sm font-medium transition-colors',
-                isCollapsed ? 'justify-center' : '',
               ]"
               @click="onNavClick"
             >
               <component :is="item.icon" class="h-5 w-5 flex-shrink-0" />
-              <span v-if="!isCollapsed">{{ item.name }}</span>
+              <span>{{ item.name }}</span>
             </RouterLink>
-          </Tooltip>
-          <RouterLink
-            v-else
-            :to="item.href"
-            :class="[
-              isActive(item.href)
-                ? 'border-accent/30 bg-accent/10 text-accent'
-                : 'border-transparent text-text-secondary hover:bg-surface-raised hover:text-text-primary',
-              'group flex items-center gap-3 rounded-lg border px-3 py-2 text-sm font-medium transition-colors',
-            ]"
-            @click="onNavClick"
-          >
-            <component :is="item.icon" class="h-5 w-5 flex-shrink-0" />
-            <span>{{ item.name }}</span>
-          </RouterLink>
-        </template>
+          </template>
+        </div>
       </nav>
 
       <!-- Bottom navigation -->

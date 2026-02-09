@@ -16,7 +16,11 @@ import TimeAgo from "@/components/common/TimeAgo.vue"
 import StatusBadge from "@/components/common/StatusBadge.vue"
 import ErrorState from "@/components/common/ErrorState.vue"
 import EmptyState from "@/components/common/EmptyState.vue"
-import { Users, Key, Mail, Activity, ArrowRight } from "lucide-vue-next"
+import Badge from "@/components/ui/Badge.vue"
+import { useProfileStore } from "@/stores/profile"
+import { Users, Key, Mail, Activity, ArrowRight, Circle } from "lucide-vue-next"
+
+const profileStore = useProfileStore()
 
 const dashboardParams = ref({ page_size: 10 })
 const { sm: isDesktop } = useBreakpoints()
@@ -123,7 +127,13 @@ function getIdentityName(identity: any): string {
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-semibold text-text-primary">Dashboard</h1>
-        <p class="mt-1 text-sm text-text-muted">Overview of your Ory Kratos instance</p>
+        <div class="mt-1 flex items-center gap-2">
+          <p class="text-sm text-text-muted">Overview of your Ory Kratos instance</p>
+          <Badge variant="outline" class="gap-1">
+            <Circle class="h-1.5 w-1.5 fill-accent text-accent" />
+            {{ profileStore.activeProfile?.slug }}
+          </Badge>
+        </div>
       </div>
       <ReloadButton :is-fetching="isAnyFetching" @reload="reloadAll" />
     </div>

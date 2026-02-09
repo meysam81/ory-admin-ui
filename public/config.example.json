@@ -1,4 +1,10 @@
 {
-  "kratosAdminBaseURL": "http://localhost:4434",
-  "kratosPublicBaseURL": "http://localhost:4433"
+  "local": {
+    "kratosAdminBaseURL": "http://localhost:4434",
+    "kratosPublicBaseURL": "http://localhost:4433"
+  },
+  "prod": {
+    "kratosAdminBaseURL": "https://kratos-admin.example.com",
+    "kratosPublicBaseURL": "https://kratos-public.example.com"
+  }
 }

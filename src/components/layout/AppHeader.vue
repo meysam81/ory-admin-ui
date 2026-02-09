@@ -7,6 +7,7 @@ import { useBreakpoints } from "@/composables/useBreakpoints"
 import { Sun, Moon, Github, Settings, Circle, Menu } from "lucide-vue-next"
 import Button from "@/components/ui/Button.vue"
 import Tooltip from "@/components/ui/Tooltip.vue"
+import ProfileSwitcher from "@/components/layout/ProfileSwitcher.vue"
 import { TooltipProvider } from "radix-vue"
 
 const route = useRoute()
@@ -65,6 +66,9 @@ function getCurrentBreadcrumb() {
             </span>
           </div>
         </Tooltip>
+
+        <!-- Profile switcher -->
+        <ProfileSwitcher />
 
         <!-- Theme toggle -->
         <Tooltip :content="themeStore.isDark ? 'Light mode' : 'Dark mode'" side="bottom">

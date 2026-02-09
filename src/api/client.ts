@@ -1,11 +1,11 @@
 import ky from "ky"
 import log from "loglevel"
-import { useSettingsStore } from "@/stores/settings"
+import { useProfileStore } from "@/stores/profile"
 
 log.setLevel(import.meta.env.DEV ? "debug" : "warn")
 
 export function createApiClient() {
-  const settings = useSettingsStore()
+  const settings = useProfileStore()
 
   return ky.create({
     prefixUrl: settings.kratosAdminBaseURL,
@@ -48,7 +48,7 @@ export function resetApiClient() {
 }
 
 export function createPublicApiClient() {
-  const settings = useSettingsStore()
+  const settings = useProfileStore()
 
   return ky.create({
     prefixUrl: settings.kratosPublicBaseURL,

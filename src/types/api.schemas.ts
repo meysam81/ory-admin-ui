@@ -141,15 +141,14 @@ export const apiErrorSchema = z.object({
   }),
 })
 
-// --- Config ---
+// --- Config (multi-profile) ---
 
-export const runtimeConfigSchema = z.object({
-  kratosAdminBaseURL: z.string().optional(),
-  kratosPublicBaseURL: z.string().optional(),
-})
+import { profileDataSchema } from "./profile"
 
-export const cachedConfigSchema = z.object({
-  config: runtimeConfigSchema,
+export const runtimeProfilesConfigSchema = z.record(z.string(), profileDataSchema)
+
+export const cachedProfilesConfigSchema = z.object({
+  profiles: runtimeProfilesConfigSchema,
   timestamp: z.number(),
 })
 

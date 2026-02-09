@@ -1,40 +1,40 @@
 /**
- * Runtime configuration loader
+ * Runtime configuration loader (multi-profile)
  *
  * Fetches /config.json at boot time with sessionStorage caching.
- * This allows deployment-time configuration without rebuilding.
+ * Config format: Record<slug, { kratosAdminBaseURL?, kratosPublicBaseURL? }>
  */
 
 import { safeParseWithLog } from "@/lib/validation"
-import { runtimeConfigSchema, cachedConfigSchema } from "@/types/api.schemas"
+import { runtimeProfilesConfigSchema, cachedProfilesConfigSchema } from "@/types/api.schemas"
+import type { ProfilesMap } from "@/types/profile"
 
-export type RuntimeConfig = {
-  kratosAdminBaseURL?: string
-  kratosPublicBaseURL?: string
-}
-
-const CONFIG_CACHE_KEY = "runtime-config"
+const CONFIG_CACHE_KEY = "runtime-profiles"
 const CONFIG_CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
 
-let runtimeConfig: RuntimeConfig | null = null
+let runtimeProfiles: ProfilesMap | null = null
 
 /**
- * Get the loaded runtime config (must call loadRuntimeConfig first)
+ * Get the loaded runtime profiles (must call loadRuntimeProfiles first)
  */
-export function getRuntimeConfig(): RuntimeConfig | null {
-  return runtimeConfig
+export function getRuntimeProfiles(): ProfilesMap | null {
+  return runtimeProfiles
 }
 
 /**
- * Check if cached config is still valid
+ * Check if cached profiles are still valid
  */
-function getCachedConfig(): RuntimeConfig | null {
+function getCachedProfiles(): ProfilesMap | null {
   try {
     const cached = sessionStorage.getItem(CONFIG_CACHE_KEY)
     if (!cached) return null
 
-    const parsed = safeParseWithLog(cachedConfigSchema, JSON.parse(cached), "config.cached")
-    const { config, timestamp } = parsed
+    const parsed = safeParseWithLog(
+      cachedProfilesConfigSchema,
+      JSON.parse(cached),
+      "profiles.cached"
+    )
+    const { profiles, timestamp } = parsed
     const isExpired = Date.now() - timestamp > CONFIG_CACHE_TTL_MS
 
     if (isExpired) {
@@ -42,7 +42,7 @@ function getCachedConfig(): RuntimeConfig | null {
       return null
     }
 
-    return config
+    return profiles
   } catch {
     sessionStorage.removeItem(CONFIG_CACHE_KEY)
     return null
@@ -50,12 +50,12 @@ function getCachedConfig(): RuntimeConfig | null {
 }
 
 /**
- * Cache the config in sessionStorage
+ * Cache the profiles in sessionStorage
  */
-function setCachedConfig(config: RuntimeConfig): void {
+function setCachedProfiles(profiles: ProfilesMap): void {
   try {
     const cached = {
-      config,
+      profiles,
       timestamp: Date.now(),
     }
     sessionStorage.setItem(CONFIG_CACHE_KEY, JSON.stringify(cached))
@@ -65,47 +65,45 @@ function setCachedConfig(config: RuntimeConfig): void {
 }
 
 /**
- * Load runtime configuration from /config.json
+ * Load runtime profiles from /config.json
  *
  * Priority:
- * 1. Return cached config if valid
+ * 1. Return cached profiles if valid
  * 2. Fetch from /config.json
- * 3. Return empty config on failure (graceful degradation)
+ * 3. Return empty map on failure (graceful degradation)
  */
-export async function loadRuntimeConfig(): Promise<RuntimeConfig> {
+export async function loadRuntimeProfiles(): Promise<ProfilesMap> {
   // Check cache first
-  const cached = getCachedConfig()
+  const cached = getCachedProfiles()
   if (cached) {
-    runtimeConfig = cached
+    runtimeProfiles = cached
     return cached
   }
 
   // Fetch fresh config
   try {
     const response = await fetch("/config.json", {
-      cache: "no-cache", // Always validate with server
+      cache: "no-cache",
     })
 
     if (!response.ok) {
-      // 404 is expected if no config.json is provided
       if (response.status !== 404) {
         console.warn(`[Config] Failed to load config.json: ${response.status}`)
       }
-      runtimeConfig = {}
+      runtimeProfiles = {}
       return {}
     }
 
     const raw = await response.json()
-    const config = safeParseWithLog(runtimeConfigSchema, raw, "config.load")
-    setCachedConfig(config)
-    runtimeConfig = config
+    const profiles = safeParseWithLog(runtimeProfilesConfigSchema, raw, "profiles.load")
+    setCachedProfiles(profiles)
+    runtimeProfiles = profiles
 
-    console.debug("[Config] Loaded runtime config:", config)
-    return config
+    console.debug("[Config] Loaded runtime profiles:", profiles)
+    return profiles
   } catch (error) {
-    // Network error or invalid JSON - graceful degradation
     console.warn("[Config] Could not load config.json:", error)
-    runtimeConfig = {}
+    runtimeProfiles = {}
     return {}
   }
 }
