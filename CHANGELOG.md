@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.1](https://github.com/licenseware/ory-admin-ui/compare/v0.1.0...v0.1.1) (2026-02-09)
+
+
+### Features
+
+* **CI:** add unit and integration tests at ~40% coverage ([fe2a872](https://github.com/licenseware/ory-admin-ui/commit/fe2a872e54faaaa54c82f6a909a1f5268c12761d))
+
+
+### Bug Fixes
+
+* add health status for public api ([7697ef3](https://github.com/licenseware/ory-admin-ui/commit/7697ef33bbc110bab1ac0218a9030e4252646671))
+* retrieve total count from response headers in list APIs ([e9ad5c7](https://github.com/licenseware/ory-admin-ui/commit/e9ad5c74590ffb1b46ee45f2dd9503d765f2cc1f))
+
 ## 0.1.0 (2026-02-07)
 
 ### Features
