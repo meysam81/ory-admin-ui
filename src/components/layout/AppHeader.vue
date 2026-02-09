@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router"
 import { useThemeStore } from "@/stores/theme"
 import { useUIStore } from "@/stores/ui"
-import { useHealthAlive } from "@/composables/useHealth"
+import { useSystemHealth } from "@/composables/useHealth"
 import { useBreakpoints } from "@/composables/useBreakpoints"
 import { Sun, Moon, Github, Settings, Circle, Menu } from "lucide-vue-next"
 import Button from "@/components/ui/Button.vue"
@@ -13,7 +13,11 @@ const route = useRoute()
 const themeStore = useThemeStore()
 const uiStore = useUIStore()
 const { isMobile } = useBreakpoints()
-const { isError: healthError } = useHealthAlive()
+const {
+  label: healthLabel,
+  tooltipText: healthTooltip,
+  colorClass: healthColor,
+} = useSystemHealth()
 
 const breadcrumbs = [
   { path: "/", name: "Dashboard" },
@@ -53,16 +57,11 @@ function getCurrentBreadcrumb() {
       <!-- Right side -->
       <div class="flex items-center gap-2">
         <!-- Connection status -->
-        <Tooltip
-          :content="healthError ? 'Disconnected from API' : 'Connected to API'"
-          side="bottom"
-        >
+        <Tooltip :content="healthTooltip" side="bottom">
           <div class="flex items-center gap-2 rounded-md px-2 py-1">
-            <Circle
-              :class="['h-2 w-2 fill-current', healthError ? 'text-destructive' : 'text-success']"
-            />
+            <Circle :class="['h-2 w-2 fill-current', healthColor]" />
             <span class="hidden text-xs text-text-muted sm:inline">
-              {{ healthError ? "Disconnected" : "Connected" }}
+              {{ healthLabel }}
             </span>
           </div>
         </Tooltip>

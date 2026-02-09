@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 import { useSettingsStore } from "@/stores/settings"
 import { useThemeStore } from "@/stores/theme"
-import { useHealthAlive, useVersion } from "@/composables/useHealth"
+import { useHealthAlive, usePublicHealthAlive, useVersion } from "@/composables/useHealth"
 import Card from "@/components/ui/Card.vue"
 import CardHeader from "@/components/ui/CardHeader.vue"
 import CardTitle from "@/components/ui/CardTitle.vue"
@@ -11,7 +11,6 @@ import CardContent from "@/components/ui/CardContent.vue"
 import Button from "@/components/ui/Button.vue"
 import Input from "@/components/ui/Input.vue"
 import Label from "@/components/ui/Label.vue"
-import Badge from "@/components/ui/Badge.vue"
 import {
   Settings,
   Server,
@@ -20,6 +19,7 @@ import {
   RotateCcw,
   CheckCircle,
   XCircle,
+  Loader2,
   Sun,
   Moon,
   Monitor,
@@ -30,13 +30,28 @@ const appVersion = __APP_VERSION__
 const settingsStore = useSettingsStore()
 const themeStore = useThemeStore()
 
-const { isError: healthError, refetch: checkHealth } = useHealthAlive()
+const { isError: adminHealthError, refetch: checkAdminHealth } = useHealthAlive()
+const { isError: publicHealthError, refetch: checkPublicHealth } = usePublicHealthAlive()
 const { data: version } = useVersion()
 
 // Local form state
 const kratosAdminBaseURL = ref(settingsStore.kratosAdminBaseURL)
 const kratosPublicBaseURL = ref(settingsStore.kratosPublicBaseURL)
 const theme = ref(themeStore.theme)
+
+// Per-field test state
+const isTestingAdmin = ref(false)
+const adminTestResult = ref<"success" | "error" | null>(null)
+const isTestingPublic = ref(false)
+const publicTestResult = ref<"success" | "error" | null>(null)
+
+// Reset test results when URLs are edited
+watch(kratosAdminBaseURL, () => {
+  adminTestResult.value = null
+})
+watch(kratosPublicBaseURL, () => {
+  publicTestResult.value = null
+})
 
 // Track if settings have changed
 const hasChanges = computed(() => {
@@ -52,7 +67,10 @@ function saveSettings() {
   settingsStore.setKratosPublicBaseURL(kratosPublicBaseURL.value)
   themeStore.setTheme(theme.value as "light" | "dark" | "system")
   toast.success("Settings saved successfully")
-  checkHealth()
+  adminTestResult.value = null
+  publicTestResult.value = null
+  checkAdminHealth()
+  checkPublicHealth()
 }
 
 function resetSettings() {
@@ -62,7 +80,10 @@ function resetSettings() {
   kratosPublicBaseURL.value = settingsStore.kratosPublicBaseURL
   theme.value = "dark"
   toast.info("Settings reset to defaults")
-  checkHealth()
+  adminTestResult.value = null
+  publicTestResult.value = null
+  checkAdminHealth()
+  checkPublicHealth()
 }
 
 // Validate API endpoint URL
@@ -85,31 +106,38 @@ const isValidPublicUrl = computed(() => {
   }
 })
 
-// Test connection
-const isTesting = ref(false)
-async function testConnection() {
+// Test admin connection
+async function testAdminConnection() {
   if (!isValidUrl.value) {
-    toast.error("Please enter a valid URL")
+    toast.error("Please enter a valid Admin API URL")
     return
   }
 
-  isTesting.value = true
+  isTestingAdmin.value = true
   settingsStore.setKratosAdminBaseURL(kratosAdminBaseURL.value)
 
   await new Promise((resolve) => setTimeout(resolve, 500))
-  await checkHealth()
+  await checkAdminHealth()
 
-  isTesting.value = false
+  isTestingAdmin.value = false
+  adminTestResult.value = adminHealthError.value ? "error" : "success"
+}
 
-  if (healthError.value) {
-    toast.error("Connection failed", {
-      description: "Could not connect to the Kratos API at the specified endpoint",
-    })
-  } else {
-    toast.success("Connection successful", {
-      description: `Connected to Kratos ${version.value?.version || ""}`,
-    })
+// Test public connection
+async function testPublicConnection() {
+  if (!isValidPublicUrl.value) {
+    toast.error("Please enter a valid Public API URL")
+    return
   }
+
+  isTestingPublic.value = true
+  settingsStore.setKratosPublicBaseURL(kratosPublicBaseURL.value)
+
+  await new Promise((resolve) => setTimeout(resolve, 500))
+  await checkPublicHealth()
+
+  isTestingPublic.value = false
+  publicTestResult.value = publicHealthError.value ? "error" : "success"
 }
 </script>
 
@@ -133,7 +161,7 @@ async function testConnection() {
       <CardContent class="space-y-4">
         <div class="space-y-2">
           <Label for="api-endpoint">Kratos Admin API Endpoint</Label>
-          <div class="flex gap-2">
+          <div class="flex items-center gap-2">
             <Input
               id="api-endpoint"
               v-model="kratosAdminBaseURL"
@@ -141,9 +169,22 @@ async function testConnection() {
               :placeholder="settingsStore.defaultEndpoint"
               :class="!isValidUrl && kratosAdminBaseURL ? 'border-destructive' : ''"
             />
-            <Button variant="outline" @click="testConnection" :disabled="!isValidUrl || isTesting">
-              {{ isTesting ? "Testing..." : "Test" }}
+            <Button
+              variant="outline"
+              @click="testAdminConnection"
+              :disabled="!isValidUrl || isTestingAdmin"
+            >
+              <Loader2 v-if="isTestingAdmin" class="mr-1 h-3 w-3 animate-spin" />
+              Test
             </Button>
+            <CheckCircle
+              v-if="adminTestResult === 'success'"
+              class="h-4 w-4 flex-shrink-0 text-success"
+            />
+            <XCircle
+              v-else-if="adminTestResult === 'error'"
+              class="h-4 w-4 flex-shrink-0 text-destructive"
+            />
           </div>
           <p v-if="!isValidUrl && kratosAdminBaseURL" class="text-xs text-destructive">
             Please enter a valid URL
@@ -160,13 +201,31 @@ async function testConnection() {
 
         <div class="space-y-2">
           <Label for="public-api-endpoint">Kratos Public API Endpoint</Label>
-          <Input
-            id="public-api-endpoint"
-            v-model="kratosPublicBaseURL"
-            type="url"
-            :placeholder="settingsStore.defaultPublicEndpoint"
-            :class="!isValidPublicUrl && kratosPublicBaseURL ? 'border-destructive' : ''"
-          />
+          <div class="flex items-center gap-2">
+            <Input
+              id="public-api-endpoint"
+              v-model="kratosPublicBaseURL"
+              type="url"
+              :placeholder="settingsStore.defaultPublicEndpoint"
+              :class="!isValidPublicUrl && kratosPublicBaseURL ? 'border-destructive' : ''"
+            />
+            <Button
+              variant="outline"
+              @click="testPublicConnection"
+              :disabled="!isValidPublicUrl || isTestingPublic"
+            >
+              <Loader2 v-if="isTestingPublic" class="mr-1 h-3 w-3 animate-spin" />
+              Test
+            </Button>
+            <CheckCircle
+              v-if="publicTestResult === 'success'"
+              class="h-4 w-4 flex-shrink-0 text-success"
+            />
+            <XCircle
+              v-else-if="publicTestResult === 'error'"
+              class="h-4 w-4 flex-shrink-0 text-destructive"
+            />
+          </div>
           <p v-if="!isValidPublicUrl && kratosPublicBaseURL" class="text-xs text-destructive">
             Please enter a valid URL
           </p>
@@ -180,36 +239,6 @@ async function testConnection() {
               settingsStore.defaultPublicEndpoint
             }}</code>
           </p>
-        </div>
-
-        <!-- Connection status -->
-        <div class="flex items-center justify-between rounded-lg bg-surface-raised p-4">
-          <div class="flex items-center gap-3">
-            <div
-              :class="[
-                'flex h-10 w-10 items-center justify-center rounded-full',
-                healthError ? 'bg-destructive/10 text-destructive' : 'bg-success/10 text-success',
-              ]"
-            >
-              <CheckCircle v-if="!healthError" class="h-5 w-5" />
-              <XCircle v-else class="h-5 w-5" />
-            </div>
-            <div>
-              <p class="text-sm font-medium text-text-primary">
-                {{ healthError ? "Disconnected" : "Connected" }}
-              </p>
-              <p class="text-xs text-text-muted">
-                {{
-                  healthError
-                    ? "Unable to reach the API"
-                    : `Kratos ${version?.version || "Unknown version"}`
-                }}
-              </p>
-            </div>
-          </div>
-          <Badge :variant="healthError ? 'destructive' : 'success'">
-            {{ healthError ? "Offline" : "Online" }}
-          </Badge>
         </div>
       </CardContent>
     </Card>

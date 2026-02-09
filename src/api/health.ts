@@ -1,4 +1,4 @@
-import { getApiClient } from "./client"
+import { getApiClient, getPublicApiClient } from "./client"
 import { safeParseWithLog } from "@/lib/validation"
 import { healthStatusSchema, versionSchema } from "@/types/api.schemas"
 import type { HealthStatus, Version } from "@/types/api"
@@ -14,6 +14,12 @@ export const healthApi = {
     const client = getApiClient()
     const raw = await client.get("admin/health/ready").json<HealthStatus>()
     return safeParseWithLog(healthStatusSchema, raw, "healthApi.ready")
+  },
+
+  publicAlive: async (): Promise<HealthStatus> => {
+    const client = getPublicApiClient()
+    const raw = await client.get("health/alive").json<HealthStatus>()
+    return safeParseWithLog(healthStatusSchema, raw, "healthApi.publicAlive")
   },
 
   version: async (): Promise<Version> => {

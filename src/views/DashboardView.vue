@@ -5,7 +5,7 @@ import { RouterLink } from "vue-router"
 import { useIdentities } from "@/composables/useIdentities"
 import { useSessions } from "@/composables/useSessions"
 import { useCourierMessages } from "@/composables/useCourier"
-import { useHealthAlive } from "@/composables/useHealth"
+import { useSystemHealth } from "@/composables/useHealth"
 import { useBreakpoints } from "@/composables/useBreakpoints"
 import Card from "@/components/ui/Card.vue"
 import CardHeader from "@/components/ui/CardHeader.vue"
@@ -46,7 +46,11 @@ const {
   error: messagesErrorObj,
   refetch: refetchMessages,
 } = useCourierMessages(dashboardParams)
-const { isError: healthError } = useHealthAlive()
+const {
+  status: healthStatus,
+  colorClass: healthColor,
+  bgColorClass: healthBgColor,
+} = useSystemHealth()
 
 const isAnyFetching = computed(
   () => identitiesFetching.value || sessionsFetching.value || messagesFetching.value
@@ -94,11 +98,16 @@ const stats = computed(() => [
   },
   {
     name: "API Status",
-    value: healthError.value ? "Offline" : "Online",
+    value:
+      healthStatus.value === "healthy"
+        ? "Healthy"
+        : healthStatus.value === "degraded"
+          ? "Degraded"
+          : "Offline",
     icon: Activity,
     href: "/settings",
-    color: healthError.value ? "text-destructive" : "text-success",
-    bgColor: healthError.value ? "bg-destructive/10" : "bg-success/10",
+    color: healthColor.value,
+    bgColor: healthBgColor.value,
   },
 ])
 

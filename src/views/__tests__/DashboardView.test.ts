@@ -25,6 +25,7 @@ vi.mock("@/api/courier", () => ({
 vi.mock("@/api/health", () => ({
   healthApi: {
     alive: vi.fn(),
+    publicAlive: vi.fn(),
   },
 }))
 
@@ -55,6 +56,7 @@ describe("DashboardView", () => {
     vi.mocked(sessionsApi.list).mockResolvedValue(paginatedResponse(sessions))
     vi.mocked(courierApi.listMessages).mockResolvedValue(paginatedResponse(messages))
     vi.mocked(healthApi.alive).mockResolvedValue({ status: "ok" })
+    vi.mocked(healthApi.publicAlive).mockResolvedValue({ status: "ok" })
   })
 
   it("renders stat cards after data loads", async () => {
@@ -69,20 +71,21 @@ describe("DashboardView", () => {
     expect(wrapper.text()).toContain("API Status")
   })
 
-  it("shows Online when health check succeeds", async () => {
+  it("shows Healthy when both health checks succeed", async () => {
     const { wrapper, router } = renderComponent(DashboardView)
     await router.isReady()
     await flushPromises()
 
-    expect(wrapper.text()).toContain("Online")
+    expect(wrapper.text()).toContain("Healthy")
   })
 
-  it("shows Offline when health check fails", async () => {
+  it("shows Offline when both health checks fail", async () => {
     vi.useFakeTimers()
     vi.mocked(healthApi.alive).mockRejectedValue(new Error("fail"))
+    vi.mocked(healthApi.publicAlive).mockRejectedValue(new Error("fail"))
     const { wrapper, router } = renderComponent(DashboardView)
     await router.isReady()
-    // useHealthAlive sets retry: 1 at query level.
+    // useHealthAlive and usePublicHealthAlive set retry: 1 at query level.
     // Need to advance past the retry backoff delay (default ~1000ms for first retry).
     await vi.advanceTimersByTimeAsync(100)
     await flushPromises()
@@ -92,6 +95,22 @@ describe("DashboardView", () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain("Offline")
+    vi.useRealTimers()
+  })
+
+  it("shows Degraded when admin is up but public is down", async () => {
+    vi.useFakeTimers()
+    vi.mocked(healthApi.publicAlive).mockRejectedValue(new Error("fail"))
+    const { wrapper, router } = renderComponent(DashboardView)
+    await router.isReady()
+    await vi.advanceTimersByTimeAsync(100)
+    await flushPromises()
+    await vi.advanceTimersByTimeAsync(2000)
+    await flushPromises()
+    await vi.advanceTimersByTimeAsync(2000)
+    await flushPromises()
+
+    expect(wrapper.text()).toContain("Degraded")
     vi.useRealTimers()
   })
 
