@@ -153,3 +153,4 @@ tmp/
 
 # Runtime config (deployment-specific, use config.example.json as template)
 public/config.json
+.direnv

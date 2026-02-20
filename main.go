@@ -18,7 +18,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/urfave/cli/v3"
 
-	gozerolog "github.com/meysam81/go-zerolog"
+	logging "github.com/meysam81/x/logging"
 )
 
 //go:embed dist/*
@@ -51,8 +51,8 @@ type AppState struct {
 }
 
 func NewLogger(c *Config) *zerolog.Logger {
-	logger := gozerolog.NewLogger(gozerolog.WithColor(c.Debug), gozerolog.WithLogLevel(c.LogLevel))
-	return logger
+	logger := logging.NewLogger(logging.WithColorsEnabled(c.Debug), logging.WithLogLevel(c.LogLevel))
+	return &logger
 }
 
 func (a *AppState) securityHeaders(next http.Handler) http.Handler {
