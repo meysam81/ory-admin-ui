@@ -340,7 +340,7 @@ describe("useProfileStore", () => {
       const store = useProfileStore()
       store.initialize()
 
-      expect(store.kratosAdminBaseURL).toBe("http://localhost:4434")
+      expect(store.kratosAdminBaseURL).toBe("http://localhost:4455")
     })
 
     it("provides kratosPublicBaseURL from active profile", () => {
