@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.0](https://github.com/licenseware/ory-admin-ui/compare/v0.1.1...v0.2.0) (2026-02-20)
+
+
+### Features
+
+* add multi-profile support ([c95dde3](https://github.com/licenseware/ory-admin-ui/commit/c95dde3f1ed26540b9fd3bc3fc891f655c4a9cbe))
+
+
+### Bug Fixes
+
+* **CI:** make tests happy ([e672f1a](https://github.com/licenseware/ory-admin-ui/commit/e672f1aafb38b683fcaa5ca7cf9748bdbdb17c7c))
+* **CI:** update the final test evaluation ([fd6f7fd](https://github.com/licenseware/ory-admin-ui/commit/fd6f7fdba81b080ed2382478bf3a28f68d6ddd0d))
+* **dev:** add x-total-count to cors exposed headers ([43063fc](https://github.com/licenseware/ory-admin-ui/commit/43063fc8def3cf0ba5b2f5dff3995cc5d7117a4b))
+* remove obsolete dependency ([97a9d36](https://github.com/licenseware/ory-admin-ui/commit/97a9d362c9dadde4f555a159c68b79b0fb5819cd))
+
 ## [0.1.1](https://github.com/licenseware/ory-admin-ui/compare/v0.1.0...v0.1.1) (2026-02-09)
 
 
