@@ -26,7 +26,7 @@ describe("useProfileStore", () => {
 
       expect(store.allProfiles).toHaveLength(1)
       expect(store.activeSlug).toBe("local")
-      expect(store.kratosAdminBaseURL).toBe("http://localhost:4434")
+      expect(store.kratosAdminBaseURL).toBe("http://localhost:4455")
       expect(store.kratosPublicBaseURL).toBe("http://localhost:4433")
     })
 
