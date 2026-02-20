@@ -19,6 +19,9 @@ serve:
         - authorization
         - content-type
         - origin
+      exposed_headers:
+        - content-type
+        - x-total-count
 
 log:
   level: info

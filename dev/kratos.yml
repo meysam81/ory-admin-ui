@@ -30,6 +30,9 @@ serve:
       allowed_origins:
         - http://localhost:3000
       debug: false
+      exposed_headers:
+        - content-type
+        - x-total-count
       enabled: true
       options_passthrough: false
     request_log:
