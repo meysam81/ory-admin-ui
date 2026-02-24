@@ -17,6 +17,8 @@ github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWE
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/meysam81/x/logging v0.0.0-20260219154253-49caa677ab7a h1:3vgZId8Zl/HQkqu+RblV1z1c1hpJjET+gBA4K6+o4to=
 github.com/meysam81/x/logging v0.0.0-20260219154253-49caa677ab7a/go.mod h1:IQhI/oS327Dq2f+4LnTFO8GwmmlaalLCOXCPK7JS5LM=
+github.com/meysam81/x/logging v0.0.0-20260224172848-22ffe828a8a2 h1:+EiLEYrtnW1khtMq5Ijwtq1R3aUYF2PFgyLf3ksPsDM=
+github.com/meysam81/x/logging v0.0.0-20260224172848-22ffe828a8a2/go.mod h1:IQhI/oS327Dq2f+4LnTFO8GwmmlaalLCOXCPK7JS5LM=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
